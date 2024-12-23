@@ -14,23 +14,33 @@ class _SharedFragmentState extends State<SharedFragment>{
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return const Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
+    return Scaffold(
+      body: Center(
         child: Column(
-          children: <Widget>[
-            Card(
-              child: ListTile(
-                leading: Icon(Icons.notifications_sharp),
-                title: Text('Notification 1'),
-                subtitle: Text('This is a notification'),
-              ),
-            ),
-            Card(
-              child: ListTile(
-                leading: Icon(Icons.notifications_sharp),
-                title: Text('Notification 2'),
-                subtitle: Text('This is a notification'),
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/share.png',
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(height: 5),
+                  // Header
+                  const Text(
+                    'You don\'t have any Shared Files',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

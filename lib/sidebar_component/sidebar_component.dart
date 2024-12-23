@@ -6,9 +6,10 @@ import '../data/menu_class.dart';
 class MenuWithSubMenu extends StatefulWidget {
   // final Widget currentScreen;
   final List<MenuItem> menuItems;
+  final ThemeMode themeMode;
   //final Function(Widget) onMenuItemSelected; // Callback function
   //const MenuWithSubMenu(this.onMenuItemSelected, {super.key});
-  const MenuWithSubMenu(this.menuItems, {Key? key})
+  const MenuWithSubMenu(this.menuItems, this.themeMode, {Key? key})
       : super(key: key);
 
   @override
@@ -16,6 +17,21 @@ class MenuWithSubMenu extends StatefulWidget {
 }
 
 class _MenuWithSubMenuState extends State<MenuWithSubMenu> {
+  // Route _createRoute(){
+  //   return PageRouteBuilder(
+  //     pageBuilder: (context, animation, secondaryAnimation) => const FirstScreen(),
+  //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+  //       const begin = Offset(1.0, 0.0); // Start from the right
+  //       const end = Offset.zero; // End at the original position
+  //       const curve = Curves.easeInOut;
+  //
+  //       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+  //       var offsetAnimation = animation.drive(tween);
+  //
+  //       return SlideTransition(position: offsetAnimation, child: child);
+  //     },
+  //   );
+  // }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -62,14 +78,29 @@ class _MenuWithSubMenuState extends State<MenuWithSubMenu> {
 
                       // Map of widget names to widget constructors
                       Map<String, Widget Function()> widgetMap = {
-                        'MyDrive': () => const MyDrive(),
-                        'Trash': () => const Trash()
+                        'MyDrive': () =>  MyDrive(widget.themeMode),
+                        'Trash': () =>  Trash(widget.themeMode)
                       };
 
                       if (widgetMap.containsKey(widgetName)) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => widgetMap[widgetName]!()),
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) => widgetMap[widgetName]!()),
+                        // );
+                        Navigator.of(context).push(
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => widgetMap[widgetName]!(),
+                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                const begin = Offset(1.0, 0.0); // Start from the right
+                                const end = Offset.zero; // End at the original position
+                                const curve = Curves.easeInOut;
+
+                                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                var offsetAnimation = animation.drive(tween);
+
+                                return SlideTransition(position: offsetAnimation, child: child);
+                              },
+                            )
                         );
                       } else {
                         // Handle case where widget is not found

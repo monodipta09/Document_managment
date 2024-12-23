@@ -12,44 +12,38 @@ class DocumentManagementEntryPoint extends StatefulWidget{
 }
 
 class _DocumentManagementEntryPointState extends State<DocumentManagementEntryPoint> {
-  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode themeMode = ThemeMode.system;
   //Widget currentScreen = const HomeFragment();
-  void _toggleTheme() {
+  void toggleTheme() {
     setState(() {
-      if (_themeMode == ThemeMode.light) {
-        _themeMode = ThemeMode.dark;
+      if (themeMode == ThemeMode.light) {
+        themeMode = ThemeMode.dark;
       } else {
-        _themeMode = ThemeMode.light;
+        themeMode = ThemeMode.light;
       }
     });
   }
-
-  // void updateScreen(Widget newScreen) {
-  //   setState(() {
-  //     currentScreen = newScreen;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      themeMode: _themeMode,
+      themeMode: themeMode,
       home: Scaffold(
         drawer: Drawer(
           // Use Drawer widget here
           // child: MenuWithSubMenu(updateScreen),
-          child: MenuWithSubMenu(menuItems),
+          child: MenuWithSubMenu(menuItems, themeMode),
         ),
         appBar: AppBar(
           title: const Text("Document Management"),
           actions: [
             IconButton(
-              icon: Icon(_themeMode == ThemeMode.light
+              icon: Icon(themeMode == ThemeMode.light
                   ? Icons.brightness_4
                   : Icons.brightness_7),
-              onPressed: _toggleTheme,
+              onPressed: toggleTheme,
             ),
           ],
         ),
