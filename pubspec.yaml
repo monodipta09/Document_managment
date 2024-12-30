@@ -78,6 +78,7 @@ flutter:
     - assets/folder.svg
     - assets/pdf-file.svg
     - assets/png-file.svg
+    - assets/excel-file.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

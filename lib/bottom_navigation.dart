@@ -3,7 +3,7 @@ import 'fragments/home_fragment.dart';
 import 'fragments/shared_fragment.dart';
 import 'fragments/starred_fragment.dart';
 
-class BottomNavigation extends StatefulWidget{
+class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
 
   @override
@@ -13,15 +13,43 @@ class BottomNavigation extends StatefulWidget{
   }
 }
 
-class _BottomNavigationState extends State<BottomNavigation>{
+class _BottomNavigationState extends State<BottomNavigation> {
   int currentPageIndex = 0;
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     final ThemeData theme = Theme.of(context);
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Define the action for the FAB here
+          showModalBottomSheet<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return SizedBox(
+                height: 200,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const Text('Modal BottomSheet'),
+                      ElevatedButton(
+                        child: const Text('Close BottomSheet'),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index){
+        onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;
           });
@@ -37,17 +65,17 @@ class _BottomNavigationState extends State<BottomNavigation>{
           NavigationDestination(
               icon: Icon(Icons.people_alt_outlined),
               selectedIcon: Icon(Icons.people),
-              label: "Shared"
-          ),
+              label: "Shared"),
           NavigationDestination(
               icon: Icon(Icons.star_border_outlined),
               selectedIcon: Icon(Icons.star),
-              label: "Starred"
-          )
+              label: "Starred")
         ],
       ),
       body: <Widget>[
-        const HomeFragment.withTheme(theme: null,),
+        const HomeFragment.withTheme(
+          theme: null,
+        ),
         const SharedFragment(),
         StarredFragment(theme)
       ][currentPageIndex],
