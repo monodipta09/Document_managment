@@ -1,17 +1,19 @@
-import 'package:document_management_main/fragments/home_fragment.dart';
+// import 'package:document_management_main/fragments/home_fragment.dart';
 import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 import 'package:flutter/material.dart';
 import 'bottom_navigation.dart';
 import 'data/menu_submenu_data.dart';
 
-class DocumentManagementEntryPoint extends StatefulWidget{
+class DocumentManagementEntryPoint extends StatefulWidget {
   const DocumentManagementEntryPoint({super.key});
 
   @override
-  State<DocumentManagementEntryPoint> createState() => _DocumentManagementEntryPointState();
+  State<DocumentManagementEntryPoint> createState() =>
+      _DocumentManagementEntryPointState();
 }
 
-class _DocumentManagementEntryPointState extends State<DocumentManagementEntryPoint> {
+class _DocumentManagementEntryPointState
+    extends State<DocumentManagementEntryPoint> {
   ThemeMode themeMode = ThemeMode.system;
   //Widget currentScreen = const HomeFragment();
   void toggleTheme() {
@@ -48,6 +50,7 @@ class _DocumentManagementEntryPointState extends State<DocumentManagementEntryPo
           ],
         ),
         body: const BottomNavigation(),
+        
         //body: currentScreen,
       ),
     );
