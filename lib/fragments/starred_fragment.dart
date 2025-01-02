@@ -3,6 +3,8 @@ import 'package:document_management_main/data/file_class.dart';
 import 'package:document_management_main/data/file_data.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/floating_action_button_widget.dart';
+
 class StarredFragment extends StatefulWidget{
   final ThemeData theme;
   const StarredFragment(this.theme, {super.key});
@@ -25,6 +27,7 @@ class _StarredFragmentState extends State<StarredFragment>{
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
       home: Scaffold(
+        floatingActionButton: const FloatingActionButtonWidget(),
         body: Card(
           shadowColor: Colors.transparent,
           margin: const EdgeInsets.all(8.0),
