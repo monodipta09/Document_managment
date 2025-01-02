@@ -1,16 +1,68 @@
-# document_management_main
+# Document Management System
 
-A new Flutter project.
+This project is a Document Management System developed using Flutter.
 
-## Getting Started
+## Table of Contents
 
-This project is a starting point for a Flutter application.
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [License](#license)
 
-A few resources to get you started if this is your first Flutter project:
+## Introduction
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The Document Management System is designed to help organizations efficiently manage, store, and retrieve documents. Built with Flutter, it offers cross-platform compatibility, allowing users to access the system on various devices.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features
+
+- **Document Storage**: Securely upload and store documents.
+- **Document Retrieval**: Easily search and retrieve stored documents.
+- **User Management**: Manage user access and permissions.
+- **Version Control**: Maintain and track document versions.
+- **Audit Trail**: Monitor document access and modifications.
+
+## Installation
+
+To set up the project locally, follow these steps:
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/monodipta09/Document_managment.git
+   ```
+
+2. **Navigate to the project directory**:
+
+   ```bash
+   cd Document_managment
+   ```
+
+3. **Install dependencies**:
+
+   Ensure you have Flutter installed. Then, run:
+
+   ```bash
+   flutter pub get
+   ```
+
+4. **Run the application**:
+
+   ```bash
+   flutter run
+   ```
+
+## Usage
+
+Once the application is running, you can:
+
+- **Upload Documents**: Add new documents to the system.
+- **Search Documents**: Use the search functionality to find documents.
+- **Manage Users**: Add or remove users and assign permissions.
+- **Track Changes**: View the history of document modifications.
+
+## License
+
+This project is proprietary and is under the copyright of KEROSS. Unauthorized use, distribution, or modification is prohibited.
+
+For more information, please contact [KEROSS](https://www.keross.com). 
