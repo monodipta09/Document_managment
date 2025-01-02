@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/floating_action_button_widget.dart';
 
 class SharedFragment extends StatefulWidget{
   const SharedFragment({super.key});
@@ -15,6 +16,7 @@ class _SharedFragmentState extends State<SharedFragment>{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      floatingActionButton: const FloatingActionButtonWidget(),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

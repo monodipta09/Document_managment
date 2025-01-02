@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'fragments/home_fragment.dart';
 import 'fragments/shared_fragment.dart';
 import 'fragments/starred_fragment.dart';
-import 'package:file_uploader_package/src/file_uploader_package.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
@@ -21,60 +20,60 @@ class _BottomNavigationState extends State<BottomNavigation> {
     // TODO: implement build
     final ThemeData theme = Theme.of(context);
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Define the action for the FAB here
-          showModalBottomSheet<void>(
-            context: context,
-            builder: (BuildContext context) {
-              return SizedBox(
-                height: 200,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      //const Text('Modal BottomSheet'),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              FilePickerWidgetState().pickFiles();
-                            },
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey[200], // Background color for the button
-                              ),
-                              child: const Icon(
-                                Icons.upload, // Upload icon
-                                color: Colors.black, // Icon color
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8), // Spacing between icon and label
-                          const Text(
-                            'Upload',
-                            style: TextStyle(
-                              fontSize: 12, // Adjust label size
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     // Define the action for the FAB here
+      //     showModalBottomSheet<void>(
+      //       context: context,
+      //       builder: (BuildContext context) {
+      //         return SizedBox(
+      //           height: 200,
+      //           child: Center(
+      //             child: Column(
+      //               mainAxisAlignment: MainAxisAlignment.center,
+      //               mainAxisSize: MainAxisSize.min,
+      //               children: <Widget>[
+      //                 //const Text('Modal BottomSheet'),
+      //                 Column(
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: [
+      //                     InkWell(
+      //                       onTap: () {
+      //                         FilePickerWidgetState().pickFiles();
+      //                       },
+      //                       child: Container(
+      //                         width: 60,
+      //                         height: 60,
+      //                         decoration: BoxDecoration(
+      //                           shape: BoxShape.circle,
+      //                           color: Colors.grey[200], // Background color for the button
+      //                         ),
+      //                         child: const Icon(
+      //                           Icons.upload, // Upload icon
+      //                           color: Colors.black, // Icon color
+      //                         ),
+      //                       ),
+      //                     ),
+      //                     const SizedBox(height: 8), // Spacing between icon and label
+      //                     const Text(
+      //                       'Upload',
+      //                       style: TextStyle(
+      //                         fontSize: 12, // Adjust label size
+      //                         color: Colors.black,
+      //                       ),
+      //                     ),
+      //                   ],
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //         );
+      //       },
+      //     );
+      //   },
+      //   child: const Icon(Icons.add),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
