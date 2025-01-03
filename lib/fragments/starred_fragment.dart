@@ -17,29 +17,53 @@ class StarredFragment extends StatefulWidget{
 }
 
 class _StarredFragmentState extends State<StarredFragment>{
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _onFilesAdded(List<FileItem> newFiles) {
+    setState(() {
+      items.addAll(newFiles);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
+    // late List<FileItem> currentItems = items;
     final List<FileItem> starredItems = items.where((item) => item.isStarred).toList();
     // TODO: implement build
-    return MaterialApp(
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.system,
-      home: Scaffold(
-        floatingActionButton: const FloatingActionButtonWidget(),
-        body: Card(
-          shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Center(
-              // child: Text(
-              //   'Home page',
-              //   style: widget.theme?.textTheme.titleLarge,
-              // ),
-              child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GridLayout(items: starredItems)),
+    // return MaterialApp(
+    //   theme: ThemeData.light(),
+    //   darkTheme: ThemeData.dark(),
+    //   themeMode: ThemeMode.system,
+    //   home: Scaffold(
+    //     floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
+    //     body: Card(
+    //       shadowColor: Colors.transparent,
+    //       margin: const EdgeInsets.all(8.0),
+    //       child: SizedBox.expand(
+    //         child: Center(
+    //           child: Padding(
+    //               padding: const EdgeInsets.all(8.0),
+    //               child: GridLayout(items: starredItems)),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
+    return Scaffold(
+      // AppBar could go here if you like
+      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
+      body: Card(
+        shadowColor: Colors.transparent,
+        margin: const EdgeInsets.all(8.0),
+        child: SizedBox.expand(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GridLayout(items: starredItems),
             ),
           ),
         ),

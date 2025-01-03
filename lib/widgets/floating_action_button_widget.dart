@@ -1,9 +1,11 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../data/file_class.dart';
 import 'bottom_sheet_widget.dart';
 
 class FloatingActionButtonWidget extends StatefulWidget{
-  const FloatingActionButtonWidget({super.key});
+  final Function(List<FileItem>) onFilesAdded;
+  const FloatingActionButtonWidget({super.key, required this.onFilesAdded});
 
   @override
   State<FloatingActionButtonWidget> createState() => _FloatingActionButtonWidgetState();
@@ -25,7 +27,7 @@ class _FloatingActionButtonWidgetState extends State<FloatingActionButtonWidget>
           showModalBottomSheet<void>(
             context: context,
             builder: (BuildContext context) {
-              return const BottomSheetWidget();
+              return BottomSheetWidget(onFilesAdded: widget.onFilesAdded,);
             },
           );
         },
