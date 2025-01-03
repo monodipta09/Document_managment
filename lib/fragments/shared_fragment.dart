@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../data/file_class.dart';
+import '../data/file_data.dart';
 import '../widgets/floating_action_button_widget.dart';
 
 class SharedFragment extends StatefulWidget{
@@ -12,11 +14,23 @@ class SharedFragment extends StatefulWidget{
 }
 
 class _SharedFragmentState extends State<SharedFragment>{
+
+  void _onFilesAdded(List<FileItem> newFiles) {
+    setState(() {
+      items.addAll(newFiles);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      floatingActionButton: const FloatingActionButtonWidget(),
+      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

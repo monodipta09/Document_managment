@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import '../data/file_class.dart';
 import 'upload_widget.dart';
 
 class BottomSheetWidget extends StatelessWidget {
-  const BottomSheetWidget({Key? key}) : super(key: key);
+  final Function(List<FileItem>) onFilesAdded;
+  const BottomSheetWidget({super.key, required this.onFilesAdded});
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
+    return SizedBox(
       height: 200,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            UploadWidget(),
+            UploadWidget(onFilesAdded: onFilesAdded,),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:document_management_main/components/grid_view.dart';
+import 'package:document_management_main/data/file_class.dart';
 import 'package:document_management_main/data/file_data.dart';
 import 'package:flutter/material.dart';
 
@@ -12,33 +13,43 @@ class HomeFragment extends StatefulWidget {
 
   @override
   State<HomeFragment> createState() {
-    // TODO: implement createState
     return _HomeFragmentState();
   }
 }
 
 class _HomeFragmentState extends State<HomeFragment> {
+  late List<FileItem> currentItems = items;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  // void updateItems(List<FileItem> items){
+  //   setState(() {
+  //     currentItems = items;
+  //   });
+  // }
+
+  void _onFilesAdded(List<FileItem> newFiles) {
+    setState(() {
+      items.addAll(newFiles);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return MaterialApp(
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.system,
-      home: Scaffold(
-        floatingActionButton: const FloatingActionButtonWidget(),
-        body: Card(
-          shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Center(
-              // child: Text(
-              //   'Home page',
-              //   style: widget.theme?.textTheme.titleLarge,
-              // ),
-              child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GridLayout(items: items)),
+    return Scaffold(
+      // AppBar could go here if you like
+      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
+      body: Card(
+        shadowColor: Colors.transparent,
+        margin: const EdgeInsets.all(8.0),
+        child: SizedBox.expand(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GridLayout(items: currentItems),
             ),
           ),
         ),
