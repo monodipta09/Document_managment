@@ -77,12 +77,13 @@ class GridLayout extends StatelessWidget {
             Positioned(
               top: 0.0,
               right: 0.0,
+              left: 125,
               child: IconButton(
-                style: ButtonStyle(
-                  padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-                    const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
-                  ),
-                ),
+                // style: ButtonStyle(
+                //   padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                //     const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
+                //   ),
+                // ),
                 icon: const Icon(Icons.more_vert,size: 24.0,),
                 onPressed: () {
                   // Handle three dots button press
