@@ -77,7 +77,7 @@ class GridLayout extends StatelessWidget {
             Positioned(
               top: 0.0,
               right: 0.0,
-              left: 125,
+              left: 124,
               child: IconButton(
                 // style: ButtonStyle(
                 //   padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
