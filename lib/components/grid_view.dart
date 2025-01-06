@@ -1,34 +1,76 @@
+import 'package:document_management_main/data/file_class.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:document_management_main/widgets/folder_screen_widget.dart';
+
+import '../files_viewer/image_viewer_page.dart';
+import '../files_viewer/pdf_viewer_page.dart';
+import '../files_viewer/text_viewer_page.dart';
 
 class GridLayout extends StatelessWidget {
-  final List<dynamic> items;
+  final List<FileItem> items;
 
-  GridLayout({required this.items});
+  const GridLayout({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // Number of columns
+        crossAxisCount: 2,
         crossAxisSpacing: 8.0,
         mainAxisSpacing: 8.0,
-        childAspectRatio: 1.0, // Adjust for aspect ratio
+        childAspectRatio: 1.0,
       ),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return _buildGridLayout(item);
+        return _buildGridLayout(item, context);
       },
     );
   }
 
-  Widget _buildGridLayout(dynamic item) {
-    // Customize this method to build your grid item layout
+  Widget _buildGridLayout(dynamic item, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Handle item tap
         print("Item tapped: ${item.name}");
+        //OpenFile.open(item.filePath);
+        if(item.isFolder){
+          Navigator.of(context).push(
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) => FolderScreenWidget(fileItems: item.children?? []),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0); // Start from the right
+                  const end = Offset.zero; // End at the original position
+                  const curve = Curves.easeInOut;
+
+                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                  var offsetAnimation = animation.drive(tween);
+
+                  return SlideTransition(position: offsetAnimation, child: child);
+                },
+              )
+          );
+        }else if (item.filePath.endsWith(".pdf")) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PdfViewerPage(filePath: item.filePath)),
+          );
+        } else if (item.filePath.endsWith(".txt")) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TextFileViewerPage(filePath: item.filePath)),
+          );
+        } else if (item.filePath.endsWith(".png") || item.filePath.endsWith(".jpg")) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ImageViewerPage(imagePath: item.filePath)),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Unsupported file type")),
+          );
+        }
+
       },
       onDoubleTap: () {
         // Handle item double tap
@@ -79,11 +121,6 @@ class GridLayout extends StatelessWidget {
               right: 0.0,
               left: 125,
               child: IconButton(
-                // style: ButtonStyle(
-                //   padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-                //     const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
-                //   ),
-                // ),
                 icon: const Icon(Icons.more_vert,size: 24.0,),
                 onPressed: () {
                   // Handle three dots button press
