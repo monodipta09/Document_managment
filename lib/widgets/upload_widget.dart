@@ -157,7 +157,7 @@ class _UploadWidgetState extends State<UploadWidget> {
     print('Initial storage permission status: $status');
 
     if (status.isGranted) {
-      print('Storage permission already granted.');
+      print('Storage permission granted.');
       return true;
     }
 
