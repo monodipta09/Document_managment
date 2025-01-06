@@ -56,6 +56,7 @@ dependencies:
   open_file: ^3.5.10
   flutter_pdfview: ^1.4.0
   flutter_text_viewer: ^0.0.6
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
