@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import '../data/file_class.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class UploadWidget extends StatefulWidget {
   final Function(List<FileItem>) onFilesAdded;
@@ -50,8 +51,49 @@ class _UploadWidgetState extends State<UploadWidget> {
   }
 
   // New function to handle folder selection and upload
+  // Future<void> _selectAndUploadFolder() async {
+  //   try {
+  //     // Open the folder picker
+  //     String? selectedDirectoryPath = await FilePicker.platform.getDirectoryPath();
+  //
+  //     if (selectedDirectoryPath != null) {
+  //       Directory selectedDirectory = Directory(selectedDirectoryPath);
+  //       // Check if the directory exists
+  //       if (await selectedDirectory.exists()) {
+  //         await uploadFolder(selectedDirectory);
+  //         // Notify the parent widget with the uploaded folder
+  //         FileItem rootFolder = await _buildFileItemFromFolder(selectedDirectory);
+  //         widget.onFilesAdded([rootFolder]);
+  //         // Show a success message
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(content: Text('Folder uploaded successfully!')),
+  //         );
+  //       } else {
+  //         // Directory does not exist
+  //         _showErrorSnackBar('Selected folder does not exist.');
+  //       }
+  //     } else {
+  //       // User canceled the picker
+  //       _showErrorSnackBar('No folder selected.');
+  //     }
+  //   } on PlatformException catch (e) {
+  //     print('Unsupported operation: $e');
+  //     _showErrorSnackBar('Unsupported operation: $e');
+  //   } catch (e) {
+  //     print('Error: $e');
+  //     _showErrorSnackBar('Error: $e');
+  //   }
+  // }
+
   Future<void> _selectAndUploadFolder() async {
     try {
+      // Request storage permissions
+      bool hasPermission = await _requestStoragePermission();
+      if (!hasPermission) {
+        _showErrorSnackBar('Storage permission is required to upload folders.');
+        return;
+      }
+
       // Open the folder picker
       String? selectedDirectoryPath = await FilePicker.platform.getDirectoryPath();
 
@@ -108,12 +150,50 @@ class _UploadWidgetState extends State<UploadWidget> {
     }
   }
 
+  // Function to request storage permissions
+  Future<bool> _requestStoragePermission() async {
+    print('Checking storage permission status...');
+    var status = await Permission.storage.status;
+    print('Initial storage permission status: $status');
+
+    if (status.isGranted) {
+      print('Storage permission granted.');
+      return true;
+    }
+
+    if (status.isDenied) {
+      print('Storage permission denied. Requesting permission...');
+      status = await Permission.storage.request();
+      print('Storage permission status after request: $status');
+      if (status.isGranted) {
+        print('Storage permission granted.');
+        return true;
+      } else if (status.isPermanentlyDenied) {
+        print('Storage permission permanently denied. Opening app settings...');
+        await openAppSettings();
+      }
+    }
+
+    if (status.isPermanentlyDenied) {
+      print('Storage permission permanently denied. Opening app settings...');
+      await openAppSettings();
+    }
+
+    return status.isGranted;
+  }
+
+
   // Recursive function to build FileItem hierarchy from a folder
   Future<FileItem> _buildFileItemFromFolder(Directory folder) async {
     final List<FileItem> children = [];
 
+    // Log the directory being processed
+    print('Processing folder: ${folder.path}');
+
     // List immediate contents of the folder
     await for (final FileSystemEntity entity in folder.list(recursive: false, followLinks: false)) {
+      print('Found entity: ${entity.path}'); // Debugging statement
+
       if (entity is File) {
         // If the entity is a file, add it to the list
         final String fileExtension = p.extension(entity.path).replaceFirst('.', '');
@@ -152,6 +232,7 @@ class _UploadWidgetState extends State<UploadWidget> {
       children: children, // Attach immediate children to this folder
     );
   }
+
 
   // Function to display error messages using SnackBar
   void _showErrorSnackBar(String message) {
