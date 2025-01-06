@@ -22,15 +22,14 @@ class _FloatingActionButtonWidgetState extends State<FloatingActionButtonWidget>
   Widget build(BuildContext context) {
     // TODO: implement build
     return FloatingActionButton(
-        onPressed: () {
-          // Define the action for the FAB here
-          showModalBottomSheet<void>(
-            context: context,
-            builder: (BuildContext context) {
-              return BottomSheetWidget(onFilesAdded: widget.onFilesAdded,);
-            },
-          );
-        },
+      onPressed: () {
+        showModalBottomSheet<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return BottomSheetWidget(onFilesAdded: widget.onFilesAdded,);
+          },
+        );
+      },
       child: const Icon(Icons.add),
     );
   }

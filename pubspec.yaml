@@ -28,6 +28,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  bottom_sheet_modal_package:
+    git:
+      url: https://github.com/RomanticNihilist/bottom_package_modal_package
+      ref: main
   flutter:
     sdk: flutter
   Menu_Submenu_accordion_dropdown:

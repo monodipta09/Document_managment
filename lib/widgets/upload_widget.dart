@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:document_management_main/data/file_data.dart';
-
-import '../data/file_class.dart'; // This is the file where `items` list is defined.
+import '../data/file_class.dart';
 
 class UploadWidget extends StatefulWidget {
   final Function(List<FileItem>) onFilesAdded;
