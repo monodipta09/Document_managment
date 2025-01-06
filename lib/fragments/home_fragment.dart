@@ -25,12 +25,6 @@ class _HomeFragmentState extends State<HomeFragment> {
     super.initState();
   }
 
-  // void updateItems(List<FileItem> items){
-  //   setState(() {
-  //     currentItems = items;
-  //   });
-  // }
-
   void _onFilesAdded(List<FileItem> newFiles) {
     setState(() {
       items.addAll(newFiles);

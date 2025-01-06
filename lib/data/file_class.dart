@@ -3,6 +3,15 @@ class FileItem {
   final String icon;
   final bool isFolder;
   final bool isStarred;
+  final List<FileItem>? children; // For folders
+  final String? filePath; // For files
 
-  FileItem({required this.name, required this.icon, required this.isFolder, required this.isStarred});
+  FileItem({
+    required this.name,
+    required this.icon,
+    required this.isFolder,
+    required this.isStarred,
+    this.children,
+    this.filePath, // Null for folders
+  });
 }

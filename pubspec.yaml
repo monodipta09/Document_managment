@@ -37,9 +37,7 @@ dependencies:
   Menu_Submenu_accordion_dropdown:
     git:
       url: https://github.com/RomanticNihilist/Menu_Submenu_accordion_dropdown.git
-  file_uploader_package:
-    git:
-      url: https://github.com/RomanticNihilist/file_uploader_package
+      ref: master
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -55,6 +53,9 @@ dependencies:
   
   flutter_svg: ^2.0.0
   file_picker: ^8.1.7
+  open_file: ^3.5.10
+  flutter_pdfview: ^1.4.0
+  flutter_text_viewer: ^0.0.6
 
 dev_dependencies:
   flutter_test:
