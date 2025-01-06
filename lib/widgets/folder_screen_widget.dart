@@ -1,24 +1,21 @@
-import 'package:document_management_main/components/grid_view.dart';
-import 'package:document_management_main/data/file_class.dart';
-import 'package:document_management_main/data/file_data.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/floating_action_button_widget.dart';
+import '../components/grid_view.dart';
+import '../data/file_class.dart';
+import 'floating_action_button_widget.dart';
 
-class HomeFragment extends StatefulWidget {
-  final ThemeData? theme;
-
-  const HomeFragment({super.key, this.theme});
-  const HomeFragment.withTheme({super.key, required this.theme});
+class FolderScreenWidget extends StatefulWidget{
+  final List<FileItem> fileItems;
+  const FolderScreenWidget({super.key, required this.fileItems});
 
   @override
-  State<HomeFragment> createState() {
-    return _HomeFragmentState();
+  State<FolderScreenWidget> createState() {
+    return _FolderScreenWidget();
   }
 }
 
-class _HomeFragmentState extends State<HomeFragment> {
-  late List<FileItem> currentItems = items;
+class _FolderScreenWidget extends State<FolderScreenWidget>{
+  late List<FileItem> currentItems = widget.fileItems;
 
   @override
   void initState() {
@@ -27,14 +24,13 @@ class _HomeFragmentState extends State<HomeFragment> {
 
   void _onFilesAdded(List<FileItem> newFiles) {
     setState(() {
-      items.addAll(newFiles);
+      widget.fileItems.addAll(newFiles);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // AppBar could go here if you like
       floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
       body: Card(
         shadowColor: Colors.transparent,
