@@ -34,6 +34,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  bottom_sheet_modal_package:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: "784333e8a6da92502d06a688293b44ffb381250d"
+      url: "https://github.com/RomanticNihilist/bottom_package_modal_package"
+    source: git
+    version: "0.0.1"
   characters:
     dependency: transitive
     description:
