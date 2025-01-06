@@ -11,7 +11,7 @@ class LoginPage extends StatelessWidget {
 
   void _login(BuildContext context, String username, String password) async {
     bool isSuccess = await _authService.login(username, password);
-    if (true) {
+    if (isSuccess) {
       // Navigate to the home page or dashboard
       // Navigator.pushNamed(context, '/home');
       Navigator.push(
