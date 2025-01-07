@@ -1,12 +1,14 @@
 class FileItem {
+  // final String id;
   final String name;
   final String icon;
   final bool isFolder;
-  final bool isStarred;
+  bool isStarred;
   final List<FileItem>? children; // For folders
   final String? filePath; // For files
 
   FileItem({
+    // required this.id,
     required this.name,
     required this.icon,
     required this.isFolder,

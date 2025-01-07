@@ -6,11 +6,13 @@ import 'package:document_management_main/widgets/folder_screen_widget.dart';
 import '../files_viewer/image_viewer_page.dart';
 import '../files_viewer/pdf_viewer_page.dart';
 import '../files_viewer/text_viewer_page.dart';
+import '../widgets/bottom_modal_options.dart';
 
 class GridLayout extends StatelessWidget {
   final List<FileItem> items;
+  final Function(FileItem)? onStarred;
 
-  const GridLayout({super.key, required this.items});
+  const GridLayout({super.key, required this.items, this.onStarred});
 
   @override
   Widget build(BuildContext context) {
@@ -30,47 +32,57 @@ class GridLayout extends StatelessWidget {
   }
 
   Widget _buildGridLayout(dynamic item, BuildContext context) {
+    String itemName = item.name.toString();
+    itemName =
+        itemName.length > 10 ? itemName.substring(0, 10) + '...' : itemName;
+
     return GestureDetector(
       onTap: () {
         print("Item tapped: ${item.name}");
         //OpenFile.open(item.filePath);
-        if(item.isFolder){
-          Navigator.of(context).push(
-              PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) => FolderScreenWidget(fileItems: item.children?? []),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  const begin = Offset(1.0, 0.0); // Start from the right
-                  const end = Offset.zero; // End at the original position
-                  const curve = Curves.easeInOut;
+        if (item.isFolder) {
+          Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                FolderScreenWidget(fileItems: item.children ?? []),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0); // Start from the right
+              const end = Offset.zero; // End at the original position
+              const curve = Curves.easeInOut;
 
-                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                  var offsetAnimation = animation.drive(tween);
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
 
-                  return SlideTransition(position: offsetAnimation, child: child);
-                },
-              )
-          );
-        }else if (item.filePath.endsWith(".pdf")) {
+              return SlideTransition(position: offsetAnimation, child: child);
+            },
+          ));
+        } else if (item.filePath.endsWith(".pdf")) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PdfViewerPage(filePath: item.filePath)),
+            MaterialPageRoute(
+                builder: (context) => PdfViewerPage(filePath: item.filePath)),
           );
         } else if (item.filePath.endsWith(".txt")) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TextFileViewerPage(filePath: item.filePath)),
+            MaterialPageRoute(
+                builder: (context) =>
+                    TextFileViewerPage(filePath: item.filePath)),
           );
-        } else if (item.filePath.endsWith(".png") || item.filePath.endsWith(".jpg")) {
+        } else if (item.filePath.endsWith(".png") ||
+            item.filePath.endsWith(".jpg")) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ImageViewerPage(imagePath: item.filePath)),
+            MaterialPageRoute(
+                builder: (context) =>
+                    ImageViewerPage(imagePath: item.filePath)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Unsupported file type")),
+            const SnackBar(content: Text("Unsupported file type")),
           );
         }
-
       },
       onDoubleTap: () {
         // Handle item double tap
@@ -97,10 +109,12 @@ class GridLayout extends StatelessWidget {
                 ),
                 const SizedBox(height: 15.0),
                 Text(
-                  item.name,
+                  // item.name,
+                  itemName,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14.0,
+                    color: Colors.black54,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -121,10 +135,26 @@ class GridLayout extends StatelessWidget {
               right: 0.0,
               left: 125,
               child: IconButton(
-                icon: const Icon(Icons.more_vert,size: 24.0,),
+                icon: const Icon(
+                  Icons.more_vert,
+                  size: 24.0,
+                  color: Colors.black54,
+                ),
                 onPressed: () {
                   // Handle three dots button press
                   print("Three dots button pressed for item: ${item.name}");
+                  showModalBottomSheet(
+                    context: context,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16.0),
+                        topRight: Radius.circular(16.0),
+                      ),
+                    ),
+                    builder: (BuildContext context) {
+                      return BottomModalOptions(item, onStarred : onStarred);
+                    },
+                  );
                 },
               ),
             ),

@@ -31,6 +31,12 @@ class _HomeFragmentState extends State<HomeFragment> {
     });
   }
 
+  void _addToStarred(FileItem item) {
+    setState(() {
+      item.isStarred = !item.isStarred;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +49,7 @@ class _HomeFragmentState extends State<HomeFragment> {
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GridLayout(items: currentItems),
+              child: GridLayout(items: currentItems, onStarred: _addToStarred),
             ),
           ),
         ),

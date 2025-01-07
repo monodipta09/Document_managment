@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/floating_action_button_widget.dart';
 
-class StarredFragment extends StatefulWidget{
+class StarredFragment extends StatefulWidget {
   final ThemeData theme;
   const StarredFragment(this.theme, {super.key});
 
@@ -16,8 +16,7 @@ class StarredFragment extends StatefulWidget{
   }
 }
 
-class _StarredFragmentState extends State<StarredFragment>{
-
+class _StarredFragmentState extends State<StarredFragment> {
   @override
   void initState() {
     super.initState();
@@ -29,10 +28,17 @@ class _StarredFragmentState extends State<StarredFragment>{
     });
   }
 
+  void _addToStarred(FileItem item) {
+    setState(() {
+      item.isStarred = !item.isStarred;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // late List<FileItem> currentItems = items;
-    final List<FileItem> starredItems = items.where((item) => item.isStarred).toList();
+    final List<FileItem> starredItems =
+        items.where((item) => item.isStarred).toList();
     // TODO: implement build
     // return MaterialApp(
     //   theme: ThemeData.light(),
@@ -55,7 +61,8 @@ class _StarredFragmentState extends State<StarredFragment>{
     // );
     return Scaffold(
       // AppBar could go here if you like
-      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
+      floatingActionButton:
+          FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
       body: Card(
         shadowColor: Colors.transparent,
         margin: const EdgeInsets.all(8.0),
@@ -63,7 +70,7 @@ class _StarredFragmentState extends State<StarredFragment>{
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GridLayout(items: starredItems),
+              child: GridLayout(items: starredItems, onStarred: _addToStarred),
             ),
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:document_management_main/data/file_data.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
@@ -36,6 +37,7 @@ class _UploadWidgetState extends State<UploadWidget> {
   void _processFiles(List<PlatformFile> files) {
     final fileItems = files.map((file) {
       return FileItem(
+        id: uuid.v4(),
         name: file.name,
         icon: _getFileIcon(file.extension),
         isFolder: false,
@@ -43,7 +45,7 @@ class _UploadWidgetState extends State<UploadWidget> {
         filePath: file.path,
       );
     }).toList();
-
+    print("fileItems: ${fileItems[0].id}");
     widget.onFilesAdded(fileItems);
   }
 
@@ -83,6 +85,9 @@ class _UploadWidgetState extends State<UploadWidget> {
 
   @override
   Widget build(BuildContext context) {
+    
+    final isLightTheme = Theme.of(context).brightness == Brightness.light;
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -105,9 +110,9 @@ class _UploadWidgetState extends State<UploadWidget> {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Upload File(s)',
-              style: TextStyle(fontSize: 12, color: Colors.black),
+              style: TextStyle(fontSize: 12, color: isLightTheme ? Colors.black : Colors.white),
             ),
             const SizedBox(height: 16),
           ],
@@ -132,9 +137,9 @@ class _UploadWidgetState extends State<UploadWidget> {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Create Folder',
-              style: TextStyle(fontSize: 12, color: Colors.black),
+              style: TextStyle(fontSize: 12, color: isLightTheme ? Colors.black : Colors.white),
             ),
             const SizedBox(height: 16),
           ],
