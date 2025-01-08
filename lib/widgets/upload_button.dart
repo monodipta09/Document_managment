@@ -14,6 +14,8 @@ class UploadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLightTheme = Theme.of(context).brightness == Brightness.light;
+
     return Column(
       children: [
         InkWell(
@@ -31,7 +33,7 @@ class UploadButton extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           label,
-          style: const TextStyle(fontSize: 12, color: Colors.black),
+          style: TextStyle(fontSize: 12, color: isLightTheme ? Colors.black : Colors.white),
         ),
         const SizedBox(height: 16),
       ],

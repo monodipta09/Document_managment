@@ -12,6 +12,7 @@ import 'package:document_management_main/data/file_data.dart';
 class FolderScreenWidget extends StatefulWidget{
   final List<FileItem> fileItems;
   final String folderName;
+  // final bool isLightTheme;
   const FolderScreenWidget({super.key, required this.fileItems, required this.folderName});
 
   @override
@@ -62,6 +63,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
       currentItems = [];
       print("Folder '${widget.folderName}' not found.");
     }
+
   }
 
   void _onFilesAdded(List<FileItem> newFiles) {
@@ -74,6 +76,12 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
         print("Folder '${widget.folderName}' not found while adding files.");
       }
       Navigator.pop(context);
+    });
+  }
+
+    void _addToStarred(FileItem item) {
+    setState(() {
+      item.isStarred = !item.isStarred;
     });
   }
 
@@ -121,7 +129,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GridLayout(items: currentItems),
+              child: GridLayout(items: currentItems, onStarred: _addToStarred),
             ),
           ),
         ),

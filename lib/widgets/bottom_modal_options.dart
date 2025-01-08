@@ -8,10 +8,12 @@ class BottomModalOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLightTheme = Theme.of(context).brightness == Brightness.light;
+
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: isLightTheme ? Colors.white : Colors.black,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16.0),
           topRight: Radius.circular(16.0),
         ),
@@ -30,6 +32,15 @@ class BottomModalOptions extends StatelessWidget {
             ),
           ),
           // Options
+                    Text(
+            itemData.name,
+            style: const TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10.0),
+          
           ListView(
             shrinkWrap: true,
             children: [

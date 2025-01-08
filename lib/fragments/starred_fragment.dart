@@ -3,6 +3,7 @@ import 'package:document_management_main/data/file_class.dart';
 import 'package:document_management_main/data/file_data.dart';
 import 'package:flutter/material.dart';
 
+import '../components/list_view.dart';
 import '../widgets/floating_action_button_widget.dart';
 
 class StarredFragment extends StatefulWidget{
@@ -17,7 +18,7 @@ class StarredFragment extends StatefulWidget{
 }
 
 class _StarredFragmentState extends State<StarredFragment>{
-
+  bool isGridView = false;
   @override
   void initState() {
     super.initState();
@@ -26,6 +27,12 @@ class _StarredFragmentState extends State<StarredFragment>{
   void _onFilesAdded(List<FileItem> newFiles) {
     setState(() {
       items.addAll(newFiles);
+    });
+  }
+
+  void _addToStarred(FileItem item) {
+    setState(() {
+      item.isStarred = !item.isStarred;
     });
   }
 
@@ -43,7 +50,32 @@ class _StarredFragmentState extends State<StarredFragment>{
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GridLayout(items: starredItems),
+              child: Stack(
+              // Changed from Column to Stack
+              children: [
+                Positioned(
+                  right: 0.0,
+                  child: IconButton(
+                    icon: Icon(isGridView ? Icons.view_list : Icons.grid_view),
+                    onPressed: () {
+                      setState(() {
+                        isGridView = !isGridView; // Toggle the view
+                      });
+                    },
+                  ),
+                ),
+                Positioned.fill(
+                  top: isGridView ? 50.0 : 30.0,
+                  // Ensure the Expanded widget takes the full space
+                  child: isGridView
+                      ? GridLayout(
+                          items: starredItems, onStarred: _addToStarred)
+                      : CustomListView(
+                          items: starredItems, onStarred: _addToStarred),
+                ),
+              ],
+            ),
+
             ),
           ),
         ),
