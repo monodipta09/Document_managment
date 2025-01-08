@@ -4,7 +4,9 @@ import 'upload_widget.dart';
 
 class BottomSheetWidget extends StatelessWidget {
   final Function(List<FileItem>) onFilesAdded;
-  const BottomSheetWidget({super.key, required this.onFilesAdded});
+  final bool isFolderUpload;
+  final String folderName;
+  const BottomSheetWidget({super.key, required this.folderName, required this.onFilesAdded, required this.isFolderUpload});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,7 @@ class BottomSheetWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            UploadWidget(onFilesAdded: onFilesAdded,),
+            isFolderUpload? UploadWidget.uploadWithinFolder(onFilesAdded: onFilesAdded, isFolderUpload: isFolderUpload, folderName: folderName,): UploadWidget(onFilesAdded: onFilesAdded),
           ],
         ),
       ),
