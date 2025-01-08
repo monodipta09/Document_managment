@@ -2,6 +2,8 @@ import 'package:document_management_main/sidebar_component/myDrive.dart';
 import 'package:document_management_main/sidebar_component/trash.dart';
 import 'package:flutter/material.dart';
 import '../data/menu_class.dart';
+import 'account.dart';
+import 'profile.dart';
 
 class MenuWithSubMenu extends StatefulWidget {
   // final Widget currentScreen;
@@ -79,7 +81,9 @@ class _MenuWithSubMenuState extends State<MenuWithSubMenu> {
                       // Map of widget names to widget constructors
                       Map<String, Widget Function()> widgetMap = {
                         'MyDrive': () =>  MyDrive(widget.themeMode),
-                        'Trash': () =>  Trash(widget.themeMode)
+                        'Trash': () =>  Trash(widget.themeMode),
+                        'Account': () =>  Account(widget.themeMode),
+                        'Profile': () =>  Profile(widget.themeMode),
                       };
 
                       if (widgetMap.containsKey(widgetName)) {

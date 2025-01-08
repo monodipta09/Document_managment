@@ -38,6 +38,7 @@ dependencies:
     git:
       url: https://github.com/RomanticNihilist/Menu_Submenu_accordion_dropdown.git
       ref: master
+  uuid: ^3.0.6
 
 
   # The following adds the Cupertino Icons font to your application.
