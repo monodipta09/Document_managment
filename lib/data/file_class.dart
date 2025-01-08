@@ -2,7 +2,7 @@ class FileItem {
   final String name;
   final String icon;
   final bool isFolder;
-  final bool isStarred;
+  bool isStarred;
   late List<FileItem>? children; // For folders
   final String? filePath; // For files
 
