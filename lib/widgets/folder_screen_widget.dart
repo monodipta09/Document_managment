@@ -1,12 +1,18 @@
-import 'package:flutter/material.dart';
+/*
+* DO NOT TOUCH THIS FILE, OR YOU WILL FACE THE WRATH OF THE DEMON(ME)
+* */
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../components/grid_view.dart';
 import '../data/file_class.dart';
 import 'floating_action_button_widget.dart';
+import 'package:document_management_main/data/file_data.dart';
 
 class FolderScreenWidget extends StatefulWidget{
   final List<FileItem> fileItems;
-  const FolderScreenWidget({super.key, required this.fileItems});
+  final String folderName;
+  const FolderScreenWidget({super.key, required this.fileItems, required this.folderName});
 
   @override
   State<FolderScreenWidget> createState() {
@@ -14,24 +20,100 @@ class FolderScreenWidget extends StatefulWidget{
   }
 }
 
-class _FolderScreenWidget extends State<FolderScreenWidget>{
-  late List<FileItem> currentItems = widget.fileItems;
+class _FolderScreenWidget extends State<FolderScreenWidget> {
+  List<FileItem> currentItems = [];
+
+  List<FileItem>? findFileItems(String folderName, List<FileItem> items) {
+    for (final item in items) {
+      if (item.name == folderName) {
+        return item.children;
+      } else if (item.isFolder && item.children != null) {
+        final result = findFileItems(folderName, item.children!);
+        if (result != null) {
+          return result;
+        }
+      }
+    }
+    return null;
+  }
+
+  FileItem? findFolder(String folderName, List<FileItem> items) {
+    for (final item in items) {
+      if (item.name == folderName) {
+        return item;
+      } else if (item.isFolder && item.children != null) {
+        final result = findFolder(folderName, item.children!);
+        if (result != null) {
+          return result;
+        }
+      }
+    }
+    return null;
+  }
+
 
   @override
   void initState() {
     super.initState();
+    final foundItems = findFileItems(widget.folderName, items);
+    if (foundItems != null) {
+      currentItems = List.from(foundItems);
+    } else {
+      currentItems = [];
+      print("Folder '${widget.folderName}' not found.");
+    }
   }
 
   void _onFilesAdded(List<FileItem> newFiles) {
     setState(() {
-      widget.fileItems.addAll(newFiles);
+      currentItems.addAll(newFiles);
+      final folder = findFolder(widget.folderName, items);
+      if (folder != null) {
+        folder.children = currentItems;
+      } else {
+        print("Folder '${widget.folderName}' not found while adding files.");
+      }
+      Navigator.pop(context);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
+      appBar: AppBar(
+        title: Text(widget.folderName),
+        leading: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back),
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: GestureDetector(
+              onTap: () {
+                // Handle save button tap
+                print("Save button tapped!");
+              },
+              child: const Text(
+                "Save",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButtonWidget(
+        onFilesAdded: _onFilesAdded,
+        isFolderUpload: true,
+        folderName: widget.folderName,
+      ),
       body: Card(
         shadowColor: Colors.transparent,
         margin: const EdgeInsets.all(8.0),

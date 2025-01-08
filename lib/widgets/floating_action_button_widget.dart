@@ -4,8 +4,10 @@ import '../data/file_class.dart';
 import 'bottom_sheet_widget.dart';
 
 class FloatingActionButtonWidget extends StatefulWidget{
+  final bool isFolderUpload;
+  final String folderName;
   final Function(List<FileItem>) onFilesAdded;
-  const FloatingActionButtonWidget({super.key, required this.onFilesAdded});
+  const FloatingActionButtonWidget({super.key, required this.folderName, required this.onFilesAdded, required this.isFolderUpload});
 
   @override
   State<FloatingActionButtonWidget> createState() => _FloatingActionButtonWidgetState();
@@ -26,7 +28,7 @@ class _FloatingActionButtonWidgetState extends State<FloatingActionButtonWidget>
         showModalBottomSheet<void>(
           context: context,
           builder: (BuildContext context) {
-            return BottomSheetWidget(onFilesAdded: widget.onFilesAdded,);
+            return BottomSheetWidget(onFilesAdded: widget.onFilesAdded, isFolderUpload: widget.isFolderUpload, folderName: widget.folderName,);
           },
         );
       },

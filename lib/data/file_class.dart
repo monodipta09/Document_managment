@@ -3,7 +3,7 @@ class FileItem {
   final String icon;
   final bool isFolder;
   final bool isStarred;
-  final List<FileItem>? children; // For folders
+  late List<FileItem>? children; // For folders
   final String? filePath; // For files
 
   FileItem({

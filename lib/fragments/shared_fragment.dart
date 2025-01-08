@@ -30,7 +30,7 @@ class _SharedFragmentState extends State<SharedFragment>{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
+      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded, isFolderUpload: false, folderName: "",),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

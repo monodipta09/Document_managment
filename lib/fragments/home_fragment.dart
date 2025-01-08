@@ -28,6 +28,7 @@ class _HomeFragmentState extends State<HomeFragment> {
   void _onFilesAdded(List<FileItem> newFiles) {
     setState(() {
       items.addAll(newFiles);
+      Navigator.pop(context);
     });
   }
 
@@ -35,7 +36,7 @@ class _HomeFragmentState extends State<HomeFragment> {
   Widget build(BuildContext context) {
     return Scaffold(
       // AppBar could go here if you like
-      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
+      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded, isFolderUpload: false, folderName: "",),
       body: Card(
         shadowColor: Colors.transparent,
         margin: const EdgeInsets.all(8.0),

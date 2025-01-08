@@ -33,29 +33,9 @@ class _StarredFragmentState extends State<StarredFragment>{
   Widget build(BuildContext context) {
     // late List<FileItem> currentItems = items;
     final List<FileItem> starredItems = items.where((item) => item.isStarred).toList();
-    // TODO: implement build
-    // return MaterialApp(
-    //   theme: ThemeData.light(),
-    //   darkTheme: ThemeData.dark(),
-    //   themeMode: ThemeMode.system,
-    //   home: Scaffold(
-    //     floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
-    //     body: Card(
-    //       shadowColor: Colors.transparent,
-    //       margin: const EdgeInsets.all(8.0),
-    //       child: SizedBox.expand(
-    //         child: Center(
-    //           child: Padding(
-    //               padding: const EdgeInsets.all(8.0),
-    //               child: GridLayout(items: starredItems)),
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
     return Scaffold(
       // AppBar could go here if you like
-      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded),
+      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded, isFolderUpload: false, folderName: "",),
       body: Card(
         shadowColor: Colors.transparent,
         margin: const EdgeInsets.all(8.0),

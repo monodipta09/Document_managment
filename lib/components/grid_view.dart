@@ -37,7 +37,7 @@ class GridLayout extends StatelessWidget {
         if(item.isFolder){
           Navigator.of(context).push(
               PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) => FolderScreenWidget(fileItems: item.children?? []),
+                pageBuilder: (context, animation, secondaryAnimation) => FolderScreenWidget(fileItems: item.children?? [], folderName: item.name,),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   const begin = Offset(1.0, 0.0); // Start from the right
                   const end = Offset.zero; // End at the original position
