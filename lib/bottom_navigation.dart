@@ -4,7 +4,19 @@ import 'fragments/shared_fragment.dart';
 import 'fragments/starred_fragment.dart';
 
 class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({super.key});
+  final ColorScheme colorScheme;
+  final bool isDarkMode;
+  final ThemeMode themeMode;
+  final void Function(bool isDark) updateTheme;
+  final void Function(ColorScheme newScheme) updateColorScheme;
+  const BottomNavigation(
+      {super.key,
+       required this.isDarkMode,
+       required this.themeMode,
+       required this.updateTheme,
+       required this.updateColorScheme, required this.colorScheme
+      }
+  );
 
   @override
   State<BottomNavigation> createState() {
@@ -45,11 +57,17 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ],
       ),
       body: <Widget>[
-        const HomeFragment.withTheme(
-          theme: null,
-        ),
+         HomeFragment(
+            colorScheme: widget.colorScheme,
+            themeMode: widget.themeMode,
+            // isDarkMode: widget.isDarkMode,
+            updateTheme: widget.updateTheme,
+            updateColorScheme: widget.updateColorScheme,
+         ),
         const SharedFragment(),
-        StarredFragment(theme)
+        StarredFragment(
+            colorScheme: widget.colorScheme,
+        ),
       ][currentPageIndex],
     );
   }

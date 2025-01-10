@@ -11,8 +11,9 @@ import '../widgets/folder_screen_widget.dart';
 class CustomListView extends StatelessWidget {
   final List<FileItem> items;
   final Function(FileItem)? onStarred;
+  final ColorScheme colorScheme;
 
-  const CustomListView({super.key, required this.items, this.onStarred});
+  const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class CustomListView extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w500,
-                color: isLight ? Colors.black : Colors.white,
+                color: colorScheme.primary,
               ),
             ),
             onTap: () {
@@ -46,6 +47,7 @@ class CustomListView extends StatelessWidget {
                       FolderScreenWidget(
                     fileItems: item.children ?? [],
                     folderName: item.name,
+                    colorScheme: colorScheme,
                     // isLightTheme: isLightTheme,
                   ),
                   transitionsBuilder:
@@ -95,9 +97,7 @@ class CustomListView extends StatelessWidget {
                 if (item.isStarred)
                   Icon(
                     Icons.star,
-                    color: isLight
-                        ? const Color.fromARGB(255, 3, 52, 92)
-                        : const Color.fromARGB(255, 228, 228, 228),
+                    color: colorScheme.secondary,
                     size: 18.0,
                   ),
                 const SizedBox(
@@ -107,9 +107,7 @@ class CustomListView extends StatelessWidget {
                   "Opened Recently",
                   style: TextStyle(
                     fontSize: 14.0,
-                    color: isLight
-                        ? const Color.fromARGB(255, 61, 61, 61)
-                        : Colors.grey,
+                    color: colorScheme.secondary
                   ),
                 ),
               ],

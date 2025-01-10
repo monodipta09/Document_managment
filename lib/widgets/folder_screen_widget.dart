@@ -9,11 +9,15 @@ import '../data/file_class.dart';
 import 'floating_action_button_widget.dart';
 import 'package:document_management_main/data/file_data.dart';
 
-class FolderScreenWidget extends StatefulWidget{
+class FolderScreenWidget extends StatefulWidget {
   final List<FileItem> fileItems;
   final String folderName;
+
   // final bool isLightTheme;
-  const FolderScreenWidget({super.key, required this.fileItems, required this.folderName});
+  final ColorScheme colorScheme;
+
+  const FolderScreenWidget(
+      {super.key, required this.fileItems, required this.folderName, required this.colorScheme});
 
   @override
   State<FolderScreenWidget> createState() {
@@ -63,7 +67,6 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
       currentItems = [];
       print("Folder '${widget.folderName}' not found.");
     }
-
   }
 
   void _onFilesAdded(List<FileItem> newFiles) {
@@ -79,7 +82,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     });
   }
 
-    void _addToStarred(FileItem item) {
+  void _addToStarred(FileItem item) {
     setState(() {
       item.isStarred = !item.isStarred;
     });
@@ -89,7 +92,12 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.folderName),
+        title: Text(
+          widget.folderName,
+          style: TextStyle(
+            color: widget.colorScheme.primary
+          ),
+        ),
         leading: Padding(
           padding: const EdgeInsets.all(2.0),
           child: GestureDetector(
@@ -129,7 +137,10 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GridLayout(items: currentItems, onStarred: _addToStarred),
+              child: GridLayout(
+                items: currentItems,
+                onStarred: _addToStarred,
+                colorScheme: widget.colorScheme,),
             ),
           ),
         ),

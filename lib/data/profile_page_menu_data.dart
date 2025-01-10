@@ -58,7 +58,19 @@ final List<MenuItem> menuItems = [
     //   return Center(child: Text('Review Screen'));
     // },
   ),
-  MenuItem(title: 'Logout', icon: Icons.arrow_circle_right),
+  MenuItem(
+    title: 'My Drive',
+    icon: Icons.folder_copy,
+
+  ),
+  MenuItem(
+    title: "Trash",
+    icon: Icons.delete_forever,
+  ),
+  MenuItem(
+    title: 'Logout',
+    icon: Icons.arrow_circle_right
+  ),
 ];
 
 

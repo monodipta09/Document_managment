@@ -75,6 +75,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'IKON Login',
       theme: AppTheme.lightTheme, // Apply your app theme (light or dark)
       home: LoginPage(), // Set LoginPage as the home screen
