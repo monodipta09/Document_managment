@@ -11,13 +11,13 @@ class ProfilePage extends StatefulWidget {
   final Function(ColorScheme colorScheme) updateColorScheme;
 
   ProfilePage({
-    Key? key,
+    super.key,
     required this.colorScheme,
     required this.themeMode,
     // required this.isDarkMode,
     required this.updateTheme,
     required this.updateColorScheme,
-  }) : super(key: key);
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
