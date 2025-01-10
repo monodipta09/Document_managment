@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/grid_view.dart';
+import '../components/list_view.dart';
 import '../data/file_class.dart';
 import 'floating_action_button_widget.dart';
 import 'package:document_management_main/data/file_data.dart';
@@ -17,7 +18,10 @@ class FolderScreenWidget extends StatefulWidget {
   final ColorScheme colorScheme;
 
   const FolderScreenWidget(
-      {super.key, required this.fileItems, required this.folderName, required this.colorScheme});
+      {super.key,
+      required this.fileItems,
+      required this.folderName,
+      required this.colorScheme});
 
   @override
   State<FolderScreenWidget> createState() {
@@ -27,6 +31,7 @@ class FolderScreenWidget extends StatefulWidget {
 
 class _FolderScreenWidget extends State<FolderScreenWidget> {
   List<FileItem> currentItems = [];
+  bool localIsGridView = false;
 
   List<FileItem>? findFileItems(String folderName, List<FileItem> items) {
     for (final item in items) {
@@ -55,7 +60,6 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     }
     return null;
   }
-
 
   @override
   void initState() {
@@ -88,15 +92,19 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     });
   }
 
+  void _toggleViewMode() {
+    setState(() {
+      localIsGridView = !localIsGridView;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.folderName,
-          style: TextStyle(
-            color: widget.colorScheme.primary
-          ),
+          style: TextStyle(color: widget.colorScheme.primary),
         ),
         leading: Padding(
           padding: const EdgeInsets.all(2.0),
@@ -130,21 +138,59 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
         isFolderUpload: true,
         folderName: widget.folderName,
       ),
-      body: Card(
-        shadowColor: Colors.transparent,
-        margin: const EdgeInsets.all(8.0),
-        child: SizedBox.expand(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridLayout(
-                items: currentItems,
-                onStarred: _addToStarred,
-                colorScheme: widget.colorScheme,),
+      body: Column(
+        children: [
+          if (currentItems.isNotEmpty)
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Padding(padding: EdgeInsets.only(left: 340.0)),
+                IconButton(
+                  // icon: Icon(widget.isGridView ? Icons.view_list : Icons.grid_view),
+                  icon:
+                      Icon(localIsGridView ? Icons.view_list : Icons.grid_view),
+                  onPressed: () {
+                    // widget.toggleViewMode;
+                    // setState(() {
+                    //   localIsGridView = !localIsGridView;
+                    // });
+                    _toggleViewMode();
+                  },
+                ),
+              ],
             ),
+          Expanded(
+            child: localIsGridView // widget.isGridView
+                ? GridLayout(
+                    items: currentItems,
+                    onStarred: _addToStarred,
+                    colorScheme: widget.colorScheme,
+                  )
+                : CustomListView(
+                    items: currentItems,
+                    onStarred: _addToStarred,
+                    colorScheme: widget.colorScheme,
+                  ),
           ),
-        ),
+          // GridLayout(items: currentItems, onStarred: _addToStarred, isGridView: widget.isGridView, toggleViewMode: widget.toggleViewMode),
+        ],
       ),
+      // body: Card(
+      //   shadowColor: Colors.transparent,
+      //   margin: const EdgeInsets.all(8.0),
+      //   child: SizedBox.expand(
+      //     child: Center(
+      //       child: Padding(
+      //         padding: const EdgeInsets.all(8.0),
+      //         child: GridLayout(
+      //           items: currentItems,
+      //           onStarred: _addToStarred,
+      //           colorScheme: widget.colorScheme,
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // ),
     );
   }
 }

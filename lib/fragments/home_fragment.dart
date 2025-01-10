@@ -15,6 +15,7 @@ class HomeFragment extends StatefulWidget {
   final ThemeMode themeMode;
   final void Function(bool isDark) updateTheme;
   final void Function(ColorScheme newScheme) updateColorScheme;
+  final bool isGridView;
 
   const HomeFragment(
       {super.key,
@@ -23,7 +24,8 @@ class HomeFragment extends StatefulWidget {
       // required this.isDarkMode,
       required this.themeMode,
       required this.updateTheme,
-      required this.updateColorScheme});
+      required this.updateColorScheme,
+      required this.isGridView});
 
   @override
   State<HomeFragment> createState() {
@@ -69,43 +71,26 @@ class _HomeFragmentState extends State<HomeFragment> {
           onFilesAdded: _onFilesAdded,
           isFolderUpload: false,
           folderName: "",
+          // colorScheme: widget.colorScheme,
         ),
-        body: Card(
-          shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Stack(
-                // Changed from Column to Stack
-                children: [
-                  Positioned(
-                    right: 0.0,
-                    child: IconButton(
-                      icon:
-                          Icon(isGridView ? Icons.view_list : Icons.grid_view),
-                      onPressed: () {
-                        setState(() {
-                          isGridView = !isGridView; // Toggle the view
-                        });
-                      },
-                    ),
-                  ),
-                  Positioned.fill(
-                    top: isGridView ? 50.0 : 30.0,
-                    // Ensure the Expanded widget takes the full space
-                    child: isGridView
-                        ? GridLayout(
-                            items: currentItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,)
-                        : CustomListView(
-                            items: currentItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,),
-                  ),
-                ],
-              ),
-            ),
+        body: widget.isGridView
+                ? GridLayout(
+                    items: currentItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,)
+                : CustomListView(
+                    items: currentItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,),
           ),
-        ),
-      ),
+        // body: Card(
+        //   shadowColor: Colors.transparent,
+        //   margin: const EdgeInsets.all(8.0),
+        //   child: SizedBox.expand(
+        //     child: widget.isGridView
+        //         ? GridLayout(
+        //             items: currentItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,)
+        //         : CustomListView(
+        //             items: currentItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,),
+        //   ),
+        // ),
+      // ),
     );
   }
 }

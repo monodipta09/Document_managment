@@ -51,17 +51,21 @@ class _AppearanceWidgetState extends State<AppearanceWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData.from(
+    return MaterialApp(
+      theme: ThemeData.from(
         colorScheme: _colorScheme,
         useMaterial3: true,
       ),
-      child: Scaffold(
+      darkTheme: ThemeData.from(
+        colorScheme: _colorScheme.copyWith(brightness: Brightness.dark),
+        useMaterial3: true,
+      ),
+      home: Scaffold(
         appBar: AppBar(
           title: Text(
             'Appearance Settings',
             style: TextStyle(
-                color: widget.colorScheme.primary
+              color: widget.colorScheme.primary
             ),
           ),
           leading: IconButton(

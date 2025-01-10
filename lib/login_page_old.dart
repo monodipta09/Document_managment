@@ -1,61 +1,24 @@
-// import 'package:document_management_main/TestViewer.dart';
-import 'package:document_management_main/apis/ikon_service.dart';
-// import 'package:document_management_main/otp_page.dart';
 import 'package:flutter/material.dart';
 import 'components/custom_input.dart';
 import 'package:document_management_main/apis/auth_service.dart';
-import 'data/create_fileStructure.dart';
 import 'document_management_entry_point.dart';
-// import 'TestViewer.dart';
-import 'apis/auth_service.dart';
-import 'apis/dart_http.dart';
-import 'package:document_management_main/apis/ikon_service.dart';
-
 
 class LoginPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-   // final AuthService _authService = AuthService();
-
+  final AuthService _authService = AuthService();
 
   void _login(BuildContext context, String username, String password) async {
-    bool isSuccess = await IKonService.iKonService.login(username, password);
-    if (isSuccess) {
+    bool isSuccess = await _authService.login(username, password);
+    if (true) {
       // Navigate to the home page or dashboard
       // Navigator.pushNamed(context, '/home');
-      final List<Map<String, dynamic>> flieInstanceData = await IKonService.iKonService.getMyInstancesV2(
-          processName: "File Manager - DM",  // Or pass your specific process name
-          predefinedFilters: {"taskName": "Viewer Access"},  // Example filters
-          processVariableFilters: null,  // Empty if no process variable filters
-          taskVariableFilters: null,     // Empty if no task variable filters
-          mongoWhereClause: null,        // Empty string if no mongo clause
-          projections: ["Data"],             // Empty list if no projections needed
-          allInstance: false           // Set to true if you want all instances
-      );
-      final List<Map<String, dynamic>> folderInstanceData = await IKonService.iKonService.getMyInstancesV2(
-          processName: "Folder Manager - DM",  // Or pass your specific process name
-          predefinedFilters: {"taskName": "Viewer Access"},  // Example filters
-          processVariableFilters: null,  // Empty if no process variable filters
-          taskVariableFilters: null,     // Empty if no task variable filters
-          mongoWhereClause: null,        // Empty string if no mongo clause
-          projections: ["Data"],             // Empty list if no projections needed
-          allInstance: false           // Set to true if you want all instances
-      );
-
-      final fileStructure = createFileStructure(flieInstanceData, folderInstanceData);
-
-
-      // Step 3: Handle the response (e.g., display data)
-      // print('API Response: $response');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Data fetched successfully!')),
-      );
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (
-              context) => DocumentManagementEntryPoint(),
+              context) => const DocumentManagementEntryPoint(),
         ),
       );
     } else {
@@ -98,9 +61,9 @@ class LoginPage extends StatelessWidget {
                       height: 40,
                     ),
                     const SizedBox(height: 10),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Icon(Icons.flag, color: Colors.white),
                         SizedBox(width: 5),
                         Text(

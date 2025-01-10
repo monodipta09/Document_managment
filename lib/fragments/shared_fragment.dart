@@ -4,7 +4,8 @@ import '../data/file_data.dart';
 import '../widgets/floating_action_button_widget.dart';
 
 class SharedFragment extends StatefulWidget{
-  const SharedFragment({super.key});
+  final bool isGridView;
+  const SharedFragment({required this.isGridView, super.key});
 
   @override
   State<SharedFragment> createState() {

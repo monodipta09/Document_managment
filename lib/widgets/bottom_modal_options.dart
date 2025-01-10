@@ -32,7 +32,7 @@ class BottomModalOptions extends StatelessWidget {
             ),
           ),
           // Options
-                    Text(
+          Text(
             itemData.name,
             style: const TextStyle(
               fontSize: 18.0,
@@ -40,41 +40,44 @@ class BottomModalOptions extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10.0),
-          
+
           ListView(
             shrinkWrap: true,
             children: [
-              _buildOption(
-                context,
-                icon: Icons.drive_file_rename_outline,
-                label: "Rename",
-                onTap: () {
-                  Navigator.pop(context); // Close the modal
-                  print("Rename option selected");
-                },
-              ),
-              _buildOption(
-                context,
-                icon: Icons.delete_outline,
-                label: "Delete",
-                onTap: () {
-                  Navigator.pop(context); // Close the modal
-                  print("Delete option selected");
-                },
-              ),
-              _buildOption(
-                context,
-                icon: Icons.share_outlined,
-                label: "Share",
-                onTap: () {
-                  Navigator.pop(context); // Close the modal
-                  print("Share option selected");
-                },
-              ),
+              // if (itemData.isFolder)
+              //   _buildOption(
+              //     context,
+              //     icon: Icons.drive_file_rename_outline,
+              //     label: "Rename",
+              //     onTap: () {
+              //       Navigator.pop(context); // Close the modal
+              //       print("Rename option selected");
+              //     },
+              //   ),
+              // _buildOption(
+              //   context,
+              //   icon: Icons.delete_outline,
+              //   label: "Delete",
+              //   onTap: () {
+              //     Navigator.pop(context); // Close the modal
+              //     print("Delete option selected");
+              //   },
+              // ),
+              // _buildOption(
+              //   context,
+              //   icon: Icons.share_outlined,
+              //   label: "Share",
+              //   onTap: () {
+              //     Navigator.pop(context); // Close the modal
+              //     print("Share option selected");
+              //   },
+              // ),
               _buildOption(
                 context,
                 icon: itemData.isStarred ? Icons.star : Icons.star_border,
-                label: itemData.isStarred ? "Remove from Starred" : "Add to Starred",
+                label: itemData.isStarred
+                    ? "Remove from Starred"
+                    : "Add to Starred",
                 onTap: () {
                   // itemData.isStarred = true;
                   if (onStarred != null) {
