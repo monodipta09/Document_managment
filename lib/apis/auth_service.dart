@@ -3,7 +3,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 class AuthService {
-  static const String baseUrl = "https://ikoncloud.keross.com/rest";
+  static const String baseUrl = "https://ikoncloud-dev.keross.com/rest";
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   /// Hashes the input string using SHA-512.
@@ -74,6 +74,7 @@ class AuthService {
         if (tempTicket != null && tempTicket is String) {
           // Store the temporaryTicket securely
           await _secureStorage.write(key: 'tempTicket', value: tempTicket);
+
           return true;
         } else {
           // Temporary ticket not found in response
@@ -88,9 +89,13 @@ class AuthService {
       print('Login error: $e');
       return false;
     }
+
+  }
+  Future<String?> getTicket() async {
+    return await _secureStorage.read(key: 'tempTicket');
   }
 
-  /// Validates the OTP provided by the user.
+/// Validates the OTP provided by the user.
 //   Future<bool> validateOtp(String otp) async {
 //     try {
 //       // Define headers
@@ -166,56 +171,56 @@ class AuthService {
 //     }
 //   }
 
-  /// Resets the password for the given [username].
-  // Future<bool> resetPassword(String userName) async {
-  //   try {
-  //     // Define headers
-  //     final headers = {
-  //       "User-Agent": "Human",
-  //       "Content-Type": "application/x-www-form-urlencoded",
-  //     };
-  //
-  //     // Define query parameters
-  //     final params = {
-  //       "inZip": "false",
-  //       "outZip": "false",
-  //       "inFormat": "freejson",
-  //       "outFormat": "freejson",
-  //       "service": "loginService",
-  //       "operation": "resetPassword",
-  //     };
-  //
-  //     // Construct the data
-  //     final data = jsonEncode([userName]); // Equivalent to '["$userName"]'
-  //
-  //     // Encode the parameters into the URL
-  //     final uri = Uri.parse(baseUrl).replace(queryParameters: params);
-  //
-  //     // Encode the body as application/x-www-form-urlencoded
-  //     final body = {'arguments': data};
-  //
-  //     // Make the POST request
-  //     final response = await http.post(
-  //       uri,
-  //       headers: headers,
-  //       body: body,
-  //     );
-  //
-  //     print(response);
-  //
-  //     if (response.statusCode == 200) {
-  //       // Optionally, you can parse the response data here
-  //       // For example:
-  //       // final responseData = json.decode(response.body);
-  //       // return responseData;
-  //       return true;
-  //     } else {
-  //       // Handle non-200 responses
-  //       return false;
-  //     }
-  //   } catch (error) {
-  //     print("Error during resetPassword API call: $error");
-  //     throw error;
-  //   }
-  // }
+/// Resets the password for the given [username].
+// Future<bool> resetPassword(String userName) async {
+//   try {
+//     // Define headers
+//     final headers = {
+//       "User-Agent": "Human",
+//       "Content-Type": "application/x-www-form-urlencoded",
+//     };
+//
+//     // Define query parameters
+//     final params = {
+//       "inZip": "false",
+//       "outZip": "false",
+//       "inFormat": "freejson",
+//       "outFormat": "freejson",
+//       "service": "loginService",
+//       "operation": "resetPassword",
+//     };
+//
+//     // Construct the data
+//     final data = jsonEncode([userName]); // Equivalent to '["$userName"]'
+//
+//     // Encode the parameters into the URL
+//     final uri = Uri.parse(baseUrl).replace(queryParameters: params);
+//
+//     // Encode the body as application/x-www-form-urlencoded
+//     final body = {'arguments': data};
+//
+//     // Make the POST request
+//     final response = await http.post(
+//       uri,
+//       headers: headers,
+//       body: body,
+//     );
+//
+//     print(response);
+//
+//     if (response.statusCode == 200) {
+//       // Optionally, you can parse the response data here
+//       // For example:
+//       // final responseData = json.decode(response.body);
+//       // return responseData;
+//       return true;
+//     } else {
+//       // Handle non-200 responses
+//       return false;
+//     }
+//   } catch (error) {
+//     print("Error during resetPassword API call: $error");
+//     throw error;
+//   }
+// }
 }

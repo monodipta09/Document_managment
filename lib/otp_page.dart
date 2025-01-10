@@ -1,49 +1,26 @@
 import 'package:document_management_main/TestViewer.dart';
 import 'package:document_management_main/apis/ikon_service.dart';
-import 'package:document_management_main/otp_page.dart';
 import 'package:flutter/material.dart';
 import 'components/custom_input.dart';
 import 'package:document_management_main/apis/auth_service.dart';
-import 'data/create_fileStructure.dart';
 import 'document_management_entry_point.dart';
 import 'TestViewer.dart';
 import 'apis/auth_service.dart';
 import 'apis/dart_http.dart';
 import 'package:document_management_main/apis/ikon_service.dart';
 
-
-class LoginPage extends StatelessWidget {
+class OtpPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController otpController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-   // final AuthService _authService = AuthService();
+  // final AuthService _authService = AuthService();
 
 
-  void _login(BuildContext context, String username, String password) async {
-    bool isSuccess = await IKonService.iKonService.login(username, password);
+  void _loginWithOtp(BuildContext context, String otp) async {
+    bool isSuccess = await IKonService.iKonService.validateOtp(otp);
     if (isSuccess) {
       // Navigate to the home page or dashboard
       // Navigator.pushNamed(context, '/home');
-      final List<Map<String, dynamic>> flieInstanceData = await IKonService.iKonService.getMyInstancesV2(
-          processName: "File Manager - DM",  // Or pass your specific process name
-          predefinedFilters: {"taskName": "Viewer Access"},  // Example filters
-          processVariableFilters: null,  // Empty if no process variable filters
-          taskVariableFilters: null,     // Empty if no task variable filters
-          mongoWhereClause: null,        // Empty string if no mongo clause
-          projections: ["Data"],             // Empty list if no projections needed
-          allInstance: false           // Set to true if you want all instances
-      );
-      final List<Map<String, dynamic>> folderInstanceData = await IKonService.iKonService.getMyInstancesV2(
-          processName: "Folder Manager - DM",  // Or pass your specific process name
-          predefinedFilters: {"taskName": "Viewer Access"},  // Example filters
-          processVariableFilters: null,  // Empty if no process variable filters
-          taskVariableFilters: null,     // Empty if no task variable filters
-          mongoWhereClause: null,        // Empty string if no mongo clause
-          projections: ["Data"],             // Empty list if no projections needed
-          allInstance: false           // Set to true if you want all instances
-      );
-
-      final fileStructure = createFileStructure(flieInstanceData, folderInstanceData);
 
 
       // Step 3: Handle the response (e.g., display data)
@@ -55,7 +32,7 @@ class LoginPage extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (
-              context) => DocumentManagementEntryPoint(),
+              context) => TestViewer(),
         ),
       );
     } else {
@@ -162,41 +139,25 @@ class LoginPage extends StatelessWidget {
 
                               // Username Input
                               CustomInput(
-                                labelText: 'Username',
-                                hintText: 'Enter your username',
+                                labelText: 'Otp',
+                                hintText: 'Enter your otp',
                                 isMandatory: true,
                                 prefixIcon: const Icon(Icons.person_outline),
-                                controller: usernameController,
+                                controller: otpController,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter Username';
+                                    return 'Please enter Otp';
                                   }
                                   return null;
                                 },
                               ),
                               const SizedBox(height: 20),
 
-                              // Password Input
-                              CustomInput(
-                                labelText: 'Password',
-                                hintText: 'Enter your password',
-                                isMandatory: true,
-                                prefixIcon: const Icon(Icons.lock_outline),
-                                inputType: InputType.password,
-                                controller: passwordController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter Password';
-                                  }
-                                  return null;
-                                },
-                              ),
-
                               // Forgot Password
                               const Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
-                                  'Forgot Password?',
+                                  'Resend otp',
                                   style: TextStyle(
                                     color: Colors.white70,
                                     fontSize: 16,
@@ -237,7 +198,7 @@ class LoginPage extends StatelessWidget {
                                       //   );
                                       // }
 
-                                      _login(context,usernameController.text, passwordController.text);
+                                      _loginWithOtp(context,otpController.text);
 
                                     }
                                   },
