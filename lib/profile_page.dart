@@ -14,7 +14,6 @@ class ProfilePage extends StatefulWidget {
     super.key,
     required this.colorScheme,
     required this.themeMode,
-    // required this.isDarkMode,
     required this.updateTheme,
     required this.updateColorScheme,
   });
