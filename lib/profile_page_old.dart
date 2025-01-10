@@ -62,16 +62,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData.from(
-          colorScheme: widget.colorScheme,
-          textTheme: ThemeData.light().textTheme)
-          .copyWith(
-        brightness: widget.themeMode == ThemeMode.dark
-            ? Brightness.dark
-            : Brightness.light,
+    return MaterialApp(
+      theme: ThemeData.from(
+        colorScheme: widget.colorScheme,
+        useMaterial3: true,
       ),
-      child: Scaffold(
+      darkTheme: ThemeData.from(
+        colorScheme: widget.colorScheme.copyWith(brightness: Brightness.dark),
+        useMaterial3: true,
+      ),
+      themeMode: widget.themeMode,
+      home: Scaffold(
         drawer: Drawer(
           child: MenuWithSubMenu(
             menuItems: menuItems,

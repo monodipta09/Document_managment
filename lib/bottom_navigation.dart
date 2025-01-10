@@ -11,12 +11,11 @@ class BottomNavigation extends StatefulWidget {
   final void Function(ColorScheme newScheme) updateColorScheme;
   const BottomNavigation(
       {super.key,
-       required this.isDarkMode,
-       required this.themeMode,
-       required this.updateTheme,
-       required this.updateColorScheme, required this.colorScheme
-      }
-  );
+      required this.isDarkMode,
+      required this.themeMode,
+      required this.updateTheme,
+      required this.updateColorScheme,
+      required this.colorScheme});
 
   @override
   State<BottomNavigation> createState() {
@@ -27,6 +26,14 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   int currentPageIndex = 0;
+  bool isGridView = false;
+
+  void _toggleViewMode() {
+    setState(() {
+      isGridView = !isGridView;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -56,19 +63,55 @@ class _BottomNavigationState extends State<BottomNavigation> {
               label: "Starred")
         ],
       ),
-      body: <Widget>[
-         HomeFragment(
-            colorScheme: widget.colorScheme,
-            themeMode: widget.themeMode,
-            // isDarkMode: widget.isDarkMode,
-            updateTheme: widget.updateTheme,
-            updateColorScheme: widget.updateColorScheme,
-         ),
-        const SharedFragment(),
-        StarredFragment(
-            colorScheme: widget.colorScheme,
-        ),
-      ][currentPageIndex],
+      body: Column(
+        children: [
+          // Toggle button
+          Row(
+            // mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Padding(padding: EdgeInsets.only(left: 340.0)),
+              IconButton(
+                icon: Icon(isGridView ? Icons.view_list : Icons.grid_view),
+                onPressed: _toggleViewMode,
+              ),
+              const SizedBox(width: 5.0),
+            ],
+          ),
+          // Content
+          Expanded(
+            child: <Widget>[
+              HomeFragment(
+                colorScheme: widget.colorScheme,
+                themeMode: widget.themeMode,
+                // isDarkMode: widget.isDarkMode,
+                updateTheme: widget.updateTheme,
+                updateColorScheme: widget.updateColorScheme,
+                isGridView: isGridView,
+              ),
+              SharedFragment(
+                isGridView: isGridView,
+              ),
+              StarredFragment(
+                colorScheme: widget.colorScheme,
+                isGridView: isGridView,
+              ),
+            ][currentPageIndex],
+          ),
+        ],
+      ),
+      // body: <Widget>[
+      //    HomeFragment(
+      //       colorScheme: widget.colorScheme,
+      //       themeMode: widget.themeMode,
+      //       // isDarkMode: widget.isDarkMode,
+      //       updateTheme: widget.updateTheme,
+      //       updateColorScheme: widget.updateColorScheme,
+      //    ),
+      //   const SharedFragment(),
+      //   StarredFragment(
+      //       colorScheme: widget.colorScheme,
+      //   ),
+      // ][currentPageIndex],
     );
   }
 }

@@ -1,126 +1,33 @@
-// import 'package:document_management_main/TestViewer.dart';
-import 'package:document_management_main/apis/ikon_service.dart';
-// import 'package:document_management_main/otp_page.dart';
 import 'package:flutter/material.dart';
 import 'components/custom_input.dart';
 import 'package:document_management_main/apis/auth_service.dart';
-import 'data/create_fileStructure.dart';
 import 'document_management_entry_point.dart';
-// import 'TestViewer.dart';
-import 'apis/auth_service.dart';
-import 'apis/dart_http.dart';
-import 'package:document_management_main/apis/ikon_service.dart';
-
 
 class LoginPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-   // final AuthService _authService = AuthService();
+  final AuthService _authService = AuthService();
 
   void _login(BuildContext context, String username, String password) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevents the dialog from being dismissed by tapping outside
-      builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child:const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(width: 20),
-                  Text(
-                    "Logging in...",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-
-    try {
-      bool isSuccess = await IKonService.iKonService.login(username, password);
-
-      if (isSuccess) {
-        final List<Map<String, dynamic>> flieInstanceData =
-        await IKonService.iKonService.getMyInstancesV2(
-          processName: "File Manager - DM",
-          predefinedFilters: {"taskName": "Viewer Access"},
-          processVariableFilters: null,
-          taskVariableFilters: null,
-          mongoWhereClause: null,
-          projections: ["Data"],
-          allInstance: false,
-        );
-
-        // Fetch folder instances
-        final List<Map<String, dynamic>> folderInstanceData =
-        await IKonService.iKonService.getMyInstancesV2(
-          processName: "Folder Manager - DM",
-          predefinedFilters: {"taskName": "Viewer Access"},
-          processVariableFilters: null,
-          taskVariableFilters: null,
-          mongoWhereClause: null,
-          projections: ["Data"],
-          allInstance: false,
-        );
-
-        // Create file structure
-        final fileStructure = createFileStructure(flieInstanceData, folderInstanceData);
-
-        // Optionally, you can process `fileStructure` as needed here
-
-        // Dismiss the loading dialog
-        Navigator.of(context).pop();
-
-        // Show success SnackBar
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Data fetched successfully!')),
-        );
-
-        // Navigate to the Document Management Entry Point
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DocumentManagementEntryPoint(),
-          ),
-        );
-      } else {
-        // Dismiss the loading dialog
-        Navigator.of(context).pop();
-
-        // Show error SnackBar
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Invalid username & password. Login failed. Please try again.'),
-          ),
-        );
-      }
-    } catch (e) {
-      // Dismiss the loading dialog in case of an error
-      Navigator.of(context).pop();
-
-      // Optionally, log the error or handle it as needed
-
-      // Show error SnackBar
+    bool isSuccess = await _authService.login(username, password);
+    if (true) {
+      // Navigate to the home page or dashboard
+      // Navigator.pushNamed(context, '/home');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (
+              context) => const DocumentManagementEntryPoint(),
+        ),
+      );
+    } else {
+      // Show an error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
+        const SnackBar(content: Text('Invalid username & password.Login failed. Please try again.')),
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -154,9 +61,9 @@ class LoginPage extends StatelessWidget {
                       height: 40,
                     ),
                     const SizedBox(height: 10),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Icon(Icons.flag, color: Colors.white),
                         SizedBox(width: 5),
                         Text(
