@@ -7,12 +7,12 @@ import '../components/list_view.dart';
 import '../widgets/floating_action_button_widget.dart';
 
 class StarredFragment extends StatefulWidget{
-  final ThemeData theme;
-  const StarredFragment(this.theme, {super.key});
+  // final ThemeData theme;
+  final ColorScheme colorScheme;
+  const StarredFragment({super.key, required this.colorScheme});
 
   @override
   State<StarredFragment> createState() {
-    // TODO: implement createState
     return _StarredFragmentState();
   }
 }
@@ -69,9 +69,9 @@ class _StarredFragmentState extends State<StarredFragment>{
                   // Ensure the Expanded widget takes the full space
                   child: isGridView
                       ? GridLayout(
-                          items: starredItems, onStarred: _addToStarred)
+                          items: starredItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,)
                       : CustomListView(
-                          items: starredItems, onStarred: _addToStarred),
+                          items: starredItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,),
                 ),
               ],
             ),

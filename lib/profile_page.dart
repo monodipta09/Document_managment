@@ -1,36 +1,112 @@
+import 'package:document_management_main/profile_page_sidebars/appearance.dart';
 import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 import 'package:flutter/material.dart';
-import 'package:document_management_main/data/profile_page_menu_data.dart';
+import 'data/profile_page_menu_data.dart';
 
 class ProfilePage extends StatefulWidget {
-  final ThemeMode themeMode;
-  const ProfilePage(this.themeMode, {super.key});
+  late ColorScheme colorScheme;
+  late ThemeMode themeMode;
+  // late bool isDarkMode;
+  final Function(bool isDarkMode) updateTheme;
+  final Function(ColorScheme colorScheme) updateColorScheme;
+
+  ProfilePage({
+    Key? key,
+    required this.colorScheme,
+    required this.themeMode,
+    // required this.isDarkMode,
+    required this.updateTheme,
+    required this.updateColorScheme,
+  }) : super(key: key);
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // ThemeMode themeMode = ThemeMode.system;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   widget.themeMode = ThemeMode.system;
+  //   widget.colorScheme = ColorScheme.fromSwatch(
+  //     brightness: widget.isDarkMode ? Brightness.dark : Brightness.light,
+  //   );
+  // }
+  //
+  // void toggleTheme() {
+  //   setState(() {
+  //     widget.isDarkMode =
+  //     widget.themeMode == ThemeMode.light ? true : false;
+  //     widget.themeMode = widget.isDarkMode ? ThemeMode.dark : ThemeMode.light;
+  //     widget.colorScheme = ColorScheme.fromSwatch(
+  //       brightness: widget.isDarkMode ? Brightness.dark : Brightness.light,
+  //     );
+  //   });
+  // }
+  //
+  // void _updateTheme(bool isDark) {
+  //   setState(() {
+  //     widget.isDarkMode = isDark;
+  //     widget.themeMode = widget.isDarkMode ? ThemeMode.dark : ThemeMode.light;
+  //     widget.colorScheme = ColorScheme.fromSwatch(
+  //       brightness: widget.isDarkMode ? Brightness.dark : Brightness.light,
+  //     );
+  //   });
+  // }
+  //
+  // void _updateColorScheme(ColorScheme newScheme) {
+  //   setState(() {
+  //     widget.colorScheme = newScheme;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: widget.themeMode == ThemeMode.light
-          ? ThemeData.light()
-          : ThemeData.dark(),
+      theme: ThemeData.from(
+        colorScheme: widget.colorScheme,
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData.from(
+        colorScheme: widget.colorScheme.copyWith(brightness: Brightness.dark),
+        useMaterial3: true,
+      ),
+      themeMode: widget.themeMode,
       home: Scaffold(
-        
         drawer: Drawer(
-          child: MenuWithSubMenu(menuItems, widget.themeMode),
+          child: MenuWithSubMenu(
+            menuItems: menuItems,
+            themeMode: widget.themeMode,
+            colorScheme: widget.colorScheme,
+            updateTheme: widget.updateTheme,
+            updateColorScheme: widget.updateColorScheme,
+          ),
         ),
         appBar: AppBar(
           title: const Text('Profile Page'),
         ),
-        body: const Center(
+        body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Profile Page'),
+              const Text('Profile Page'),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AppearanceWidget(
+                        colorScheme: widget.colorScheme,
+                        themeMode: widget.themeMode,
+                        onThemeChanged: widget.updateTheme,
+                        onColorSchemeChanged: widget.updateColorScheme,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Appearance Settings'),
+              ),
             ],
           ),
         ),

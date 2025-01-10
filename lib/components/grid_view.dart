@@ -11,9 +11,15 @@ import '../widgets/bottom_modal_options.dart';
 class GridLayout extends StatelessWidget {
   final List<FileItem> items;
   final Function(FileItem) onStarred;
+  final ColorScheme colorScheme;
+
   // final bool isLightTheme;
 
-  const GridLayout({super.key, required this.items, required this.onStarred});
+  const GridLayout(
+      {super.key,
+      required this.items,
+      required this.onStarred,
+      required this.colorScheme});
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +56,7 @@ class GridLayout extends StatelessWidget {
                 FolderScreenWidget(
               fileItems: item.children ?? [],
               folderName: item.name,
+              colorScheme: colorScheme,
               // isLightTheme: isLightTheme,
             ),
             transitionsBuilder:
@@ -125,7 +132,7 @@ class GridLayout extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14.0,
-                    color: isLight ? Colors.black : Colors.white,
+                    color: colorScheme.primary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -137,7 +144,7 @@ class GridLayout extends StatelessWidget {
                 right: 8.0,
                 child: Icon(
                   Icons.star,
-                  color: isLight ? const Color.fromARGB(255, 3, 52, 92) : const Color.fromARGB(255, 228, 228, 228),
+                  color: colorScheme.secondary,
                   size: 18.0,
                 ),
               ),
@@ -149,7 +156,7 @@ class GridLayout extends StatelessWidget {
                 icon: Icon(
                   Icons.more_vert,
                   size: 24.0,
-                  color: isLight ? Colors.black : Colors.white,
+                  color: colorScheme.secondary,
                 ),
                 onPressed: () {
                   // Handle three dots button press
