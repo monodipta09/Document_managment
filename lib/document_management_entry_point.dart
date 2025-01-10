@@ -1,8 +1,8 @@
-// import 'package:document_management_main/fragments/home_fragment.dart';
-import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 import 'package:flutter/material.dart';
+import 'package:document_management_main/profile_page.dart';
+import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 import 'bottom_navigation.dart';
-import 'data/menu_submenu_data.dart';
+import 'data/profile_page_menu_data.dart';
 
 class DocumentManagementEntryPoint extends StatefulWidget {
   const DocumentManagementEntryPoint({super.key});
@@ -14,44 +14,109 @@ class DocumentManagementEntryPoint extends StatefulWidget {
 
 class _DocumentManagementEntryPointState
     extends State<DocumentManagementEntryPoint> {
-  ThemeMode themeMode = ThemeMode.system;
-  //Widget currentScreen = const HomeFragment();
+  bool _isDarkMode = false;
+  late ColorScheme _colorScheme;
+  late ThemeMode themeMode;
+
+  @override
+  void initState() {
+    super.initState();
+    themeMode = ThemeMode.system;
+    _colorScheme = ColorScheme.fromSwatch(
+      brightness: _isDarkMode ? Brightness.dark : Brightness.light,
+    );
+  }
+
   void toggleTheme() {
     setState(() {
-      if (themeMode == ThemeMode.light) {
-        themeMode = ThemeMode.dark;
-      } else {
-        themeMode = ThemeMode.light;
-      }
+      _isDarkMode =
+      themeMode == ThemeMode.light ? true : false;
+      themeMode = _isDarkMode ? ThemeMode.dark : ThemeMode.light;
+      _colorScheme = ColorScheme.fromSwatch(
+        brightness: _isDarkMode ? Brightness.dark : Brightness.light,
+      );
+    });
+  }
+
+  void _updateTheme(bool isDark) {
+    setState(() {
+      _isDarkMode = isDark;
+      themeMode = _isDarkMode ? ThemeMode.dark : ThemeMode.light;
+      _colorScheme = ColorScheme.fromSwatch(
+        brightness: _isDarkMode ? Brightness.dark : Brightness.light,
+      );
+    });
+  }
+
+  void _updateColorScheme(ColorScheme newScheme) {
+    setState(() {
+      _colorScheme = newScheme;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      title: 'Document Management',
+      theme: ThemeData.from(
+        colorScheme: _colorScheme,
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData.from(
+        colorScheme: _colorScheme.copyWith(brightness: Brightness.dark),
+        useMaterial3: true,
+      ),
       themeMode: themeMode,
       home: Scaffold(
         drawer: Drawer(
-          // Use Drawer widget here
-          // child: MenuWithSubMenu(updateScreen),
-          child: MenuWithSubMenu(menuItems, themeMode),
+          child: MenuWithSubMenu(
+            menuItems: menuItems,
+            themeMode: themeMode,
+            colorScheme: _colorScheme,
+            updateTheme: _updateTheme,
+            updateColorScheme: _updateColorScheme,
+          ),
         ),
         appBar: AppBar(
-          title: const Text("Document Management"),
+          title: Text(
+            "Document Management",
+            style: TextStyle(color: _colorScheme.primary),
+          ),
           actions: [
             IconButton(
-              icon: Icon(themeMode == ThemeMode.light
-                  ? Icons.brightness_4
-                  : Icons.brightness_7),
-              onPressed: toggleTheme,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(
+                      colorScheme: _colorScheme,
+                      themeMode: themeMode,
+                      // isDarkMode: _isDarkMode,
+                      updateTheme: _updateTheme,
+                      updateColorScheme: _updateColorScheme,
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.account_circle),
             ),
+            // IconButton(
+            //   icon: Icon(themeMode == ThemeMode.light
+            //       ? Icons.brightness_4
+            //       : Icons.brightness_7),
+            //   onPressed: () {
+            //     toggleTheme();
+            //   },
+            // ),
           ],
         ),
-        body: const BottomNavigation(),
-        
-        //body: currentScreen,
+        body: BottomNavigation(
+          colorScheme: _colorScheme,
+          themeMode: themeMode,
+          isDarkMode: _isDarkMode,
+          updateTheme: _updateTheme,
+          updateColorScheme: _updateColorScheme,
+        ),
       ),
     );
   }

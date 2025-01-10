@@ -2,8 +2,8 @@ class FileItem {
   final String name;
   final String icon;
   final bool isFolder;
-  final bool isStarred;
-  final List<FileItem>? children; // For folders
+  bool isStarred;
+  late List<FileItem>? children; // For folders
   final String? filePath; // For files
 
   FileItem({
