@@ -113,23 +113,23 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
             child: const Icon(Icons.arrow_back),
           ),
         ),
-        actions: [
+        actions: const [
           Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: GestureDetector(
-              onTap: () {
-                // Handle save button tap
-                print("Save button tapped!");
-              },
-              child: const Text(
-                "Save",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                  fontSize: 18,
-                ),
-              ),
-            ),
+            padding: EdgeInsets.only(right: 12.0),
+            // child: GestureDetector(
+            //   onTap: () {
+            //     // Handle save button tap
+            //     print("Save button tapped!");
+            //   },
+            //   child: const Text(
+            //     "Save",
+            //     style: TextStyle(
+            //       fontWeight: FontWeight.bold,
+            //       color: Colors.blue,
+            //       fontSize: 18,
+            //     ),
+            //   ),
+            // ),
           ),
         ],
       ),
