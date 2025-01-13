@@ -3,6 +3,7 @@ import 'package:document_management_main/profile_page.dart';
 import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 import 'bottom_navigation.dart';
 import 'data/profile_page_menu_data.dart';
+import 'widgets/search_bar_widget.dart';
 
 class DocumentManagementEntryPoint extends StatefulWidget {
   const DocumentManagementEntryPoint({super.key});
@@ -29,8 +30,7 @@ class _DocumentManagementEntryPointState
 
   void toggleTheme() {
     setState(() {
-      _isDarkMode =
-      themeMode == ThemeMode.light ? true : false;
+      _isDarkMode = themeMode == ThemeMode.light ? true : false;
       themeMode = _isDarkMode ? ThemeMode.dark : ThemeMode.light;
       _colorScheme = ColorScheme.fromSwatch(
         brightness: _isDarkMode ? Brightness.dark : Brightness.light,
@@ -84,6 +84,7 @@ class _DocumentManagementEntryPointState
             style: TextStyle(color: _colorScheme.primary),
           ),
           actions: [
+            const SearchBarWidget(),
             IconButton(
               onPressed: () {
                 Navigator.push(

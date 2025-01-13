@@ -2,6 +2,7 @@
 * DO NOT TOUCH THIS FILE, OR YOU WILL FACE THE WRATH OF THE DEMON(ME)
 * */
 
+import 'package:document_management_main/widgets/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/grid_view.dart';
@@ -115,6 +116,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
           ),
         ),
         actions: const [
+          const SearchBarWidget(),
           Padding(
             padding: EdgeInsets.only(right: 12.0),
             // child: GestureDetector(
