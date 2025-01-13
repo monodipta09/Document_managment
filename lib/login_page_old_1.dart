@@ -1,6 +1,5 @@
 // import 'package:document_management_main/TestViewer.dart';
 import 'package:document_management_main/apis/ikon_service.dart';
-import 'package:document_management_main/data/file_data.dart';
 // import 'package:document_management_main/otp_page.dart';
 import 'package:flutter/material.dart';
 import 'components/custom_input.dart';
@@ -80,7 +79,6 @@ class LoginPage extends StatelessWidget {
 
         // Create file structure
         final fileStructure = createFileStructure(flieInstanceData, folderInstanceData);
-        getItemData(fileStructure);
 
         // Optionally, you can process `fileStructure` as needed here
 

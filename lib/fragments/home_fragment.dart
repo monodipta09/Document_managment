@@ -1,4 +1,5 @@
 import 'package:document_management_main/components/grid_view.dart';
+import 'package:document_management_main/data/create_fileStructure.dart';
 import 'package:document_management_main/data/file_class.dart';
 import 'package:document_management_main/data/file_data.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,8 @@ class HomeFragment extends StatefulWidget {
 }
 
 class _HomeFragmentState extends State<HomeFragment> {
-  late List<FileItem> currentItems = items;
+  // late List<FileItem> currentItems = items;
+  late List<FileItemNew> currentItems = allItems;
   bool isGridView = false;
 
   @override
@@ -42,14 +44,16 @@ class _HomeFragmentState extends State<HomeFragment> {
     super.initState();
   }
 
-  void _onFilesAdded(List<FileItem> newFiles) {
+  void _onFilesAdded(List<FileItemNew> newFiles) {
     setState(() {
-      items.addAll(newFiles);
+      // items.addAll(newFiles);
+      allItems.addAll(newFiles);
       Navigator.pop(context);
+
     });
   }
 
-  void _addToStarred(FileItem item) {
+  void _addToStarred(FileItemNew item) {
     setState(() {
       item.isStarred = !item.isStarred;
     });
@@ -71,7 +75,7 @@ class _HomeFragmentState extends State<HomeFragment> {
           onFilesAdded: _onFilesAdded,
           isFolderUpload: false,
           folderName: "",
-          // colorScheme: widget.colorScheme,
+          colorScheme: widget.colorScheme,
         ),
         body: widget.isGridView
                 ? GridLayout(

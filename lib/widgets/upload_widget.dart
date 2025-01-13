@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:uuid/uuid.dart';
+import '../data/create_fileStructure.dart';
 import '../utils/file_upload_utils.dart';
 import '../utils/snackbar_utils.dart';
 import 'upload_button.dart';
@@ -9,7 +11,7 @@ import '../data/file_class.dart';
 class UploadWidget extends StatefulWidget {
   final bool isFolderUpload;
   final String? folderName;
-  final Function(List<FileItem>) onFilesAdded;
+  final Function(List<FileItemNew>) onFilesAdded;
 
   const UploadWidget({
     super.key,
@@ -29,6 +31,8 @@ class UploadWidget extends StatefulWidget {
 }
 
 class _UploadWidgetState extends State<UploadWidget> {
+  var uuid = Uuid();
+
   Future<void> pickFiles(bool isFolderUpload, String folderName) async {
     try {
       final result = await FilePicker.platform.pickFiles(
@@ -48,12 +52,13 @@ class _UploadWidgetState extends State<UploadWidget> {
   }
 
   void _createFolder(String folderName) {
-    final newFolder = FileItem(
+    final newFolder = FileItemNew(
       name: folderName,
       icon: 'assets/folder.svg',
       isFolder: true,
       isStarred: false,
       filePath: null,
+      identifier: uuid.v4(),
     );
 
     widget.onFilesAdded([newFolder]);

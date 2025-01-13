@@ -1,12 +1,9 @@
 import 'package:document_management_main/data/file_class.dart';
 import 'package:flutter/material.dart';
 
-import '../data/create_fileStructure.dart';
-import 'folder_dialog.dart';
-
 class BottomModalOptions extends StatelessWidget {
-  final FileItemNew itemData;
-  final Function(FileItemNew)? onStarred;
+  final FileItem itemData;
+  final Function(FileItem)? onStarred;
   const BottomModalOptions(this.itemData, {this.onStarred, super.key});
 
   @override
@@ -53,7 +50,6 @@ class BottomModalOptions extends StatelessWidget {
               //     icon: Icons.drive_file_rename_outline,
               //     label: "Rename",
               //     onTap: () {
-              //       FolderDialog();
               //       Navigator.pop(context); // Close the modal
               //       print("Rename option selected");
               //     },
