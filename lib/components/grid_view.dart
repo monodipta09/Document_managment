@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:document_management_main/widgets/folder_screen_widget.dart';
 
+import '../data/create_fileStructure.dart';
 import '../files_viewer/image_viewer_page.dart';
 import '../files_viewer/pdf_viewer_page.dart';
 import '../files_viewer/text_viewer_page.dart';
 import '../widgets/bottom_modal_options.dart';
 
 class GridLayout extends StatelessWidget {
-  final List<FileItem> items;
-  final Function(FileItem) onStarred;
+  final List<FileItemNew> items;
+  final Function(FileItemNew) onStarred;
   final ColorScheme colorScheme;
 
   // final bool isLightTheme;

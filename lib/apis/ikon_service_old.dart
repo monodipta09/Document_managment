@@ -16,7 +16,6 @@ class IKonService {
 
 
   final String restUrl = "https://ikoncloud-dev.keross.com/rest";
-  final String downloadUrl = 'https://ikoncloud-dev.keross.com/download';
 
   // Hashes the input string using SHA-512.
   Future<String> _hashPassword(String content) async {
@@ -298,7 +297,7 @@ class IKonService {
     required String? mongoWhereClause,
     required List<String> projections,
     required bool allInstance,})
-    async {
+  async {
     final headers = {
       'Content-Type': 'application/x-www-form-urlencoded'
     };
@@ -352,10 +351,6 @@ class IKonService {
       print("Error during getMyInstances API call: $error");
       throw error;
     }
-  }
-
-  String getDownloadUrlForFiles(String resourceId, String resourceName, String resourceType) {
-      return downloadUrl + "?ticket=" + _ticket + "&resourceId=" + resourceId + "&resourceName=" + resourceName + "&resourceType=" + resourceType;
   }
 
 

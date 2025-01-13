@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import '../data/create_fileStructure.dart';
 import '../data/file_class.dart';
 import '../data/file_data.dart';
 import '../widgets/floating_action_button_widget.dart';
 
 class SharedFragment extends StatefulWidget{
   final bool isGridView;
-  const SharedFragment({required this.isGridView, super.key});
+  final ColorScheme colorScheme;
+  const SharedFragment({required this.isGridView, required this.colorScheme, super.key});
 
   @override
   State<SharedFragment> createState() {
@@ -16,9 +18,10 @@ class SharedFragment extends StatefulWidget{
 
 class _SharedFragmentState extends State<SharedFragment>{
 
-  void _onFilesAdded(List<FileItem> newFiles) {
+  void _onFilesAdded(List<FileItemNew> newFiles) {
     setState(() {
-      items.addAll(newFiles);
+      // items.addAll(newFiles);
+      allItems.addAll(newFiles);
     });
   }
 
@@ -31,7 +34,7 @@ class _SharedFragmentState extends State<SharedFragment>{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded, isFolderUpload: false, folderName: "",),
+      floatingActionButton: FloatingActionButtonWidget(onFilesAdded: _onFilesAdded, isFolderUpload: false, folderName: "", colorScheme: widget.colorScheme,),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
