@@ -57,6 +57,7 @@ class _DocumentManagementEntryPointState
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Document Management',
       theme: ThemeData.from(
         colorScheme: _colorScheme,
