@@ -73,6 +73,7 @@ class _UploadWidgetState extends State<UploadWidget> {
         UploadButton(
           onTap:(){
             pickFiles(widget.isFolderUpload, widget.folderName?? "");
+            // Navigator.pop(context);
           },
           icon: Icons.upload_file,
           label: 'Upload File(s)',
@@ -84,6 +85,7 @@ class _UploadWidgetState extends State<UploadWidget> {
               context: context,
               builder: (_) => FolderDialog(onFolderCreated: _createFolder),
             );
+            // Navigator.pop(context);
           },
           icon: Icons.folder_open,
           label: 'Create Folder',

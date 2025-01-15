@@ -89,22 +89,22 @@ class _ProfilePageState extends State<ProfilePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text('Profile Page'),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AppearanceWidget(
-                        colorScheme: widget.colorScheme,
-                        themeMode: widget.themeMode,
-                        onThemeChanged: widget.updateTheme,
-                        onColorSchemeChanged: widget.updateColorScheme,
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Appearance Settings'),
-              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => AppearanceWidget(
+              //           colorScheme: widget.colorScheme,
+              //           themeMode: widget.themeMode,
+              //           onThemeChanged: widget.updateTheme,
+              //           onColorSchemeChanged: widget.updateColorScheme,
+              //         ),
+              //       ),
+              //     );
+              //   },
+              //   child: const Text('Appearance Settings'),
+              // ),
             ],
           ),
         ),
