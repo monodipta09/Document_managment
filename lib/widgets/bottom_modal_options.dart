@@ -13,6 +13,11 @@ class BottomModalOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLightTheme = Theme.of(context).brightness == Brightness.light;
 
+    void _renameFolder(String newName) {
+      print("Rename folder called");
+      itemData.name = newName;
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: isLightTheme ? Colors.white : Colors.black,
@@ -47,17 +52,23 @@ class BottomModalOptions extends StatelessWidget {
           ListView(
             shrinkWrap: true,
             children: [
-              // if (itemData.isFolder)
-              //   _buildOption(
-              //     context,
-              //     icon: Icons.drive_file_rename_outline,
-              //     label: "Rename",
-              //     onTap: () {
-              //       FolderDialog();
-              //       Navigator.pop(context); // Close the modal
-              //       print("Rename option selected");
-              //     },
-              //   ),
+              if (itemData.isFolder)
+                _buildOption(
+                  context,
+                  icon: Icons.drive_file_rename_outline,
+                  label: "Rename",
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => FolderDialog(
+                        onFolderCreated: _renameFolder,
+                        folderName: itemData.name,
+                      ),
+                    );
+                    Navigator.pop(context); // Close the modal
+                    print("Rename option selected");
+                  },
+                ),
               // _buildOption(
               //   context,
               //   icon: Icons.delete_outline,

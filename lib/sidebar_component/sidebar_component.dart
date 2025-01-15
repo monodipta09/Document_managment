@@ -79,10 +79,29 @@ class _MenuWithSubMenuState extends State<MenuWithSubMenu> {
 
                       // Map of widget names to widget constructors
                       Map<String, Widget Function()> widgetMap = {
-                        'MyDrive': () =>  MyDrive(widget.themeMode),
-                        'Trash': () =>  Trash(widget.themeMode),
-                        'Account': () =>  Account(widget.themeMode),
-                        'Profile': () =>  Profile(widget.themeMode),
+                        'MyDrive': () =>  MyDrive(
+                          onThemeChanged: widget.updateTheme,
+                          onColorSchemeChanged: widget.updateColorScheme,
+                          colorScheme: widget.colorScheme,
+                          themeMode: widget.themeMode,
+                        ),
+                        'Trash': () =>  Trash(
+                          onThemeChanged: widget.updateTheme,
+                          onColorSchemeChanged: widget.updateColorScheme,
+                          colorScheme: widget.colorScheme,
+                          themeMode: widget.themeMode,
+                        ),
+                        'Account': () =>  Account(
+                          onThemeChanged: widget.updateTheme,
+                          onColorSchemeChanged: widget.updateColorScheme,
+                          colorScheme: widget.colorScheme,
+                          themeMode: widget.themeMode,
+                        ),
+                        'Profile': () =>  Profile(
+                          onThemeChanged: widget.updateTheme,
+                          onColorSchemeChanged: widget.updateColorScheme,
+                          colorScheme: widget.colorScheme,
+                          themeMode: widget.themeMode,),
                         'Appearance': () => AppearanceWidget(
                           onThemeChanged: widget.updateTheme,
                           onColorSchemeChanged: widget.updateColorScheme,

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 // File item class definition
 class FileItemNew {
-  final String name;
+  late String name;
   final String icon;
   final bool isFolder;
   bool isStarred;

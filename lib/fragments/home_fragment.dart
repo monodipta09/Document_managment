@@ -47,7 +47,8 @@ class _HomeFragmentState extends State<HomeFragment> {
   void _onFilesAdded(List<FileItemNew> newFiles) {
     setState(() {
       // items.addAll(newFiles);
-      allItems.addAll(newFiles);
+      // allItems.addAll(newFiles);
+      allItems.insertAll(0, newFiles);
       Navigator.pop(context);
 
     });

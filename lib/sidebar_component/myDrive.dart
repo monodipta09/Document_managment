@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 class MyDrive extends StatefulWidget{
-  const MyDrive(this.themeMode, {super.key});
   final ThemeMode themeMode;
+  final ColorScheme colorScheme;
+  final Function(bool isDarkMode) onThemeChanged;
+  final Function(ColorScheme colorScheme) onColorSchemeChanged;
+
+  const MyDrive({super.key, required this.themeMode, required this.colorScheme, required this.onThemeChanged, required this.onColorSchemeChanged, });
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -11,35 +15,30 @@ class MyDrive extends StatefulWidget{
 }
 
 class _MyDriveState extends State<MyDrive>{
-  ThemeMode themeMode = ThemeMode.system;
-  //Widget currentScreen = const HomeFragment();
-  void toggleTheme() {
-    setState(() {
-      if (themeMode == ThemeMode.light) {
-        themeMode = ThemeMode.dark;
-      } else {
-        themeMode = ThemeMode.light;
-      }
-    });
-  }
+  // ThemeMode themeMode = ThemeMode.system;
+  // //Widget currentScreen = const HomeFragment();
+  // void toggleTheme() {
+  //   setState(() {
+  //     if (themeMode == ThemeMode.light) {
+  //       themeMode = ThemeMode.dark;
+  //     } else {
+  //       themeMode = ThemeMode.light;
+  //     }
+  //   });
+  // }
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(
-      //title: "My Drive",
-      themeMode: themeMode,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      home: Scaffold(
+    return Theme(
+      data: ThemeData.from(
+          colorScheme: widget.colorScheme,
+          textTheme: ThemeData.light().textTheme)
+          .copyWith(
+        brightness: widget.themeMode == ThemeMode.dark
+            ? Brightness.dark
+            : Brightness.light,),
+      child: Scaffold(
         appBar: AppBar(
-          actions: [
-            IconButton(
-              icon: Icon(themeMode == ThemeMode.light
-                  ? Icons.brightness_4
-                  : Icons.brightness_7),
-              onPressed: toggleTheme,
-            ),
-          ],
           title: const Text("My Drive"),
           leading: Padding(
             padding: const EdgeInsets.all(2.0),
@@ -49,8 +48,11 @@ class _MyDriveState extends State<MyDrive>{
             ),
           ),
         ),
-        body: const Center(
-          child: Text("My Drive Sidebar Fragment"),
+        body: Center(
+          child: Text("My Drive Sidebar Fragment",
+          style: TextStyle(
+              color: widget.colorScheme.primary,
+            ),),
         ),
       ),
     );
