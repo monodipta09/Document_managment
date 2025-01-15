@@ -55,7 +55,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       // The UI shown before the user types anything or while typing
       builder: (BuildContext context, SearchController controller) {
         return IconButton(
-          icon: const Icon(Icons.search),
+          icon: const Icon(Icons.search_outlined),
           onPressed: () {
             controller.openView();
           },
