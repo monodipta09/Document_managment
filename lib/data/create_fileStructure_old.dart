@@ -1,25 +1,22 @@
-import 'package:document_management_main/apis/ikon_service.dart';
 import 'package:flutter/material.dart';
 
 
 // File item class definition
-class FileItemNew {
-  late String name;
+class FileItem {
+  final String name;
   final String icon;
   final bool isFolder;
-  bool isStarred;
-  late List<FileItemNew>? children;
+  final bool isStarred;
+  final List<FileItem>? children;
   final String identifier;
-  final String? filePath;
 
-  FileItemNew({
+  FileItem({
     required this.name,
     required this.icon,
     required this.isFolder,
     required this.isStarred,
     this.children,
     required this.identifier,
-    this.filePath,
   });
 }
 
@@ -40,9 +37,9 @@ String getFileIcon(String extension) {
   }
 }
 
-List<FileItemNew> createFileStructure(List<dynamic> fileInstanceData, List<dynamic> folderInstanceData) {
+List<FileItem> createFileStructure(List<dynamic> fileInstanceData, List<dynamic> folderInstanceData) {
   // Create a map of folder ID to its children
-  Map<String, List<FileItemNew>> folderChildren = {};
+  Map<String, List<FileItem>> folderChildren = {};
 
   // First pass: Create folder structure
   for (var folder in folderInstanceData) {
@@ -54,7 +51,7 @@ List<FileItemNew> createFileStructure(List<dynamic> fileInstanceData, List<dynam
     folderChildren.putIfAbsent(folderId, () => []);
 
     // Create folder item
-    FileItemNew folderItem = FileItemNew(
+    FileItem folderItem = FileItem(
       name: data['folderName'],
       icon: 'assets/folder.svg',
       isFolder: true,
@@ -75,13 +72,12 @@ List<FileItemNew> createFileStructure(List<dynamic> fileInstanceData, List<dynam
     var fileDetails = data['uploadResourceDetails'][0];
     String? folderId = data['folder_identifier'];
 
-    FileItemNew fileItem = FileItemNew(
+    FileItem fileItem = FileItem(
       name: fileDetails['fileName'],
       icon: getFileIcon(fileDetails['fileNameExtension']),
       isFolder: false,
       isStarred: false, // You can modify this based on your requirements
       identifier: data['resource_identifier'],
-      filePath: IKonService.iKonService.getDownloadUrlForFiles(fileDetails['resourceId'], fileDetails['resourceName'], fileDetails['resourceType']),
     );
 
     // Add file to folder if it belongs to one, otherwise it's a root item
@@ -92,13 +88,13 @@ List<FileItemNew> createFileStructure(List<dynamic> fileInstanceData, List<dynam
   }
 
   // Final pass: Build complete hierarchy starting from root folders
-  List<FileItemNew> rootItems = [];
+  List<FileItem> rootItems = [];
 
   for (var folder in folderInstanceData) {
     var data = folder['data'];
     if (data['parentId'] == null) {
       // This is a root folder
-      rootItems.add(FileItemNew(
+      rootItems.add(FileItem(
         name: data['folderName'],
         icon: 'assets/folder.svg',
         isFolder: true,
@@ -114,7 +110,7 @@ List<FileItemNew> createFileStructure(List<dynamic> fileInstanceData, List<dynam
     var data = file['data'];
     if (data['folder_identifier'] == null) {
       var fileDetails = data['uploadResourceDetails'][0];
-      rootItems.add(FileItemNew(
+      rootItems.add(FileItem(
         name: fileDetails['fileName'],
         icon: getFileIcon(fileDetails['fileNameExtension']),
         isFolder: false,

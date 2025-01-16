@@ -3,6 +3,7 @@ import 'package:document_management_main/profile_page.dart';
 import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 import 'bottom_navigation.dart';
 import 'data/profile_page_menu_data.dart';
+import 'widgets/search_bar_widget.dart';
 
 class DocumentManagementEntryPoint extends StatefulWidget {
   const DocumentManagementEntryPoint({super.key});
@@ -29,8 +30,7 @@ class _DocumentManagementEntryPointState
 
   void toggleTheme() {
     setState(() {
-      _isDarkMode =
-      themeMode == ThemeMode.light ? true : false;
+      _isDarkMode = themeMode == ThemeMode.light ? true : false;
       themeMode = _isDarkMode ? ThemeMode.dark : ThemeMode.light;
       _colorScheme = ColorScheme.fromSwatch(
         brightness: _isDarkMode ? Brightness.dark : Brightness.light,
@@ -57,6 +57,7 @@ class _DocumentManagementEntryPointState
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Document Management',
       theme: ThemeData.from(
         colorScheme: _colorScheme,
@@ -83,23 +84,28 @@ class _DocumentManagementEntryPointState
             style: TextStyle(color: _colorScheme.primary),
           ),
           actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(
-                      colorScheme: _colorScheme,
-                      themeMode: themeMode,
-                      // isDarkMode: _isDarkMode,
-                      updateTheme: _updateTheme,
-                      updateColorScheme: _updateColorScheme,
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.account_circle),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 22.0, 0.0),
+              child: const SearchBarWidget(),
             ),
+
+            // IconButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => ProfilePage(
+            //           colorScheme: _colorScheme,
+            //           themeMode: themeMode,
+            //           // isDarkMode: _isDarkMode,
+            //           updateTheme: _updateTheme,
+            //           updateColorScheme: _updateColorScheme,
+            //         ),
+            //       ),
+            //     );
+            //   },
+            //   icon: const Icon(Icons.account_circle),
+            // ),
             // IconButton(
             //   icon: Icon(themeMode == ThemeMode.light
             //       ? Icons.brightness_4

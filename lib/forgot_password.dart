@@ -1,26 +1,18 @@
-// import 'package:document_management_main/TestViewer.dart';
-import 'package:document_management_main/apis/ikon_service.dart';
-import 'package:document_management_main/data/file_data.dart';
-// import 'package:document_management_main/otp_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'apis/ikon_service.dart';
 import 'components/custom_input.dart';
 import 'package:document_management_main/apis/auth_service.dart';
-import 'data/create_fileStructure.dart';
 import 'document_management_entry_point.dart';
-// import 'TestViewer.dart';
+import 'login_page.dart';
 import 'apis/auth_service.dart';
-import 'apis/dart_http.dart';
-import 'package:document_management_main/apis/ikon_service.dart';
-import 'forgot_password.dart';
 
-
-class LoginPage extends StatelessWidget {
+class ForgotPassword extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-   // final AuthService _authService = AuthService();
+  final AuthService _authService = AuthService();
 
-  void _login(BuildContext context, String username, String password) async {
+  void _forgotPassword(BuildContext context, String username) async {
     showDialog(
       context: context,
       barrierDismissible: false, // Prevents the dialog from being dismissed by tapping outside
@@ -41,7 +33,7 @@ class LoginPage extends StatelessWidget {
                   CircularProgressIndicator(),
                   SizedBox(width: 20),
                   Text(
-                    "Logging in...",
+                    "Sending Email...",
                     style: TextStyle(fontSize: 16),
                   ),
                 ],
@@ -51,67 +43,23 @@ class LoginPage extends StatelessWidget {
         );
       },
     );
-
-    try {
-      bool isSuccess = await IKonService.iKonService.login(username, password);
-
+    try{
+      bool isSuccess =await IKonService.iKonService.resetPassword(username);
       if (isSuccess) {
-        final List<Map<String, dynamic>> flieInstanceData =
-        await IKonService.iKonService.getMyInstancesV2(
-          processName: "File Manager - DM",
-          predefinedFilters: {"taskName": "Viewer Access"},
-          processVariableFilters: null,
-          taskVariableFilters: null,
-          mongoWhereClause: null,
-          projections: ["Data"],
-          allInstance: false,
-        );
-
-        // Fetch folder instances
-        final List<Map<String, dynamic>> folderInstanceData =
-        await IKonService.iKonService.getMyInstancesV2(
-          processName: "Folder Manager - DM",
-          predefinedFilters: {"taskName": "Viewer Access"},
-          processVariableFilters: null,
-          taskVariableFilters: null,
-          mongoWhereClause: null,
-          projections: ["Data"],
-          allInstance: false,
-        );
-
-        // Create file structure
-        final fileStructure = createFileStructure(flieInstanceData, folderInstanceData);
-        getItemData(fileStructure);
-
-        // Optionally, you can process `fileStructure` as needed here
-
-        // Dismiss the loading dialog
-        Navigator.of(context).pop();
-
-        // Show success SnackBar
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Data fetched successfully!')),
-        );
-
-        // Navigate to the Document Management Entry Point
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DocumentManagementEntryPoint(),
-          ),
+          const SnackBar(content: Text('Password sent to your registered email')),
         );
       } else {
-        // Dismiss the loading dialog
-        Navigator.of(context).pop();
 
-        // Show error SnackBar
+        Navigator.pop(context);
+        // Show an error message
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Invalid username & password. Login failed. Please try again.'),
-          ),
+          const SnackBar(content: Text('Invalid username & password.Login failed. Please try again.')),
         );
       }
-    } catch (e) {
+    }
+    catch (e) {
       // Dismiss the loading dialog in case of an error
       Navigator.of(context).pop();
 
@@ -124,11 +72,16 @@ class LoginPage extends StatelessWidget {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // Ensure the Scaffold resizes when the keyboard appears
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Change this to the desired color
+        ),
+      ),
       resizeToAvoidBottomInset: true,
       body: GestureDetector(
         // Detect taps outside of input fields
@@ -157,18 +110,18 @@ class LoginPage extends StatelessWidget {
                       height: 40,
                     ),
                     const SizedBox(height: 10),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.flag, color: Colors.white),
-                        SizedBox(width: 5),
-                        Text(
-                          'EN',
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                        Icon(Icons.keyboard_arrow_down, color: Colors.white70),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: const [
+                    //     Icon(Icons.flag, color: Colors.white),
+                    //     SizedBox(width: 5),
+                    //     Text(
+                    //       'EN',
+                    //       style: TextStyle(color: Colors.white70, fontSize: 14),
+                    //     ),
+                    //     Icon(Icons.keyboard_arrow_down, color: Colors.white70),
+                    //   ],
+                    // ),
                     const SizedBox(height: 20),
 
                     // Heading
@@ -235,38 +188,7 @@ class LoginPage extends StatelessWidget {
                               ),
                               const SizedBox(height: 20),
 
-                              // Password Input
-                              CustomInput(
-                                labelText: 'Password',
-                                hintText: 'Enter your password',
-                                isMandatory: true,
-                                prefixIcon: const Icon(Icons.lock_outline),
-                                inputType: InputType.password,
-                                controller: passwordController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter Password';
-                                  }
-                                  return null;
-                                },
-                              ),
-
-                              // Forgot Password
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: TextButton(
-                                  child: const Text('Forgot Password?',style: TextStyle(color: Colors.white),),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ForgotPassword()),
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Login Button
+                              // ForgotPassword Button
                               SizedBox(
                                 width: double.infinity,
                                 height: 48,
@@ -298,12 +220,12 @@ class LoginPage extends StatelessWidget {
                                       //   );
                                       // }
 
-                                      _login(context,usernameController.text, passwordController.text);
+                                      _forgotPassword(context,usernameController.text);
 
                                     }
                                   },
                                   child: const Text(
-                                    'Login',
+                                    'Generate New Password',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -344,29 +266,6 @@ class LoginPage extends StatelessWidget {
                     // Footer Links and Logo
                     Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              "Don't have any account?",
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
                         const SizedBox(height: 60),
                         const Text(
                           'Looking for Support?',

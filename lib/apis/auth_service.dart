@@ -172,55 +172,55 @@ class AuthService {
 //   }
 
 /// Resets the password for the given [username].
-// Future<bool> resetPassword(String userName) async {
-//   try {
-//     // Define headers
-//     final headers = {
-//       "User-Agent": "Human",
-//       "Content-Type": "application/x-www-form-urlencoded",
-//     };
-//
-//     // Define query parameters
-//     final params = {
-//       "inZip": "false",
-//       "outZip": "false",
-//       "inFormat": "freejson",
-//       "outFormat": "freejson",
-//       "service": "loginService",
-//       "operation": "resetPassword",
-//     };
-//
-//     // Construct the data
-//     final data = jsonEncode([userName]); // Equivalent to '["$userName"]'
-//
-//     // Encode the parameters into the URL
-//     final uri = Uri.parse(baseUrl).replace(queryParameters: params);
-//
-//     // Encode the body as application/x-www-form-urlencoded
-//     final body = {'arguments': data};
-//
-//     // Make the POST request
-//     final response = await http.post(
-//       uri,
-//       headers: headers,
-//       body: body,
-//     );
-//
-//     print(response);
-//
-//     if (response.statusCode == 200) {
-//       // Optionally, you can parse the response data here
-//       // For example:
-//       // final responseData = json.decode(response.body);
-//       // return responseData;
-//       return true;
-//     } else {
-//       // Handle non-200 responses
-//       return false;
-//     }
-//   } catch (error) {
-//     print("Error during resetPassword API call: $error");
-//     throw error;
-//   }
-// }
+Future<bool> resetPassword(String userName) async {
+  try {
+    // Define headers
+    final headers = {
+      "User-Agent": "Human",
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+
+    // Define query parameters
+    final params = {
+      "inZip": "false",
+      "outZip": "false",
+      "inFormat": "freejson",
+      "outFormat": "freejson",
+      "service": "loginService",
+      "operation": "resetPassword",
+    };
+
+    // Construct the data
+    final data = jsonEncode([userName]); // Equivalent to '["$userName"]'
+
+    // Encode the parameters into the URL
+    final uri = Uri.parse(baseUrl).replace(queryParameters: params);
+
+    // Encode the body as application/x-www-form-urlencoded
+    final body = {'arguments': data};
+
+    // Make the POST request
+    final response = await http.post(
+      uri,
+      headers: headers,
+      body: body,
+    );
+
+    print(response);
+
+    if (response.statusCode == 200) {
+      // Optionally, you can parse the response data here
+      // For example:
+      // final responseData = json.decode(response.body);
+      // return responseData;
+      return true;
+    } else {
+      // Handle non-200 responses
+      return false;
+    }
+  } catch (error) {
+    print("Error during resetPassword API call: $error");
+    throw error;
+  }
+}
 }

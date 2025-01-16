@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import '../data/create_fileStructure.dart';
 import '../data/file_class.dart';
 import 'upload_widget.dart';
 
 class BottomSheetWidget extends StatelessWidget {
-  final Function(List<FileItem>) onFilesAdded;
+  final Function(List<FileItemNew>) onFilesAdded;
   final bool isFolderUpload;
   final String folderName;
   const BottomSheetWidget({super.key, required this.folderName, required this.onFilesAdded, required this.isFolderUpload});

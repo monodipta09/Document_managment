@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:document_management_main/data/item_data.dart';
 import 'package:flutter_svg/svg.dart';
+import '../data/create_fileStructure.dart';
 import '../data/file_class.dart';
 import '../files_viewer/image_viewer_page.dart';
 import '../files_viewer/pdf_viewer_page.dart';
@@ -9,8 +10,8 @@ import '../widgets/bottom_modal_options.dart';
 import '../widgets/folder_screen_widget.dart';
 
 class CustomListView extends StatelessWidget {
-  final List<FileItem> items;
-  final Function(FileItem)? onStarred;
+  final List<FileItemNew> items;
+  final Function(FileItemNew)? onStarred;
   final ColorScheme colorScheme;
 
   const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme});
@@ -18,12 +19,18 @@ class CustomListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
+
+
     // print("islight $isLight");
     return ListView.builder(
         padding: const EdgeInsets.all(8),
         itemCount: items.length,
         itemBuilder: (BuildContext context, int index) {
           final item = items[index];
+          String itemName = item.name.toString();
+          itemName =
+          itemName.length > 20 ? itemName.substring(0, 20) + '...' : itemName;
+
           return Padding(
             padding: const EdgeInsets.only(left:10.0),
             child: ListTile(
@@ -33,7 +40,8 @@ class CustomListView extends StatelessWidget {
                 width: 20.0,
               ),
               title: Text(
-                item.name,
+                // item.name,
+                itemName,
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.w500,

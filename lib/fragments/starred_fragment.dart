@@ -4,6 +4,7 @@ import 'package:document_management_main/data/file_data.dart';
 import 'package:flutter/material.dart';
 
 import '../components/list_view.dart';
+import '../data/create_fileStructure.dart';
 import '../widgets/floating_action_button_widget.dart';
 
 class StarredFragment extends StatefulWidget {
@@ -26,43 +27,62 @@ class _StarredFragmentState extends State<StarredFragment> {
     super.initState();
   }
 
-  void _onFilesAdded(List<FileItem> newFiles) {
+  void _onFilesAdded(List<FileItemNew> newFiles) {
     setState(() {
-      items.addAll(newFiles);
+      // items.addAll(newFiles);
+      allItems.addAll(newFiles);
     });
   }
 
-  void _addToStarred(FileItem item) {
+  void _addToStarred(FileItemNew item) {
     setState(() {
       item.isStarred = !item.isStarred;
     });
   }
 
+  List<FileItemNew> getStarredFiles(List<FileItemNew> items) {
+    List<FileItemNew> starredFiles = [];
+
+    for (var item in items) {
+      if (item.isStarred) {
+        starredFiles.add(item);
+      }
+
+      // If the item has children, recursively get their starred files
+      if (item.isFolder && item.children != null) {
+        starredFiles.addAll(getStarredFiles(item.children!));
+      }
+    }
+
+    return starredFiles;
+  }
+
   @override
   Widget build(BuildContext context) {
     // late List<FileItem> currentItems = items;
-    final List<FileItem> starredItems =
-        items.where((item) => item.isStarred).toList();
+    final List<FileItemNew> starredItems =
+        // items.where((item) => item.isStarred).toList();
+      allItems.where((item) => item.isStarred).toList();
 
-    final List<FileItem> newStarredItems = [];
-    for(FileItem item in items){
-      // item.isStarred ? newStarredItems.add(item) : null;
-    }
+    // final List<FileItemNew> newStarredItems = getStarredFiles(items);
+    final List<FileItemNew> newStarredItems = getStarredFiles(allItems);
+
     return Scaffold(
       // AppBar could go here if you like
       floatingActionButton: FloatingActionButtonWidget(
         onFilesAdded: _onFilesAdded,
         isFolderUpload: false,
         folderName: "",
+        colorScheme: widget.colorScheme,
       ),
       body: widget.isGridView
           ? GridLayout(
-              items: starredItems,
+              items: newStarredItems,
               onStarred: _addToStarred,
               colorScheme: widget.colorScheme,
             )
           : CustomListView(
-              items: starredItems,
+              items: newStarredItems,
               onStarred: _addToStarred,
               colorScheme: widget.colorScheme,
             ),

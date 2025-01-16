@@ -1,6 +1,5 @@
 import 'file_class.dart';
 import 'package:document_management_main/login_page.dart';
-import 'create_fileStructure.dart';
 
 final List<FileItem> items = [
   FileItem(name: "Documents", icon: "assets/folder.svg", isFolder: true, isStarred: true),
@@ -31,8 +30,3 @@ final List<FileItem> items = [
   ),
   // Add more items as needed
 ];
-
-List<FileItemNew> allItems = [];
-void getItemData(items){
-  allItems = items;
-}

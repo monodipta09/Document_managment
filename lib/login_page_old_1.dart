@@ -1,6 +1,5 @@
 // import 'package:document_management_main/TestViewer.dart';
 import 'package:document_management_main/apis/ikon_service.dart';
-import 'package:document_management_main/data/file_data.dart';
 // import 'package:document_management_main/otp_page.dart';
 import 'package:flutter/material.dart';
 import 'components/custom_input.dart';
@@ -11,7 +10,6 @@ import 'document_management_entry_point.dart';
 import 'apis/auth_service.dart';
 import 'apis/dart_http.dart';
 import 'package:document_management_main/apis/ikon_service.dart';
-import 'forgot_password.dart';
 
 
 class LoginPage extends StatelessWidget {
@@ -81,7 +79,6 @@ class LoginPage extends StatelessWidget {
 
         // Create file structure
         final fileStructure = createFileStructure(flieInstanceData, folderInstanceData);
-        getItemData(fileStructure);
 
         // Optionally, you can process `fileStructure` as needed here
 
@@ -252,16 +249,14 @@ class LoginPage extends StatelessWidget {
                               ),
 
                               // Forgot Password
-                              Align(
+                              const Align(
                                 alignment: Alignment.centerRight,
-                                child: TextButton(
-                                  child: const Text('Forgot Password?',style: TextStyle(color: Colors.white),),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ForgotPassword()),
-                                    );
-                                  },
+                                child: Text(
+                                  'Forgot Password?',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 20),

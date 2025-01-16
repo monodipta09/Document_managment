@@ -2,16 +2,18 @@
 * DO NOT TOUCH THIS FILE, OR YOU WILL FACE THE WRATH OF THE DEMON(ME)
 * */
 
+import 'package:document_management_main/widgets/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/grid_view.dart';
 import '../components/list_view.dart';
+import '../data/create_fileStructure.dart';
 import '../data/file_class.dart';
 import 'floating_action_button_widget.dart';
 import 'package:document_management_main/data/file_data.dart';
 
 class FolderScreenWidget extends StatefulWidget {
-  final List<FileItem> fileItems;
+  final List<FileItemNew> fileItems;
   final String folderName;
 
   // final bool isLightTheme;
@@ -30,10 +32,10 @@ class FolderScreenWidget extends StatefulWidget {
 }
 
 class _FolderScreenWidget extends State<FolderScreenWidget> {
-  List<FileItem> currentItems = [];
+  List<FileItemNew> currentItems = [];
   bool localIsGridView = false;
 
-  List<FileItem>? findFileItems(String folderName, List<FileItem> items) {
+  List<FileItemNew>? findFileItems(String folderName, List<FileItemNew> items) {
     for (final item in items) {
       if (item.name == folderName) {
         return item.children;
@@ -47,7 +49,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     return null;
   }
 
-  FileItem? findFolder(String folderName, List<FileItem> items) {
+  FileItemNew? findFolder(String folderName, List<FileItemNew> items) {
     for (final item in items) {
       if (item.name == folderName) {
         return item;
@@ -64,7 +66,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
   @override
   void initState() {
     super.initState();
-    final foundItems = findFileItems(widget.folderName, items);
+    final foundItems = findFileItems(widget.folderName, allItems);
     if (foundItems != null) {
       currentItems = List.from(foundItems);
     } else {
@@ -73,10 +75,10 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     }
   }
 
-  void _onFilesAdded(List<FileItem> newFiles) {
+  void _onFilesAdded(List<FileItemNew> newFiles) {
     setState(() {
       currentItems.addAll(newFiles);
-      final folder = findFolder(widget.folderName, items);
+      final folder = findFolder(widget.folderName, allItems);
       if (folder != null) {
         folder.children = currentItems;
       } else {
@@ -86,7 +88,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     });
   }
 
-  void _addToStarred(FileItem item) {
+  void _addToStarred(FileItemNew item) {
     setState(() {
       item.isStarred = !item.isStarred;
     });
@@ -114,6 +116,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
           ),
         ),
         actions: const [
+          const SearchBarWidget(),
           Padding(
             padding: EdgeInsets.only(right: 12.0),
             // child: GestureDetector(
@@ -137,18 +140,20 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
         onFilesAdded: _onFilesAdded,
         isFolderUpload: true,
         folderName: widget.folderName,
+        colorScheme: widget.colorScheme,
       ),
       body: Column(
         children: [
           if (currentItems.isNotEmpty)
             Row(
-              // mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Padding(padding: EdgeInsets.only(left: 340.0)),
+                // const Padding(padding: EdgeInsets.only(left: 340.0)),
                 IconButton(
                   // icon: Icon(widget.isGridView ? Icons.view_list : Icons.grid_view),
                   icon:
                       Icon(localIsGridView ? Icons.view_list : Icons.grid_view),
+
                   onPressed: () {
                     // widget.toggleViewMode;
                     // setState(() {
@@ -157,6 +162,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
                     _toggleViewMode();
                   },
                 ),
+                const SizedBox(width: 28.0),
               ],
             ),
           Expanded(

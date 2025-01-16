@@ -45,7 +45,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             currentPageIndex = index;
           });
         },
-        indicatorColor: Colors.amber,
+        indicatorColor: widget.colorScheme.secondary,
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
@@ -67,14 +67,14 @@ class _BottomNavigationState extends State<BottomNavigation> {
         children: [
           // Toggle button
           Row(
-            // mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Padding(padding: EdgeInsets.only(left: 340.0)),
+              // const Padding(padding: EdgeInsets.only(left: 340.0)),
               IconButton(
                 icon: Icon(isGridView ? Icons.view_list : Icons.grid_view),
                 onPressed: _toggleViewMode,
               ),
-              const SizedBox(width: 5.0),
+              const SizedBox(width: 28.0),
             ],
           ),
           // Content
@@ -90,6 +90,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
               ),
               SharedFragment(
                 isGridView: isGridView,
+                colorScheme: widget.colorScheme,
               ),
               StarredFragment(
                 colorScheme: widget.colorScheme,

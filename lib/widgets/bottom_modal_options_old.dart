@@ -1,22 +1,14 @@
 import 'package:document_management_main/data/file_class.dart';
 import 'package:flutter/material.dart';
 
-import '../data/create_fileStructure.dart';
-import 'folder_dialog.dart';
-
 class BottomModalOptions extends StatelessWidget {
-  final FileItemNew itemData;
-  final Function(FileItemNew)? onStarred;
+  final FileItem itemData;
+  final Function(FileItem)? onStarred;
   const BottomModalOptions(this.itemData, {this.onStarred, super.key});
 
   @override
   Widget build(BuildContext context) {
     final isLightTheme = Theme.of(context).brightness == Brightness.light;
-
-    void _renameFolder(String newName) {
-      print("Rename folder called");
-      itemData.name = newName;
-    }
 
     return Container(
       decoration: BoxDecoration(
@@ -52,23 +44,16 @@ class BottomModalOptions extends StatelessWidget {
           ListView(
             shrinkWrap: true,
             children: [
-              if (itemData.isFolder)
-                _buildOption(
-                  context,
-                  icon: Icons.drive_file_rename_outline,
-                  label: "Rename",
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => FolderDialog(
-                        onFolderCreated: _renameFolder,
-                        folderName: itemData.name,
-                      ),
-                    );
-                    Navigator.pop(context); // Close the modal
-                    print("Rename option selected");
-                  },
-                ),
+              // if (itemData.isFolder)
+              //   _buildOption(
+              //     context,
+              //     icon: Icons.drive_file_rename_outline,
+              //     label: "Rename",
+              //     onTap: () {
+              //       Navigator.pop(context); // Close the modal
+              //       print("Rename option selected");
+              //     },
+              //   ),
               // _buildOption(
               //   context,
               //   icon: Icons.delete_outline,

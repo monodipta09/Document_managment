@@ -1,12 +1,12 @@
-import 'package:document_management_main/TestViewer.dart';
+
 import 'package:document_management_main/apis/ikon_service.dart';
 import 'package:flutter/material.dart';
-import 'components/custom_input.dart';
+import '../components/custom_input.dart';
 import 'package:document_management_main/apis/auth_service.dart';
-import 'document_management_entry_point.dart';
-import 'TestViewer.dart';
-import 'apis/auth_service.dart';
-import 'apis/dart_http.dart';
+import '../document_management_entry_point.dart';
+
+import '../apis/auth_service.dart';
+import '../apis/dart_http.dart';
 import 'package:document_management_main/apis/ikon_service.dart';
 
 class OtpPage extends StatelessWidget {
@@ -28,13 +28,13 @@ class OtpPage extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Data fetched successfully!')),
       );
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (
-              context) => TestViewer(),
-        ),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (
+      //         context) => TestViewer(),
+      //   ),
+      // );  //for navigating after otp
     } else {
       // Show an error message
       ScaffoldMessenger.of(context).showSnackBar(

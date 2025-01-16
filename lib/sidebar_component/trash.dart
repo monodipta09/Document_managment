@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Trash extends StatefulWidget{
-  const Trash(this.themeMode, {super.key});
   final ThemeMode themeMode;
+  final ColorScheme colorScheme;
+  final Function(bool isDarkMode) onThemeChanged;
+  final Function(ColorScheme colorScheme) onColorSchemeChanged;
+  
+  const Trash({super.key, required this.themeMode,  required this.colorScheme, required this.onThemeChanged, required this.onColorSchemeChanged});
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -11,35 +15,30 @@ class Trash extends StatefulWidget{
 }
 
 class _TrashState extends State<Trash>{
-  ThemeMode themeMode = ThemeMode.system;
-  //Widget currentScreen = const HomeFragment();
-  void toggleTheme() {
-    setState(() {
-      if (themeMode == ThemeMode.light) {
-        themeMode = ThemeMode.dark;
-      } else {
-        themeMode = ThemeMode.light;
-      }
-    });
-  }
+  // ThemeMode themeMode = ThemeMode.system;
+  // //Widget currentScreen = const HomeFragment();
+  // void toggleTheme() {
+  //   setState(() {
+  //     if (themeMode == ThemeMode.light) {
+  //       themeMode = ThemeMode.dark;
+  //     } else {
+  //       themeMode = ThemeMode.light;
+  //     }
+  //   });
+  // }
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(
-      //title: "My Drive",
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: themeMode,
-      home: Scaffold(
+    return Theme(
+      data: ThemeData.from(
+          colorScheme: widget.colorScheme,
+          textTheme: ThemeData.light().textTheme)
+          .copyWith(
+        brightness: widget.themeMode == ThemeMode.dark
+            ? Brightness.dark
+            : Brightness.light,),
+      child: Scaffold(
         appBar: AppBar(
-          actions: [
-            IconButton(
-              icon: Icon(themeMode == ThemeMode.light
-                  ? Icons.brightness_4
-                  : Icons.brightness_7),
-              onPressed: toggleTheme,
-            ),
-          ],
           title: const Text("Trash"),
           leading: Padding(
             padding: const EdgeInsets.all(2.0),
@@ -49,8 +48,10 @@ class _TrashState extends State<Trash>{
             ),
           ),
         ),
-        body: const Center(
-          child: Text("Trash Sidebar Fragment"),
+        body: Center(
+          child: Text("Trash Sidebar Fragment",style: TextStyle(
+              color: widget.colorScheme.primary,
+            ),),
         ),
       ),
     );
