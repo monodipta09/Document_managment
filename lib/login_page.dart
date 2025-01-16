@@ -94,7 +94,7 @@ class LoginPage extends StatelessWidget {
         );
 
         // Navigate to the Document Management Entry Point
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => DocumentManagementEntryPoint(),
