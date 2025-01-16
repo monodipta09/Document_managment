@@ -74,27 +74,27 @@ class CustomListView extends StatelessWidget {
                           position: offsetAnimation, child: child);
                     },
                   ));
-                } else if (item.filePath!.endsWith(".pdf")) {
+                } else if (item.filePath!.endsWith("pdf")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            PdfViewerPage(filePath: item.filePath!)),
+                            PdfViewerPage(filePath: item.filePath!, fileName: item.name,)),
                   );
-                } else if (item.filePath!.endsWith(".txt")) {
+                } else if (item.filePath!.endsWith("plain")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            TextFileViewerPage(filePath: item.filePath!)),
+                            TextFileViewerPage(filePath: item.filePath!,fileName: item.name,)),
                   );
-                } else if (item.filePath!.endsWith(".png") ||
-                    item.filePath!.endsWith(".jpg")) {
+                } else if (item.filePath!.endsWith("png") ||
+                    item.filePath!.endsWith("jpg")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            ImageViewerPage(imagePath: item.filePath!)),
+                            ImageViewerPage(imagePath: item.filePath!,fileName: item.name,)),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(

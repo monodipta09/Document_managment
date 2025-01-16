@@ -109,21 +109,21 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PdfViewerPage(filePath: item.filePath!),
+                      builder: (context) => PdfViewerPage(filePath: item.filePath!, fileName: item.name,),
                     ),
                   );
                 } else if (path.endsWith(".txt")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TextFileViewerPage(filePath: item.filePath!),
+                      builder: (context) => TextFileViewerPage(filePath: item.filePath!,fileName: item.name,),
                     ),
                   );
                 } else if (path.endsWith(".png") || path.endsWith(".jpg")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ImageViewerPage(imagePath: item.filePath!),
+                      builder: (context) => ImageViewerPage(imagePath: item.filePath!,fileName: item.name,),
                     ),
                   );
                 } else {

@@ -51,6 +51,7 @@ class GridLayout extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
+        String fileName=item.name;
         print("Item tapped: ${item.name}");
         //OpenFile.open(item.filePath);
         if (item.isFolder) {
@@ -78,15 +79,16 @@ class GridLayout extends StatelessWidget {
         } else if (item.filePath.endsWith("pdf")) {
           Navigator.push(
             context,
+          // Access the file name
             MaterialPageRoute(
-                builder: (context) => PdfViewerPage(filePath: item.filePath)),
+                builder: (context) => PdfViewerPage(filePath: item.filePath,fileName: fileName)),
           );
-        } else if (item.filePath.endsWith("txt")) {
+        } else if (item.filePath.endsWith("plain")) {
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    TextFileViewerPage(filePath: item.filePath)),
+                    TextFileViewerPage(filePath: item.filePath,fileName: fileName)),
           );
         } else if (item.filePath.endsWith("png") ||
             item.filePath.endsWith("jpg")) {
@@ -94,7 +96,7 @@ class GridLayout extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    ImageViewerPage(imagePath: item.filePath)),
+                    ImageViewerPage(imagePath: item.filePath,fileName: fileName)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

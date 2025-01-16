@@ -7,7 +7,9 @@ import 'package:path_provider/path_provider.dart';
 class PdfViewerPage extends StatefulWidget {
   final String filePath;
 
-  const PdfViewerPage({Key? key, required this.filePath}) : super(key: key);
+  final String fileName;
+
+  const PdfViewerPage({Key? key, required this.filePath, required this.fileName}) : super(key: key);
 
   @override
   _PdfViewerPageState createState() => _PdfViewerPageState();
@@ -16,6 +18,8 @@ class PdfViewerPage extends StatefulWidget {
 class _PdfViewerPageState extends State<PdfViewerPage> {
   String? localFilePath;
   bool isLoading = true;
+
+
 
   @override
   void initState() {
@@ -52,7 +56,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("PDF Viewer")),
+      appBar: AppBar(title: Text(widget.fileName)),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : localFilePath != null
