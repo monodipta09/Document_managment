@@ -42,6 +42,8 @@ class GridLayout extends StatelessWidget {
     );
   }
 
+
+
   Widget _buildGridLayout(dynamic item, BuildContext context, bool isLight) {
     String itemName = item.name.toString();
     itemName =
@@ -73,21 +75,21 @@ class GridLayout extends StatelessWidget {
               return SlideTransition(position: offsetAnimation, child: child);
             },
           ));
-        } else if (item.filePath.endsWith(".pdf")) {
+        } else if (item.filePath.endsWith("pdf")) {
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => PdfViewerPage(filePath: item.filePath)),
           );
-        } else if (item.filePath.endsWith(".txt")) {
+        } else if (item.filePath.endsWith("txt")) {
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
                     TextFileViewerPage(filePath: item.filePath)),
           );
-        } else if (item.filePath.endsWith(".png") ||
-            item.filePath.endsWith(".jpg")) {
+        } else if (item.filePath.endsWith("png") ||
+            item.filePath.endsWith("jpg")) {
           Navigator.push(
             context,
             MaterialPageRoute(

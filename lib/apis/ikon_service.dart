@@ -355,8 +355,6 @@ class IKonService {
   }
 
   String getDownloadUrlForFiles(String resourceId, String resourceName, String resourceType) {
-      return downloadUrl + "?ticket=" + _ticket + "&resourceId=" + resourceId + "&resourceName=" + resourceName + "&resourceType=" + resourceType;
+      return "$downloadUrl?ticket=$_ticket&resourceId=$resourceId&resourceName=$resourceName&resourceType=$resourceType";
   }
-
-
 }
