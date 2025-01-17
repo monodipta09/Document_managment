@@ -1,21 +1,64 @@
 import 'package:document_management_main/data/file_class.dart';
 import 'package:flutter/material.dart';
 
+import '../apis/ikon_service.dart';
 import '../data/create_fileStructure.dart';
 import 'folder_dialog.dart';
 
 class BottomModalOptions extends StatelessWidget {
   final FileItemNew itemData;
   final Function(FileItemNew)? onStarred;
+
   const BottomModalOptions(this.itemData, {this.onStarred, super.key});
 
   @override
   Widget build(BuildContext context) {
+    String cutOrCopiedIdentifier;
+    String cutOrCopied;
+    String folderOrFile;
+    bool isCutOrCopied=false;
+    String taskId;
     final isLightTheme = Theme.of(context).brightness == Brightness.light;
 
-    void _renameFolder(String newName) {
+    Future<void> _renameFolder(String newName) async {
+      String identifier=itemData.identifier;
       print("Rename folder called");
       itemData.name = newName;
+      final List<Map<String, dynamic>> folderInstanceData =
+          await IKonService.iKonService.getMyInstancesV2(
+        processName: "Folder Manager - DM",
+        predefinedFilters: {"taskName": "Editor Access"},
+        processVariableFilters: {"folder_identifier" : identifier},
+        taskVariableFilters: null,
+        mongoWhereClause: null,
+        projections: ["Data"],
+        allInstance: false,
+      );
+
+      print("Task id:");
+
+      print(folderInstanceData[0]["taskId"]);
+      taskId= folderInstanceData[0]["taskId"];
+
+      bool result =  await IKonService.iKonService.invokeAction(taskId: taskId,transitionName: "Update Editor Access",data: {"folder_identifier":itemData.identifier,"folderName":itemData.name}, processIdentifierFields: null);
+
+
+    }
+
+    void _cutOrCopyDocument(isFolder,cutOrCopied,identifier){
+      String copied_identifier,item_type;
+        if(isFolder){
+          item_type="folder";
+          copied_identifier=identifier;
+        }
+        else{
+          item_type="file";
+          copied_identifier=identifier;
+        }
+      cutOrCopiedIdentifier=copied_identifier;
+      cutOrCopied=cutOrCopied;
+      folderOrFile=item_type;
+      isCutOrCopied=true;
     }
 
     return Container(
@@ -57,7 +100,7 @@ class BottomModalOptions extends StatelessWidget {
                   context,
                   icon: Icons.drive_file_rename_outline,
                   label: "Rename",
-                  onTap: () {
+                  onTap: () async {
                     showDialog(
                       context: context,
                       builder: (_) => FolderDialog(
@@ -69,15 +112,19 @@ class BottomModalOptions extends StatelessWidget {
                     print("Rename option selected");
                   },
                 ),
-              // _buildOption(
-              //   context,
-              //   icon: Icons.delete_outline,
-              //   label: "Delete",
-              //   onTap: () {
-              //     Navigator.pop(context); // Close the modal
-              //     print("Delete option selected");
-              //   },
-              // ),
+              _buildOption(
+                context,
+                icon: Icons.delete_outline,
+                label: "Cut",
+                onTap: () {
+                  Navigator.pop(context); // Close the modal
+                  bool isFolder=itemData.isFolder;
+                  String cutOrCopied = "Cut";
+                  String identifier=itemData.identifier;
+                  _cutOrCopyDocument(isFolder,cutOrCopied,identifier);
+
+                },
+              ),
               // _buildOption(
               //   context,
               //   icon: Icons.share_outlined,

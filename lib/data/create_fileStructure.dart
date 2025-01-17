@@ -120,6 +120,7 @@ List<FileItemNew> createFileStructure(List<dynamic> fileInstanceData, List<dynam
         isFolder: false,
         isStarred: false,
         identifier: data['resource_identifier'],
+        filePath: IKonService.iKonService.getDownloadUrlForFiles(fileDetails['resourceId'], fileDetails['resourceName'], fileDetails['resourceType']),
       ));
     }
   }
