@@ -13,6 +13,7 @@ class GridLayout extends StatelessWidget {
   final List<FileItemNew> items;
   final Function(FileItemNew) onStarred;
   final ColorScheme colorScheme;
+  final Function(String, FileItemNew item) renameFolder;
 
   // final bool isLightTheme;
 
@@ -20,7 +21,8 @@ class GridLayout extends StatelessWidget {
       {super.key,
       required this.items,
       required this.onStarred,
-      required this.colorScheme});
+      required this.colorScheme,
+        required this.renameFolder});
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +177,7 @@ class GridLayout extends StatelessWidget {
                       ),
                     ),
                     builder: (BuildContext context) {
-                      return BottomModalOptions(item, onStarred: onStarred);
+                      return BottomModalOptions(item, onStarred: onStarred, renameFolder: renameFolder);
                     },
                   );
                 },

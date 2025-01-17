@@ -3,27 +3,31 @@ import 'package:flutter/material.dart';
 
 import '../apis/ikon_service.dart';
 import '../data/create_fileStructure.dart';
+import '../fragments/home_fragment.dart';
 import 'folder_dialog.dart';
 
 class BottomModalOptions extends StatelessWidget {
   final FileItemNew itemData;
   final Function(FileItemNew)? onStarred;
+  final Function(String, FileItemNew item) renameFolder;
 
-  const BottomModalOptions(this.itemData, {this.onStarred, super.key});
+
+  const BottomModalOptions(this.itemData, {this.onStarred, super.key, required this.renameFolder});
 
   @override
   Widget build(BuildContext context) {
-    String cutOrCopiedIdentifier;
+    String cutOrCopiedIdentifier=" ";
     String cutOrCopied;
     String folderOrFile;
     bool isCutOrCopied=false;
     String taskId;
     final isLightTheme = Theme.of(context).brightness == Brightness.light;
 
-    Future<void> _renameFolder(String newName) async {
+    Future<void> _renameFolderServer(String newName) async {
       String identifier=itemData.identifier;
       print("Rename folder called");
       itemData.name = newName;
+
       final List<Map<String, dynamic>> folderInstanceData =
           await IKonService.iKonService.getMyInstancesV2(
         processName: "Folder Manager - DM",
@@ -60,6 +64,21 @@ class BottomModalOptions extends StatelessWidget {
       folderOrFile=item_type;
       isCutOrCopied=true;
     }
+
+    // Future<void> _pasteFolder(String destinationIdentifier) async {
+    //   print(cutOrCopiedIdentifier);
+    //   final List<Map<String, dynamic>> folderInstanceData =
+    //       await IKonService.iKonService.getMyInstancesV2(
+    //     processName: "Folder Manager - DM",
+    //     predefinedFilters: {"taskName": "Sharing Activity"},
+    //     processVariableFilters: {"folder_identifier" : cutOrCopiedIdentifier!},
+    //     taskVariableFilters: null,
+    //     mongoWhereClause: null,
+    //     projections: ["Data"],
+    //     allInstance: false,
+    //   );
+    //   print(folderInstanceData);
+    // }
 
     return Container(
       decoration: BoxDecoration(
@@ -104,8 +123,10 @@ class BottomModalOptions extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (_) => FolderDialog(
-                        onFolderCreated: _renameFolder,
-                        folderName: itemData.name,
+                        // onFolderCreated: renameFolder,
+                        folderData: itemData,
+                        renameFolder: renameFolder,
+                       // onFolderCreated: _renameFolderServer,
                       ),
                     );
                     Navigator.pop(context); // Close the modal
@@ -118,22 +139,25 @@ class BottomModalOptions extends StatelessWidget {
                 label: "Cut",
                 onTap: () {
                   Navigator.pop(context); // Close the modal
-                  bool isFolder=itemData.isFolder;
+                  bool isFolder = itemData.isFolder;
                   String cutOrCopied = "Cut";
-                  String identifier=itemData.identifier;
-                  _cutOrCopyDocument(isFolder,cutOrCopied,identifier);
-
+                  String identifier = itemData.identifier;
+                  _cutOrCopyDocument(isFolder, cutOrCopied, identifier);
                 },
               ),
-              // _buildOption(
-              //   context,
-              //   icon: Icons.share_outlined,
-              //   label: "Share",
-              //   onTap: () {
-              //     Navigator.pop(context); // Close the modal
-              //     print("Share option selected");
-              //   },
-              // ),
+              _buildOption(
+                context,
+                icon: Icons.share_outlined,
+                label: "Paste",
+                onTap: () {
+                  Navigator.pop(context); // Close the modal
+                  if (itemData.isFolder) {
+                    String destinationIdentifier = itemData.identifier;
+                    // _pasteFolder(destinationIdentifier);
+                  }
+                  print("Share option selected");
+                },
+              ),
               _buildOption(
                 context,
                 icon: itemData.isStarred ? Icons.star : Icons.star_border,
