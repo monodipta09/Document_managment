@@ -126,6 +126,10 @@ List<FileItemNew> createFileStructure(List<dynamic> fileInstanceData, List<dynam
       ));
     }
   }
+  print("Root Items are");
+  print(rootItems);
+  print("Folder Children: ");
+  print(folderChildren);
 
   return rootItems;
 }

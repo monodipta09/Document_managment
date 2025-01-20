@@ -16,6 +16,7 @@ import 'package:document_management_main/data/file_data.dart';
 class FolderScreenWidget extends StatefulWidget {
   final List<FileItemNew> fileItems;
   final String folderName;
+  final dynamic parentId;
 
   // final bool isLightTheme;
   final ColorScheme colorScheme;
@@ -24,7 +25,8 @@ class FolderScreenWidget extends StatefulWidget {
       {super.key,
       required this.fileItems,
       required this.folderName,
-      required this.colorScheme});
+      required this.colorScheme,
+      this.parentId});
 
   @override
   State<FolderScreenWidget> createState() {
@@ -76,6 +78,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     }
   }
 
+  // final FileItemNew folder;
   void _onFilesAdded(List<FileItemNew> newFiles) {
     setState(() {
       currentItems.addAll(newFiles);
@@ -150,20 +153,6 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
           const SearchBarWidget(),
           Padding(
             padding: EdgeInsets.only(right: 12.0),
-            // child: GestureDetector(
-            //   onTap: () {
-            //     // Handle save button tap
-            //     print("Save button tapped!");
-            //   },
-            //   child: const Text(
-            //     "Save",
-            //     style: TextStyle(
-            //       fontWeight: FontWeight.bold,
-            //       color: Colors.blue,
-            //       fontSize: 18,
-            //     ),
-            //   ),
-            // ),
           ),
         ],
       ),
@@ -172,6 +161,8 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
         isFolderUpload: true,
         folderName: widget.folderName,
         colorScheme: widget.colorScheme,
+        // parentFolderId: findFolder(widget.folderName, allItems)?.fileId,
+        parentFolderId: widget.parentId,
       ),
       body: Column(
         children: [

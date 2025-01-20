@@ -12,6 +12,7 @@ import 'folder_dialog.dart';
 import '../data/file_class.dart';
 
 class UploadWidget extends StatefulWidget {
+  final dynamic parentFolderId;
   final bool isFolderUpload;
   final String? folderName;
   final Function(List<FileItemNew>) onFilesAdded;
@@ -19,6 +20,7 @@ class UploadWidget extends StatefulWidget {
   const UploadWidget({
     super.key,
     required this.onFilesAdded,
+    this.parentFolderId
   }) : isFolderUpload = false,
         folderName = null;
 
@@ -26,7 +28,8 @@ class UploadWidget extends StatefulWidget {
     super.key,
     required this.onFilesAdded,
     required this.isFolderUpload,
-    required this.folderName
+    required this.folderName,
+    this.parentFolderId
   }) : assert(isFolderUpload == true, 'isFolderUpload must be true for uploadWithinFolder');
 
   @override
@@ -36,7 +39,7 @@ class UploadWidget extends StatefulWidget {
 class _UploadWidgetState extends State<UploadWidget> {
   var uuid = Uuid();
 
-  Future<void> pickFiles(bool isFolderUpload, String folderName) async {
+  Future<void> pickFiles(bool isFolderUpload, String folderName, dynamic parentFolderId) async {
     try {
       final result = await FilePicker.platform.pickFiles(
         compressionQuality: 30,
@@ -71,7 +74,7 @@ class _UploadWidgetState extends State<UploadWidget> {
               }
             ],
             "resource_identifier": file.identifier,
-            "folder_identifier": null,
+            "folder_identifier": parentFolderId,
             "createdBy": "b3683fff-4a28-4949-b9f0-48155df0ee59",
             "createdOn": DateTime.now().toIso8601String(),
             "updatedBy": "b3683fff-4a28-4949-b9f0-48155df0ee59",
@@ -115,12 +118,12 @@ class _UploadWidgetState extends State<UploadWidget> {
     }
   }
 
-  Future<void> _createFolder(String folderName) async {
+  Future<void> _createFolder(String folderName, dynamic parentId) async {
     final String folderId = uuid.v4();
     final Map<String, dynamic> extractDataForFolder = {
       "folderName": folderName,
       "folder_identifier": folderId,
-      "parentId": null,
+      "parentId": parentId,
       "createdBy": "b3683fff-4a28-4949-b9f0-48155df0ee59",
       "createdOn": "2025-01-16T09:40:53.158+0000",
       "updatedBy": "b3683fff-4a28-4949-b9f0-48155df0ee59",
@@ -160,7 +163,7 @@ class _UploadWidgetState extends State<UploadWidget> {
       isFolder: true,
       isStarred: false,
       filePath: null,
-      identifier: uuid.v4(),
+      identifier: folderId,
     );
 
     widget.onFilesAdded([newFolder]);
@@ -174,7 +177,7 @@ class _UploadWidgetState extends State<UploadWidget> {
       children: [
         UploadButton(
           onTap:(){
-            pickFiles(widget.isFolderUpload, widget.folderName?? "");
+            pickFiles(widget.isFolderUpload, widget.folderName?? "", widget.parentFolderId);
             // Navigator.pop(context);
           },
           icon: Icons.upload_file,
@@ -185,7 +188,7 @@ class _UploadWidgetState extends State<UploadWidget> {
           onTap: () {
             showDialog(
               context: context,
-              builder: (_) => FolderDialog(onFolderCreated: _createFolder),
+              builder: (_) => FolderDialog(onFolderCreated: _createFolder, parentId: widget.parentFolderId,),
             );
             // Navigator.pop(context);
           },
