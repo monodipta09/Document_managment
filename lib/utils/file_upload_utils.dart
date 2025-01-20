@@ -22,6 +22,23 @@ String getFileIcon(String? extension) {
   }
 }
 
+String getResourceType(String extension) {
+  switch (extension.toLowerCase()) {
+    case 'pdf':
+      return 'application/pdf';
+    case 'png':
+      return 'image/png';
+    case 'jpg':
+      return 'image/jpg';
+    case 'jpeg':
+      return 'images/jpeg';
+    case 'xlsx':
+      return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    default:
+      return 'text/plain';
+  }
+}
+
 List<FileItemNew> processFiles(List<PlatformFile> files, bool isFolderUpload, String folderName) {
   return files.map((file) {
     return FileItemNew(

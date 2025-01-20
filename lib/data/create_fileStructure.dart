@@ -11,6 +11,7 @@ class FileItemNew {
   late List<FileItemNew>? children;
   final String identifier;
   final String? filePath;
+  final String? fileId;
 
   FileItemNew({
     required this.name,
@@ -20,6 +21,7 @@ class FileItemNew {
     this.children,
     required this.identifier,
     this.filePath,
+    this.fileId,
   });
 }
 

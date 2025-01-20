@@ -13,8 +13,9 @@ class CustomListView extends StatelessWidget {
   final List<FileItemNew> items;
   final Function(FileItemNew)? onStarred;
   final ColorScheme colorScheme;
+  final Function(String, FileItemNew item) renameFolder;
 
-  const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme});
+  const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme, required this.renameFolder});
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +142,7 @@ class CustomListView extends StatelessWidget {
                       ),
                     ),
                     builder: (BuildContext context) {
-                      return BottomModalOptions(item, onStarred: onStarred);
+                      return BottomModalOptions(item, onStarred: onStarred, renameFolder: renameFolder);
                     },
                   );
                 },

@@ -4,6 +4,7 @@ import 'package:document_management_main/data/file_class.dart';
 import 'package:document_management_main/data/file_data.dart';
 import 'package:flutter/material.dart';
 
+import '../apis/ikon_service.dart';
 import '../components/list_view.dart';
 import '../widgets/floating_action_button_widget.dart';
 
@@ -60,6 +61,36 @@ class _HomeFragmentState extends State<HomeFragment> {
     });
   }
 
+  void _renameFolder(String newName, FileItemNew? item) async {
+    setState(() {
+      item!.name = newName;
+    });
+
+    String identifier=item!.identifier;
+    String taskId;
+    print("Rename folder called");
+    item.name = newName;
+
+    final List<Map<String, dynamic>> folderInstanceData =
+        await IKonService.iKonService.getMyInstancesV2(
+      processName: "Folder Manager - DM",
+      predefinedFilters: {"taskName": "Editor Access"},
+      processVariableFilters: {"folder_identifier" : identifier},
+      taskVariableFilters: null,
+      mongoWhereClause: null,
+      projections: ["Data"],
+      allInstance: false,
+    );
+
+    print("Task id:");
+
+    print(folderInstanceData[0]["taskId"]);
+    taskId= folderInstanceData[0]["taskId"];
+
+    bool result =  await IKonService.iKonService.invokeAction(taskId: taskId,transitionName: "Update Editor Access",data: {"folder_identifier":item.identifier,"folderName":item.name}, processIdentifierFields: null);
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -80,9 +111,9 @@ class _HomeFragmentState extends State<HomeFragment> {
         ),
         body: widget.isGridView
                 ? GridLayout(
-                    items: currentItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,)
+                    items: currentItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,renameFolder: _renameFolder,)
                 : CustomListView(
-                    items: currentItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,),
+                    items: currentItems, onStarred: _addToStarred, colorScheme: widget.colorScheme,renameFolder: _renameFolder,),
           ),
         // body: Card(
         //   shadowColor: Colors.transparent,
