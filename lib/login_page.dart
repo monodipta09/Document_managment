@@ -56,7 +56,7 @@ class LoginPage extends StatelessWidget {
       bool isSuccess = await IKonService.iKonService.login(username, password);
 
       if (isSuccess) {
-        final List<Map<String, dynamic>> flieInstanceData =
+        final List<Map<String, dynamic>> fileInstanceData =
         await IKonService.iKonService.getMyInstancesV2(
           processName: "File Manager - DM",
           predefinedFilters: {"taskName": "Viewer Access"},
@@ -66,6 +66,8 @@ class LoginPage extends StatelessWidget {
           projections: ["Data"],
           allInstance: false,
         );
+        print("FileInstance Data: ");
+        print(fileInstanceData);
 
         // Fetch folder instances
         final List<Map<String, dynamic>> folderInstanceData =
@@ -78,9 +80,11 @@ class LoginPage extends StatelessWidget {
           projections: ["Data"],
           allInstance: false,
         );
+        print("FolderInstance Data: ");
+        print(folderInstanceData);
 
         // Create file structure
-        final fileStructure = createFileStructure(flieInstanceData, folderInstanceData);
+        final fileStructure = createFileStructure(fileInstanceData, folderInstanceData);
         getItemData(fileStructure);
 
         // Optionally, you can process `fileStructure` as needed here
@@ -344,9 +348,9 @@ class LoginPage extends StatelessWidget {
                     // Footer Links and Logo
                     Column(
                       children: [
-                        Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Text(
                               "Don't have any account?",
                               style: TextStyle(
