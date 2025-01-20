@@ -69,13 +69,14 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
   @override
   void initState() {
     super.initState();
-    final foundItems = findFileItems(widget.folderName, allItems);
-    if (foundItems != null) {
-      currentItems = List.from(foundItems);
-    } else {
-      currentItems = [];
-      print("Folder '${widget.folderName}' not found.");
-    }
+    // final foundItems = findFileItems(widget.folderName, allItems);
+    // if (foundItems != null) {
+    //   currentItems = List.from(foundItems);
+    // } else {
+    //   currentItems = [];
+    //   print("Folder '${widget.folderName}' not found.");
+    // }
+    currentItems = widget.fileItems;
   }
 
   // final FileItemNew folder;
