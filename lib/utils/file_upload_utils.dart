@@ -48,6 +48,7 @@ List<FileItemNew> processFiles(List<PlatformFile> files, bool isFolderUpload, St
       icon: getFileIcon(file.extension),
       isFolder: false,
       isStarred: false,
+      isDeleted: false,
       filePath: file.path,
       fileId: fileId,
       identifier: identifier,

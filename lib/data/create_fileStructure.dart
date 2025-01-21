@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 
 // File item class definition
-class
-FileItemNew {
+class FileItemNew {
   late String name;
   final String icon;
   final bool isFolder;
   bool isStarred;
+  bool isDeleted;
   late List<FileItemNew>? children;
   final String identifier;
   final String? filePath;
@@ -19,6 +19,7 @@ FileItemNew {
     required this.icon,
     required this.isFolder,
     required this.isStarred,
+    required this.isDeleted,
     this.children,
     required this.identifier,
     this.filePath,
@@ -44,9 +45,11 @@ String getFileIcon(String extension) {
 }
 
 List<FileItemNew> createFileStructure(
-    List<dynamic> fileInstanceData, List<dynamic> folderInstanceData) {
+    List<Map<String, dynamic>> fileInstanceData, List<Map<String, dynamic>> folderInstanceData, List<Map<String, dynamic>> starredInstanceData, List<Map<String, dynamic>> trashInstanceData) {
   // Create a map of folder ID to its children
   Map<String, List<FileItemNew>> folderChildren = {};
+  Set<String> starredItemIds = {};
+  Set<String> trashedItemIds = {};
 
   // First pass: Initialize the folderChildren map with empty lists
   for (var folder in folderInstanceData) {
@@ -69,6 +72,7 @@ List<FileItemNew> createFileStructure(
       icon: 'assets/folder.svg',
       isFolder: true,
       isStarred: false, // Modify based on your requirements
+      isDeleted: false,
       children: [], // Initialize with empty list; will be populated later
       identifier: folderId,
       filePath: null, // Not applicable for folders
@@ -102,6 +106,7 @@ List<FileItemNew> createFileStructure(
       icon: getFileIcon(fileDetails['fileNameExtension']),
       isFolder: false,
       isStarred: false, // Modify based on your requirements
+      isDeleted: false,
       identifier: data['resource_identifier'],
       filePath: IKonService.iKonService.getDownloadUrlForFiles(
         fileDetails['resourceId'],
@@ -151,5 +156,74 @@ List<FileItemNew> createFileStructure(
   print("Folder Children: ");
   print(folderChildren);
 
+  /*
+  1. Process the starredInstanceData.
+  2. Process the trashedInstanceData.
+  3. Modify the rootItems.
+  */
+
+  // 1. Process the starredInstanceData.
+  starredItemIds = getStarredFiles(starredInstanceData);
+  // var data = starredInstanceData[0]["data"];
+  // data["file"]?.keys.forEach((id) {
+  //   starredItemIds.add(id);
+  // });
+
+  // data["folder"]?.keys.forEach((id) {
+  //   starredItemIds.add(id);
+  // });
+  trashedItemIds = getTrashedFiles(trashInstanceData);
+  // for (var item in trashInstanceData) {
+  //   trashedItemIds.add(item["data"]["identifier"]);
+  // }
+
+
+  modifyRootItemsStarredTrashed(rootItems, starredItemIds, trashedItemIds);
+
+
+
+
   return rootItems;
+}
+
+Set<String> getStarredFiles(List<Map<String, dynamic>> items) {
+  Set<String> starredFilesIds = {};
+
+  var data = items[0]["data"];
+  data["file"]?.keys.forEach((id) {
+    starredFilesIds.add(id);
+  });
+
+  data["folder"]?.keys.forEach((id) {
+    starredFilesIds.add(id);
+  });
+
+  return starredFilesIds;
+}
+
+Set<String> getTrashedFiles(List<Map<String, dynamic>> items) {
+  Set<String> trashedFilesIds = {};
+
+
+ for (var item in items) {
+   trashedFilesIds.add(item["data"]["identifier"]);
+ }
+
+  return trashedFilesIds;
+}
+
+void modifyRootItemsStarredTrashed(List<FileItemNew> rootItems, Set<String> starredItemIds, Set<String> trashedItemIds) {
+  for (final item in rootItems) {
+    if (starredItemIds.contains(item.identifier)) {
+      item.isStarred = true;
+    }
+
+    if (trashedItemIds.contains(item.identifier)) {
+      item.isDeleted = true;
+    }
+
+    if (item.isFolder && item.children != null && item.children!.isNotEmpty) {
+      modifyRootItemsStarredTrashed(item.children!, starredItemIds, trashedItemIds);
+    }
+  }
 }
