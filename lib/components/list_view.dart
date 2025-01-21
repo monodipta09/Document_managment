@@ -29,8 +29,7 @@ class CustomListView extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           final item = items[index];
           String itemName = item.name.toString();
-          itemName =
-          itemName.length > 20 ? itemName.substring(0, 20) + '...' : itemName;
+          itemName = itemName.length > 20 ? '${itemName.substring(0, 20)}...' : itemName;
 
           return Padding(
             padding: const EdgeInsets.only(left:10.0),

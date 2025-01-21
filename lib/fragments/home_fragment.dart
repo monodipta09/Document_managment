@@ -81,8 +81,32 @@ class _HomeFragmentState extends State<HomeFragment> {
       print("FolderInstance Data: ");
       print(folderInstanceData);
 
+      final Map<String, dynamic> userData = await IKonService.iKonService.getLoggedInUserProfileDetails();
+
+      final List<Map<String, dynamic>> starredInstanceData =
+      await IKonService.iKonService.getMyInstancesV2(
+        processName: "User Specific Folder and File Details - DM",
+        predefinedFilters: {"taskName": "View Details"},
+        processVariableFilters: {"userId": userData["USER_ID"]},
+        taskVariableFilters: null,
+        mongoWhereClause: null,
+        projections: ["Data"],
+        allInstance: false,
+      );
+
+      final List<Map<String, dynamic>> trashInstanceData =
+      await IKonService.iKonService.getMyInstancesV2(
+        processName: "Delete Folder Structure - DM",
+        predefinedFilters: {"taskName": "Delete Folder And Files"},
+        processVariableFilters: null,
+        taskVariableFilters: null,
+        mongoWhereClause: null,
+        projections: ["Data"],
+        allInstance: false,
+      );
+
       // Create file structure
-      final fileStructure = createFileStructure(fileInstanceData, folderInstanceData);
+      final fileStructure = createFileStructure(fileInstanceData, folderInstanceData, starredInstanceData, trashInstanceData);
 
       // Update the state with the new file structure
       setState(() {

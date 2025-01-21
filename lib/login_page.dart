@@ -12,6 +12,7 @@ import 'apis/auth_service.dart';
 import 'apis/dart_http.dart';
 import 'package:document_management_main/apis/ikon_service.dart';
 import 'forgot_password.dart';
+import 'dart:io';
 
 
 class LoginPage extends StatelessWidget {
@@ -83,8 +84,37 @@ class LoginPage extends StatelessWidget {
         print("FolderInstance Data: ");
         print(folderInstanceData);
 
+        final Map<String, dynamic> userData = await IKonService.iKonService.getLoggedInUserProfileDetails();
+
+        final List<Map<String, dynamic>> starredInstanceData =
+        await IKonService.iKonService.getMyInstancesV2(
+          processName: "User Specific Folder and File Details - DM",
+          predefinedFilters: {"taskName": "View Details"},
+          processVariableFilters: {"user_id": userData["USER_ID"]},
+          taskVariableFilters: null,
+          mongoWhereClause: null,
+          projections: ["Data"],
+          allInstance: false,
+        );
+        print("Starred Data");
+        print(starredInstanceData);
+
+        final List<Map<String, dynamic>> trashInstanceData =
+        await IKonService.iKonService.getMyInstancesV2(
+          processName: "Delete Folder Structure - DM",
+          predefinedFilters: {"taskName": "Delete Folder And Files"},
+          processVariableFilters: null,
+          taskVariableFilters: null,
+          mongoWhereClause: null,
+          projections: ["Data"],
+          allInstance: false,
+        );
+
+        print("Starred Data");
+        print(trashInstanceData);
+
         // Create file structure
-        final fileStructure = createFileStructure(fileInstanceData, folderInstanceData);
+        final fileStructure = createFileStructure(fileInstanceData, folderInstanceData, starredInstanceData, trashInstanceData);
         getItemData(fileStructure);
 
         // Optionally, you can process `fileStructure` as needed here
@@ -101,7 +131,12 @@ class LoginPage extends StatelessWidget {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => DocumentManagementEntryPoint(),
+            builder: (context) {
+              if(Platform.isAndroid){
+                return const DocumentManagementEntryPoint();
+              }
+              return const DocumentManagementEntryPoint();
+            },
           ),
         );
       } else {

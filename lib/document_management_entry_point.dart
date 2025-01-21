@@ -4,6 +4,7 @@ import 'package:document_management_main/sidebar_component/sidebar_component.dar
 import 'bottom_navigation.dart';
 import 'data/profile_page_menu_data.dart';
 import 'widgets/search_bar_widget.dart';
+import 'dart:io';
 
 class DocumentManagementEntryPoint extends StatefulWidget {
   const DocumentManagementEntryPoint({super.key});
@@ -83,37 +84,11 @@ class _DocumentManagementEntryPointState
             "Document Management",
             style: TextStyle(color: _colorScheme.primary),
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 22.0, 0.0),
-              child: const SearchBarWidget(),
+          actions:const [
+             Padding(
+              padding:  EdgeInsets.fromLTRB(0.0, 0.0, 22.0, 0.0),
+              child:  SearchBarWidget(),
             ),
-
-            // IconButton(
-            //   onPressed: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) => ProfilePage(
-            //           colorScheme: _colorScheme,
-            //           themeMode: themeMode,
-            //           // isDarkMode: _isDarkMode,
-            //           updateTheme: _updateTheme,
-            //           updateColorScheme: _updateColorScheme,
-            //         ),
-            //       ),
-            //     );
-            //   },
-            //   icon: const Icon(Icons.account_circle),
-            // ),
-            // IconButton(
-            //   icon: Icon(themeMode == ThemeMode.light
-            //       ? Icons.brightness_4
-            //       : Icons.brightness_7),
-            //   onPressed: () {
-            //     toggleTheme();
-            //   },
-            // ),
           ],
         ),
         body: BottomNavigation(
