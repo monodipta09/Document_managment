@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../apis/ikon_service.dart';
 import '../components/list_view.dart';
 import '../data/create_fileStructure.dart';
+import '../utils/Starred_item_utils.dart';
 import '../widgets/floating_action_button_widget.dart';
 
 class StarredFragment extends StatefulWidget {
@@ -39,6 +40,7 @@ class _StarredFragmentState extends State<StarredFragment> {
     setState(() {
       item.isStarred = !item.isStarred;
     });
+    addToStarred(item.isFolder,item.identifier,"starred",item.isStarred,item.filePath);
   }
 
   Future<void> _renameFolder(String newName, FileItemNew? item) async {

@@ -40,6 +40,8 @@ String getResourceType(String extension) {
 }
 
 List<FileItemNew> processFiles(List<PlatformFile> files, bool isFolderUpload, String folderName) {
+  String fileId = uuid.v4();
+  String identifier = uuid.v4();
   return files.map((file) {
     return FileItemNew(
       name: file.name,
@@ -47,7 +49,8 @@ List<FileItemNew> processFiles(List<PlatformFile> files, bool isFolderUpload, St
       isFolder: false,
       isStarred: false,
       filePath: file.path,
-      identifier: uuid.v4(),
+      fileId: fileId,
+      identifier: identifier,
     );
   }).toList();
 }

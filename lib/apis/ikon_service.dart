@@ -15,8 +15,8 @@ class IKonService {
 
 
 
-  final String restUrl = "https://ikoncloud-uat.keross.com/rest";
-  final String downloadUrl = 'https://ikoncloud-uat.keross.com/download';
+  final String restUrl = "https://ikoncloud-dev.keross.com/rest";
+  final String downloadUrl = 'https://ikoncloud-dev.keross.com/download';
 
   // Hashes the input string using SHA-512.
   Future<String> _hashPassword(String content) async {

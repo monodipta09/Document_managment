@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 
 // File item class definition
-class FileItemNew {
+class
+FileItemNew {
   late String name;
   final String icon;
   final bool isFolder;
@@ -42,36 +43,55 @@ String getFileIcon(String extension) {
   }
 }
 
-List<FileItemNew> createFileStructure(List<dynamic> fileInstanceData, List<dynamic> folderInstanceData) {
+List<FileItemNew> createFileStructure(
+    List<dynamic> fileInstanceData, List<dynamic> folderInstanceData) {
   // Create a map of folder ID to its children
   Map<String, List<FileItemNew>> folderChildren = {};
 
-  // First pass: Create folder structure
+  // First pass: Initialize the folderChildren map with empty lists
+  for (var folder in folderInstanceData) {
+    var data = folder['data'];
+    String folderId = data['folder_identifier'];
+    folderChildren[folderId] = [];
+  }
+
+  // Second pass: Create folder items and assign them to their parents
+  Map<String, FileItemNew> folderItemsMap = {}; // Map to store folder items by ID
+
   for (var folder in folderInstanceData) {
     var data = folder['data'];
     String folderId = data['folder_identifier'];
     String? parentId = data['parentId'];
-
-    // Initialize empty children list for each folder
-    folderChildren.putIfAbsent(folderId, () => []);
 
     // Create folder item
     FileItemNew folderItem = FileItemNew(
       name: data['folderName'],
       icon: 'assets/folder.svg',
       isFolder: true,
-      isStarred: false, // You can modify this based on your requirements
+      isStarred: false, // Modify based on your requirements
+      children: [], // Initialize with empty list; will be populated later
       identifier: folderId,
+      filePath: null, // Not applicable for folders
+      fileId: null, // Not applicable for folders
     );
 
-    // Add to parent's children if it has a parent, otherwise it's a root item
+    // Store the folder item in the map
+    folderItemsMap[folderId] = folderItem;
+
+    // Add to parent's children if it has a parent
     if (parentId != null) {
-      folderChildren.putIfAbsent(parentId, () => []);
-      folderChildren[parentId]!.add(folderItem);
+      if (folderChildren.containsKey(parentId)) {
+        folderChildren[parentId]!.add(folderItem);
+      } else {
+        // Handle cases where parent folder data might be missing
+        folderChildren[parentId] = [folderItem];
+      }
     }
   }
 
-  // Second pass: Add files to their respective folders
+  // Third pass: Add files to their respective folders
+  List<FileItemNew> rootFiles = []; // Files with no parent folder
+
   for (var file in fileInstanceData) {
     var data = file['data'];
     var fileDetails = data['uploadResourceDetails'][0];
@@ -81,51 +101,55 @@ List<FileItemNew> createFileStructure(List<dynamic> fileInstanceData, List<dynam
       name: fileDetails['fileName'],
       icon: getFileIcon(fileDetails['fileNameExtension']),
       isFolder: false,
-      isStarred: false, // You can modify this based on your requirements
+      isStarred: false, // Modify based on your requirements
       identifier: data['resource_identifier'],
-      filePath: IKonService.iKonService.getDownloadUrlForFiles(fileDetails['resourceId'], fileDetails['resourceName'], fileDetails['resourceType']),
+      filePath: IKonService.iKonService.getDownloadUrlForFiles(
+        fileDetails['resourceId'],
+        fileDetails['resourceName'],
+        fileDetails['resourceType'],
+      ),
+      fileId: fileDetails['resourceId'],
     );
 
-    // Add file to folder if it belongs to one, otherwise it's a root item
+    // Add file to folder if it belongs to one, otherwise add to rootFiles
     if (folderId != null) {
-      folderChildren.putIfAbsent(folderId, () => []);
-      folderChildren[folderId]!.add(fileItem);
+      if (folderChildren.containsKey(folderId)) {
+        folderChildren[folderId]!.add(fileItem);
+      } else {
+        // Handle cases where the folder might not exist
+        rootFiles.add(fileItem);
+      }
+    } else {
+      rootFiles.add(fileItem);
     }
   }
 
-  // Final pass: Build complete hierarchy starting from root folders
-  List<FileItemNew> rootItems = [];
-
+  // Final pass: Assign children to each folder item
   for (var folder in folderInstanceData) {
     var data = folder['data'];
-    if (data['parentId'] == null) {
-      // This is a root folder
-      rootItems.add(FileItemNew(
-        name: data['folderName'],
-        icon: 'assets/folder.svg',
-        isFolder: true,
-        isStarred: false,
-        children: folderChildren[data['folder_identifier']] ?? [],
-        identifier: data['folder_identifier'],
-      ));
+    String folderId = data['folder_identifier'];
+
+    if (folderItemsMap.containsKey(folderId)) {
+      folderItemsMap[folderId]!.children = folderChildren[folderId];
     }
   }
 
-  // Add root files (files with no folder)
-  for (var file in fileInstanceData) {
-    var data = file['data'];
-    if (data['folder_identifier'] == null) {
-      var fileDetails = data['uploadResourceDetails'][0];
-      rootItems.add(FileItemNew(
-        name: fileDetails['fileName'],
-        icon: getFileIcon(fileDetails['fileNameExtension']),
-        isFolder: false,
-        isStarred: false,
-        identifier: data['resource_identifier'],
-        filePath: IKonService.iKonService.getDownloadUrlForFiles(fileDetails['resourceId'], fileDetails['resourceName'], fileDetails['resourceType']),
-      ));
-    }
-  }
+  // Build the complete hierarchy starting from root folders
+  List<FileItemNew> rootFolders = folderInstanceData
+      .where((folder) => folder['data']['parentId'] == null)
+      .map<FileItemNew>((folder) {
+    var data = folder['data'];
+    String folderId = data['folder_identifier'];
+    return folderItemsMap[folderId]!;
+  }).toList();
+
+  // Combine root folders and root files
+  List<FileItemNew> rootItems = [...rootFolders, ...rootFiles];
+
+  print("Root Items are");
+  print(rootItems);
+  print("Folder Children: ");
+  print(folderChildren);
 
   return rootItems;
 }

@@ -63,6 +63,7 @@ class GridLayout extends StatelessWidget {
               fileItems: item.children ?? [],
               folderName: item.name,
               colorScheme: colorScheme,
+              parentId: item.identifier,
               // isLightTheme: isLightTheme,
             ),
             transitionsBuilder:
@@ -79,31 +80,31 @@ class GridLayout extends StatelessWidget {
             },
           ));
         } else if (item.filePath.endsWith("pdf")) {
-          Navigator.push(
-            context,
-          // Access the file name
-            MaterialPageRoute(
-                builder: (context) => PdfViewerPage(filePath: item.filePath,fileName: fileName)),
-          );
+        Navigator.push(
+        context,
+        // Access the file name
+        MaterialPageRoute(
+        builder: (context) => PdfViewerPage(filePath: item.filePath,fileName: fileName)),
+        );
         } else if (item.filePath.endsWith("plain")) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    TextFileViewerPage(filePath: item.filePath,fileName: fileName)),
-          );
+        Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) =>
+        TextFileViewerPage(filePath: item.filePath,fileName: fileName)),
+        );
         } else if (item.filePath.endsWith("png") ||
-            item.filePath.endsWith("jpg")) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    ImageViewerPage(imagePath: item.filePath,fileName: fileName)),
-          );
+        item.filePath.endsWith("jpg")) {
+        Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) =>
+        ImageViewerPage(imagePath: item.filePath,fileName: fileName)),
+        );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Unsupported file type")),
-          );
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Unsupported file type")),
+        );
         }
       },
       onDoubleTap: () {
