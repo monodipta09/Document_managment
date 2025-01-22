@@ -23,7 +23,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
+  int _selectedIndex = 0;
   // @override
   // void initState() {
   //   super.initState();
@@ -60,6 +60,14 @@ class _ProfilePageState extends State<ProfilePage> {
   //   });
   // }
 
+  void _onMenuItemSelected(Widget widget) {
+    setState(() {
+      // Handle navigation or widget replacement based on selection
+      // For example, navigate to a new page
+      _selectedIndex = 0; // Reset or set based on selection
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -79,6 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
             colorScheme: widget.colorScheme,
             updateTheme: widget.updateTheme,
             updateColorScheme: widget.updateColorScheme,
+            // onMenuItemSelected: _onMenuItemSelected,
           ),
         ),
         appBar: AppBar(
