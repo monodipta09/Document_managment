@@ -1,5 +1,7 @@
+import 'package:document_management_main/profile_page_sidebars/appearance.dart';
 import 'package:flutter/material.dart';
 import 'menu_class.dart';
+import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 
 final List<MenuItem> menuItems = [
   MenuItem(
@@ -33,9 +35,6 @@ final List<MenuItem> menuItems = [
   MenuItem(
     title: 'Appearance',
     icon: Icons.palette,
-    // onTap: () {
-    //   return Center(child: Text('Appearance Screen'));
-    // },
   ),
   MenuItem(
     title: 'Notifications',

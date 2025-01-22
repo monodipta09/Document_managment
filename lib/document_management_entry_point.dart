@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:document_management_main/profile_page.dart';
 import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 import 'bottom_navigation.dart';
+import 'data/menu_class.dart';
 import 'data/profile_page_menu_data.dart';
 import 'widgets/search_bar_widget.dart';
 import 'dart:io';
@@ -16,9 +17,61 @@ class DocumentManagementEntryPoint extends StatefulWidget {
 
 class _DocumentManagementEntryPointState
     extends State<DocumentManagementEntryPoint> {
+  int _selectedIndex = 0;
   bool _isDarkMode = false;
   late ColorScheme _colorScheme;
   late ThemeMode themeMode;
+
+  // final List<MenuItem> _menuItems = [
+  //   MenuItem(
+  //     title: 'My Drive',
+  //     icon: Icons.drive_file_move,
+  //     destination: () => MyDrive(
+  //       onThemeChanged: _updateTheme,
+  //       onColorSchemeChanged: _updateColorScheme,
+  //       colorScheme: _colorScheme,
+  //       themeMode: _themeMode,
+  //     ),
+  //   ),
+  //   MenuItem(
+  //     title: 'Trash',
+  //     icon: Icons.delete,
+  //     destination: () => Trash(
+  //       onThemeChanged: _updateTheme,
+  //       onColorSchemeChanged: _updateColorScheme,
+  //       colorScheme: _colorScheme,
+  //       themeMode: _themeMode,
+  //     ),
+  //   ),
+  //   MenuItem.withSubItems(
+  //     title: 'Profile',
+  //     icon: Icons.person,
+  //     subItems: [
+  //       MenuItem(
+  //         title: 'Account',
+  //         icon: Icons.account_circle,
+  //         destination: () => Account(
+  //           onThemeChanged: _updateTheme,
+  //           onColorSchemeChanged: _updateColorScheme,
+  //           colorScheme: _colorScheme,
+  //           themeMode: _themeMode,
+  //         ),
+  //       ),
+  //       MenuItem(
+  //         title: 'Appearance',
+  //         icon: Icons.color_lens,
+  //         destination: () => AppearanceWidget(
+  //           onThemeChanged: _updateTheme,
+  //           onColorSchemeChanged: _updateColorScheme,
+  //           colorScheme: _colorScheme,
+  //           themeMode: _themeMode,
+  //         ),
+  //       ),
+  //       // Add more sub-items as needed
+  //     ],
+  //   ),
+  //   // Add more main items as needed
+  // ];
 
   @override
   void initState() {
@@ -55,6 +108,14 @@ class _DocumentManagementEntryPointState
     });
   }
 
+  void _onMenuItemSelected(Widget widget) {
+    setState(() {
+      // Handle navigation or widget replacement based on selection
+      // For example, navigate to a new page
+      _selectedIndex = 0; // Reset or set based on selection
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -77,6 +138,7 @@ class _DocumentManagementEntryPointState
             colorScheme: _colorScheme,
             updateTheme: _updateTheme,
             updateColorScheme: _updateColorScheme,
+            // onMenuItemSelected: _onMenuItemSelected,
           ),
         ),
         appBar: AppBar(
