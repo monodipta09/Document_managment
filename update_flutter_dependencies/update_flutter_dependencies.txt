@@ -6,13 +6,65 @@ $apps = @(
     # Add more paths as needed
 )
 
-# Loop through each app directory and run flutter pub get
-foreach ($app in $apps) {
-    Write-Host "Updating dependencies in $app..."
-    Set-Location -Path $app
-    flutter pub get
+# Git package details
+$packageName = "menu_submenu_sidebar_dropdown_accordian_package" # The package name
+$packageGitUrl = "https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package.git" # Git URL
+$branchOrCommit = "<latest-commit-hash>" # Replace with the actual commit hash (not branch name)
+
+# Function to clear pub cache for the specific Git package
+function Clear-PubCacheForGitPackage {
+    param (
+        [string]$packageName
+    )
+
+    Write-Host "Clearing pub cache for package: $packageName..."
+    $pubCachePath = "$HOME\.pub-cache\git"
+
+    if (Test-Path -Path $pubCachePath) {
+        $packageDirectories = Get-ChildItem -Path $pubCachePath -Directory | Where-Object { $_.Name -like "*$packageName*" }
+
+        if ($packageDirectories.Count -gt 0) {
+            foreach ($dir in $packageDirectories) {
+                Remove-Item -Recurse -Force -Path $dir.FullName
+                Write-Host "Removed cached directory: $dir"
+            }
+        } else {
+            Write-Host "No cached directories found for package: $packageName."
+        }
+    } else {
+        Write-Host "The directory $pubCachePath does not exist. Skipping cache clearing."
+    }
 }
 
-Write-Host "All apps updated!"
+# Clear cache for the specific Git package
+Clear-PubCacheForGitPackage -packageName $packageName
 
+# Loop through each app directory and update the specific dependency
+foreach ($app in $apps) {
+    Write-Host "Processing project: $app"
+    Set-Location -Path $app
 
+    # Update only the dependency for the specified package in pubspec.yaml
+    $pubspecPath = Join-Path $app "pubspec.yaml"
+    $pubspecContent = Get-Content $pubspecPath -Raw
+
+    # Use a regex to find and update the Git URL and ref for the specific package
+    $regex = "(menu_submenu_sidebar_dropdown_accordian_package:\s*\n\s*git:\s*\n\s*url:\s*).*?(\n\s*ref:\s*).*"
+    $replacement = "`$1$packageGitUrl`n      ref: $branchOrCommit"
+
+    # Perform the replacement
+    $updatedPubspecContent = $pubspecContent -replace $regex, $replacement
+
+    # Save the updated content back to pubspec.yaml
+    Set-Content -Path $pubspecPath -Value $updatedPubspecContent
+
+    # Remove .packages and pubspec.lock to force a re-fetch
+    Remove-Item -Path "$app\.packages" -ErrorAction SilentlyContinue
+    Remove-Item -Path "$app\pubspec.lock" -ErrorAction SilentlyContinue
+
+    # Run flutter pub get
+    flutter pub get
+    Write-Host "Dependencies updated for: $app"
+}
+
+Write-Host "All projects have been updated and dependencies refreshed!"
