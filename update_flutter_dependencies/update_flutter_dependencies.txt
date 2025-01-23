@@ -1,0 +1,18 @@
+# List of Flutter project paths
+$apps = @(
+    "C:\Users\diasa\StudioProjects\ikon_demo",
+    "C:\Users\diasa\StudioProjects\login_page",
+    "C:\Users\diasa\StudioProjects\document_management_main"
+    # Add more paths as needed
+)
+
+# Loop through each app directory and run flutter pub get
+foreach ($app in $apps) {
+    Write-Host "Updating dependencies in $app..."
+    Set-Location -Path $app
+    flutter pub get
+}
+
+Write-Host "All apps updated!"
+
+
