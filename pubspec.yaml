@@ -28,6 +28,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  menu_submenu_sidebar_dropdown_accordian_package:
+    git:
+      url: https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package
+      ref : main
   file_uploader_package:
     git:
       url: https://github.com/RomanticNihilist/file_uploader_package
