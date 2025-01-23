@@ -1,72 +1,76 @@
 import 'package:document_management_main/profile_page_sidebars/appearance.dart';
 import 'package:flutter/material.dart';
-import 'menu_class.dart';
-import 'package:document_management_main/sidebar_component/sidebar_component.dart';
+// import 'package:document_management_main/sidebar_component/sidebar_component.dart';
+import 'package:menu_submenu_sidebar_dropdown_accordian_package/menu_submenu_sidebar_dropdown_accordian_package.dart' as externalMenuItem;
 
-final List<MenuItem> menuItems = [
-  MenuItem(
+
+
+// typedef ExternalMenuItem = menu_submenu_sidebar_dropdown_accordian_package.MenuItem;
+
+final List<externalMenuItem.MenuItem> menuItems = [
+  externalMenuItem.MenuItem(
     title: 'Profile',
     icon: Icons.person,
     // onTap: () {
     //   return Center(child: Text('Profile Screen'));
     // },
   ),
-  MenuItem(
+  externalMenuItem.MenuItem(
     title: 'Account',
     icon: Icons.account_circle,
     // onTap: () {
     //   return Center(child: Text('Account Screen'));
     // },
   ),
-  MenuItem(
+  externalMenuItem.MenuItem(
     title: 'Collaborations',
     icon: Icons.person_add,
     subItems: [
-      MenuItem(
+      externalMenuItem.MenuItem(
         title: 'User Invitations',
         icon: Icons.person_add,
       ),
-      MenuItem(
+      externalMenuItem.MenuItem(
         title: 'Share Apps',
         icon: Icons.person_add,
       ),
     ],
   ),
-  MenuItem(
+  externalMenuItem.MenuItem(
     title: 'Appearance',
     icon: Icons.palette,
   ),
-  MenuItem(
+  externalMenuItem.MenuItem(
     title: 'Notifications',
     icon: Icons.notifications,
     // onTap: () {
     //   return Center(child: Text('Notifications Screen'));
     // },
   ),
-  MenuItem(
+  externalMenuItem.MenuItem(
     title: 'App Display',
     icon: Icons.computer,
     // onTap: () {
     //   return Center(child: Text('App Display Screen'));
     // },
   ),
-  MenuItem(
+  externalMenuItem.MenuItem(
     title: 'Review',
     icon: Icons.chat,
     // onTap: () {
     //   return Center(child: Text('Review Screen'));
     // },
   ),
-  MenuItem(
+  externalMenuItem.MenuItem(
     title: 'My Drive',
     icon: Icons.folder_copy,
 
   ),
-  MenuItem(
+  externalMenuItem.MenuItem(
     title: "Trash",
     icon: Icons.delete_forever,
   ),
-  MenuItem(
+  externalMenuItem.MenuItem(
     title: 'Logout',
     icon: Icons.arrow_circle_right
   ),

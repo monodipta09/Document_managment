@@ -1,19 +1,18 @@
-import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 import 'package:flutter/material.dart';
-import '../data/menu_class.dart';
 import '../profile_page_sidebars/account.dart';
 import '../profile_page_sidebars/appearance.dart';
 import '../profile_page_sidebars/profile.dart';
 import '../sidebar_component/myDrive.dart';
 import '../sidebar_component/trash.dart';
+import 'package:menu_submenu_sidebar_dropdown_accordian_package/menu_submenu_sidebar_dropdown_accordian_package.dart' as externalPackageForMenuItems;
 
 
-class StringToWidgetMap extends MenuWithSubMenu {
+class StringToWidgetMap extends externalPackageForMenuItems.MenuWithSubMenu {
    StringToWidgetMap({
     super.key,
     required ColorScheme colorScheme,
     required ThemeMode themeMode,
-    required List<MenuItem> menuItems,
+    required List<externalPackageForMenuItems.MenuItem> menuItems,
     required Function(bool) updateTheme,
     required Function(ColorScheme) updateColorScheme,
   }) : super(

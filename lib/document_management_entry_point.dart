@@ -1,11 +1,9 @@
+import 'package:document_management_main/widgets/search_bar_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:document_management_main/profile_page.dart';
-import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 import 'bottom_navigation.dart';
-import 'data/menu_class.dart';
 import 'data/profile_page_menu_data.dart';
-import 'widgets/search_bar_widget.dart';
 import 'dart:io';
+import 'package:menu_submenu_sidebar_dropdown_accordian_package/menu_submenu_sidebar_dropdown_accordian_package.dart';
 
 class DocumentManagementEntryPoint extends StatefulWidget {
   const DocumentManagementEntryPoint({super.key});
@@ -17,7 +15,6 @@ class DocumentManagementEntryPoint extends StatefulWidget {
 
 class _DocumentManagementEntryPointState
     extends State<DocumentManagementEntryPoint> {
-  int _selectedIndex = 0;
   bool _isDarkMode = false;
   late ColorScheme _colorScheme;
   late ThemeMode themeMode;
@@ -112,7 +109,7 @@ class _DocumentManagementEntryPointState
     setState(() {
       // Handle navigation or widget replacement based on selection
       // For example, navigate to a new page
-      _selectedIndex = 0; // Reset or set based on selection
+// Reset or set based on selection
     });
   }
 
