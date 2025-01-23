@@ -118,9 +118,7 @@ This project includes a script for updating dependencies across multiple Flutter
 
 ## License
 
-This project is proprietary and is under the copyright of KEROSS. Unauthorized use, distribution, or modification is prohibited.
-
-For more information, please contact [KEROSS](https://www.keross.com). 
+This project is proprietary and is the property of KEROSS. Unauthorized access, use, or distribution is strictly prohibited. For more information, visit [KEROSS](https://www.keross.com).Please, visit the LICENSE file for more instruction.
 
 ---
 
