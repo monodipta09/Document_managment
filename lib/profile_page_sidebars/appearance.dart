@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import '../theme/color_picker_selection.dart';
 import '../theme/theme_selector.dart';
 
-class AppearanceWidget extends StatefulWidget {
+class Appearance extends StatefulWidget {
   final ColorScheme colorScheme;
   final ThemeMode themeMode;
   final Function(bool isDarkMode) onThemeChanged;
   final Function(ColorScheme colorScheme) onColorSchemeChanged;
 
-  const AppearanceWidget({
+  const Appearance({
     Key? key,
     required this.onThemeChanged,
     required this.onColorSchemeChanged,
@@ -17,10 +17,10 @@ class AppearanceWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AppearanceWidgetState createState() => _AppearanceWidgetState();
+  _AppearanceState createState() => _AppearanceState();
 }
 
-class _AppearanceWidgetState extends State<AppearanceWidget> {
+class _AppearanceState extends State<Appearance> {
   bool _isDarkMode = false;
   late ColorScheme _colorScheme;
 

@@ -1,7 +1,8 @@
 import 'package:document_management_main/profile_page_sidebars/appearance.dart';
-import 'package:document_management_main/sidebar_component/sidebar_component.dart';
+// import 'package:document_management_main/sidebar_component/sidebar_component.dart';
 import 'package:flutter/material.dart';
 import 'data/profile_page_menu_data.dart';
+import 'package:menu_submenu_sidebar_dropdown_accordian_package/menu_submenu_sidebar_dropdown_accordian_package.dart';
 
 class ProfilePage extends StatefulWidget {
   late ColorScheme colorScheme;
@@ -23,7 +24,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
+  int _selectedIndex = 0;
   // @override
   // void initState() {
   //   super.initState();
@@ -60,6 +61,14 @@ class _ProfilePageState extends State<ProfilePage> {
   //   });
   // }
 
+  void _onMenuItemSelected(Widget widget) {
+    setState(() {
+      // Handle navigation or widget replacement based on selection
+      // For example, navigate to a new page
+      _selectedIndex = 0; // Reset or set based on selection
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -79,6 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
             colorScheme: widget.colorScheme,
             updateTheme: widget.updateTheme,
             updateColorScheme: widget.updateColorScheme,
+            // onMenuItemSelected: _onMenuItemSelected,
           ),
         ),
         appBar: AppBar(

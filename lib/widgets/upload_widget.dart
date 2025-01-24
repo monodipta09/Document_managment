@@ -162,6 +162,7 @@ class _UploadWidgetState extends State<UploadWidget> {
       icon: 'assets/folder.svg',
       isFolder: true,
       isStarred: false,
+      isDeleted: false,
       filePath: null,
       identifier: folderId,
     );

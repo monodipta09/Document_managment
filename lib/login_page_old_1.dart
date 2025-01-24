@@ -78,7 +78,7 @@ class LoginPage extends StatelessWidget {
         );
 
         // Create file structure
-        final fileStructure = createFileStructure(flieInstanceData, folderInstanceData);
+        // final fileStructure = createFileStructure(flieInstanceData, folderInstanceData);
 
         // Optionally, you can process `fileStructure` as needed here
 

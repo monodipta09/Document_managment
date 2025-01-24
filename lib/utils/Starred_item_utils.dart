@@ -1,6 +1,6 @@
 import 'package:document_management_main/apis/ikon_service.dart';
 
-addToStarred(isFolder,identifier,parameterType,parameterValue,filePath){
+void addToStarred(isFolder,identifier,parameterType,parameterValue,filePath){
     if(isFolder){
       invokeUserSpecificDetails("folder",identifier,parameterType,parameterValue);
     }
@@ -18,7 +18,7 @@ addToStarred(isFolder,identifier,parameterType,parameterValue,filePath){
     }
 }
 
- invokeUserSpecificDetails(itemType,identifier,parameterType,parameterValue) async {
+void invokeUserSpecificDetails(itemType,identifier,parameterType,parameterValue) async {
   String taskId;  Map<String, dynamic> itemData;
    final Map<String, dynamic> userData = await IKonService.iKonService.getLoggedInUserProfileDetails();
    String userId=userData["USER_ID"];
@@ -34,14 +34,16 @@ addToStarred(isFolder,identifier,parameterType,parameterValue,filePath){
      allInstance: false,
    );
   print("folderInstanceData");
-   print(folderInstanceData);
-   taskId= folderInstanceData[0]["taskId"];
+  print(folderInstanceData);
+if(folderInstanceData.length > 0){
 
-   print("Task id");
-   print(taskId);
+
+  taskId= folderInstanceData[0]["taskId"];
+  print("Task id");
+  print(taskId);
   itemData=folderInstanceData[0]["data"];
   print("ItemData id");
-   print(itemData);
+  print(itemData);
 
   // if(!itemData[itemType]){
   //   itemData[itemType] = {};
@@ -56,6 +58,22 @@ addToStarred(isFolder,identifier,parameterType,parameterValue,filePath){
   itemData[itemType][identifier][parameterType] = parameterValue;
 
   bool result =  await IKonService.iKonService.invokeAction(taskId: taskId,transitionName: "Update Edit Details",data: itemData, processIdentifierFields: null);
+
+}else{
+  Map<String, Map<String, dynamic>> userWithObject = {};
+  userWithObject[identifier] = {};
+  userWithObject[identifier]![parameterType] = parameterValue;
+
+  Map<String, dynamic> obj = {
+    "user_id": userId,
+    itemType: userWithObject,
+  };
+
+  String processId= await IKonService.iKonService.mapProcessName(processName: "User Specific Folder and File Details - DM");
+  
+  bool result=await IKonService.iKonService.startProcessV2(processId: processId, data: obj, processIdentifierFields: "user_id");
+}
+
 
  }
 
