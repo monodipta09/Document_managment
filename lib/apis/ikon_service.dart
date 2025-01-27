@@ -16,6 +16,7 @@ class IKonService {
 
 
   final String restUrl = "https://ikoncloud-dev.keross.com/rest";
+  final String uploadUrl = 'https://ikoncloud-dev.keross.com/upload';
   final String downloadUrl = 'https://ikoncloud-dev.keross.com/download';
 
   // Hashes the input string using SHA-512.
@@ -585,6 +586,63 @@ class IKonService {
     }
   }
 
+
+  Future<String> uploadFile({ required String filePath, required String resourceId}) async {
+    var headers = {
+      'Content-Type': 'multipart/form-data'
+    };
+
+    final uri = Uri.parse(uploadUrl).replace(queryParameters: {
+      'ticket': _ticket,
+      'resourceId': resourceId
+    });
+
+    var request = http.MultipartRequest('POST', uri)
+      ..headers.addAll(headers)
+      ..files.add(await http.MultipartFile.fromPath('file', filePath));
+
+    try {
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        return await response.stream.bytesToString();
+      } else {
+        print('Upload failed: ${response.reasonPhrase}');
+        return 'false';
+      }
+    } catch (error) {
+      print("Error during file upload: $error");
+      throw error;
+    }
+  }
+
+
+  Future<String> downloadResource({required String resourceId,required String resourceName}) async {
+    try {
+      final params = {
+        'ticket': _ticket,
+        'resourceId': resourceId,
+        'resourceName': resourceName
+      };
+
+      final uri = Uri.parse(downloadUrl).replace(queryParameters: params);
+
+      final request = http.MultipartRequest('GET', uri);
+
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+        return responseBody;
+      } else {
+        print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
+        throw Exception('Failed to download resource: ${response.reasonPhrase}');
+      }
+    } catch (error) {
+      print("Error during downloadResource API call: $error");
+      throw error;
+    }
+  }
 
 
 }
