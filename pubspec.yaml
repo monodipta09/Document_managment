@@ -42,11 +42,8 @@ dependencies:
       ref: main
   flutter:
     sdk: flutter
-  Menu_Submenu_accordion_dropdown:
-    git:
-      url: https://github.com/RomanticNihilist/Menu_Submenu_accordion_dropdown.git
-      ref: master
   uuid: ^3.0.6
+  get: ^4.6.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -137,3 +134,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+
+
+
+

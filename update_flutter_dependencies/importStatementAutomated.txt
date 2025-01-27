@@ -1,0 +1,74 @@
+
+
+# Define the base path for Pub cache Git dependencies
+$BaseCachePath = "C:\Users\$env:USERNAME\AppData\Local\Pub\Cache\git"
+
+# Name of the Dart file to modify in the package
+$FileName = "menu_submenu_sidebar_dropdown_accordian_package.dart"
+
+# List of projects and their respective import statements
+$Projects = @(
+    @{
+        Path = "C:\Users\diasa\StudioProjects\document_management_main";
+        ImportStatement = "import 'package:document_management_main/utils/string_to_widget_map.dart';"
+    }
+)
+
+# Iterate through each project
+foreach ($project in $Projects) {
+    $ProjectPath = $project.Path
+    $ImportStatement = $project.ImportStatement
+    $LockFilePath = Join-Path $ProjectPath "pubspec.lock"
+
+    # Check if the pubspec.lock file exists
+    if (Test-Path $LockFilePath) {
+        Write-Host "Processing $LockFilePath..."
+
+        # Read the pubspec.lock file
+        $lockFileContent = Get-Content $LockFilePath -Raw
+
+        # Extract the Git dependency for the package
+        $dependency = [regex]::Match(
+            $lockFileContent,
+            'menu_submenu_sidebar_dropdown_accordian_package:\s+dependency: ".*?"\s+description:\s+path: ".*?"\s+ref: .*?\s+resolved-ref: (.*?)\s+url: .*?'
+        )
+
+        if ($dependency.Success) {
+            $ResolvedRef = $dependency.Groups[1].Value.Trim()
+
+            # Locate the corresponding package directory in the Pub cache
+            $packageDir = Get-ChildItem -Path $BaseCachePath -Directory | Where-Object { $_.Name -match "menu_submenu_sidebar_dropdown_accordian_package-$ResolvedRef" }
+
+            if ($packageDir) {
+                # Locate the Dart file to modify
+                $filePath = Join-Path $packageDir.FullName "lib\src\$FileName"
+
+                if (Test-Path $filePath) {
+                    # Read the existing file content
+                    $fileContent = Get-Content $filePath -Raw
+
+                    # Check if the import statement already exists
+                    if ($fileContent -notmatch [regex]::Escape($ImportStatement)) {
+                        # Prepend the import statement
+                        $newContent = "$ImportStatement`r`n$fileContent"
+
+                        # Save the updated content back to the file
+                        Set-Content -Path $filePath -Value $newContent -Force
+
+                        Write-Host "Import statement added successfully to $filePath for $ProjectPath"
+                    } else {
+                        Write-Host "The import statement already exists in $filePath for $ProjectPath"
+                    }
+                } else {
+                    Write-Host "File not found: $filePath for $ProjectPath"
+                }
+            } else {
+                Write-Host "Package directory not found for resolved-ref $ResolvedRef for $ProjectPath"
+            }
+        } else {
+            Write-Host "No Git dependency found for menu_submenu_sidebar_dropdown_accordian_package in $LockFilePath"
+        }
+    } else {
+        Write-Host "pubspec.lock file not found in $ProjectPath"
+    }
+}
