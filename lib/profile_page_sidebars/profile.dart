@@ -157,7 +157,7 @@ class _ProfileState extends State<Profile> {
                       'Date of Birth',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: const Text('12-12-2024'),
+                    subtitle: const Text('dd-mm-yyyy'),
                     trailing: const Icon(Icons.calendar_month),
                     onTap: () {
                       // Handle navigation
