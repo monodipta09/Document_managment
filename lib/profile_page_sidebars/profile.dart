@@ -1,98 +1,64 @@
-// import 'package:flutter/material.dart';
-//
-// class Profile extends StatefulWidget {
-//   final ThemeMode themeMode;
-//   final ColorScheme colorScheme;
-//   final Function(bool isDarkMode) onThemeChanged;
-//   final Function(ColorScheme colorScheme) onColorSchemeChanged;
-//   const Profile(
-//       {required this.onThemeChanged,
-//       required this.onColorSchemeChanged,
-//       required this.colorScheme,
-//       required this.themeMode,
-//       super.key});
-//   @override
-//   State<StatefulWidget> createState() {
-//     // TODO: implement createState
-//     return _ProfileState();
-//   }
-// }
-//
-// class _ProfileState extends State<Profile> {
-//   // ThemeMode themeMode = ThemeMode.system;
-//
-//   //Widget currentScreen = const HomeFragment();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // TODO: implement build
-//     return Theme(
-//       data: ThemeData.from(
-//               colorScheme: widget.colorScheme,
-//               textTheme: ThemeData.light().textTheme)
-//           .copyWith(
-//               brightness: widget.themeMode == ThemeMode.dark
-//                   ? Brightness.dark
-//                   : Brightness.light),
-//       child: Scaffold(
-//         appBar: AppBar(
-//           title: const Text("Profile"),
-//           leading: Padding(
-//             padding: const EdgeInsets.all(2.0),
-//             child: GestureDetector(
-//               onTap: () => Navigator.pop(context),
-//               child: const Icon(Icons.arrow_back),
-//             ),
-//           ),
-//         ),
-//         body: Center(
-//           child: Text(
-//             "Profile Sidebar Fragment",
-//             style: TextStyle(
-//
-//               color: widget.colorScheme.primary,
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
+import 'package:document_management_main/apis/ikon_service.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
+  late String? name;
+  late String? email;
+  late String? phoneNumber;
+  late String? login;
   final ThemeMode themeMode;
   final ColorScheme colorScheme;
   final Function(bool isDarkMode) onThemeChanged;
   final Function(ColorScheme colorScheme) onColorSchemeChanged;
 
-  const Profile({
-    required this.onThemeChanged,
-    required this.onColorSchemeChanged,
-    required this.colorScheme,
-    required this.themeMode,
-    Key? key,
-  }) : super(key: key);
+  Profile(
+      {required this.onThemeChanged,
+      required this.onColorSchemeChanged,
+      required this.colorScheme,
+      required this.themeMode,
+      this.email,
+      this.login,
+      this.name,
+      this.phoneNumber,
+      super.key});
 
   @override
   State<StatefulWidget> createState() {
+    // TODO: implement createState
     return _ProfileState();
   }
 }
 
 class _ProfileState extends State<Profile> {
+  late final Map<String, dynamic> userDataDetails;
+  late final Map<String, dynamic> userData;
+  @override
+  void initState() {
+    super.initState();
+    getUserDetails();
+  }
+
+  void getUserDetails() async{
+    userData = await IKonService.iKonService.getLoggedInUserProfile();
+    userDataDetails = await IKonService.iKonService.getLoggedInUserProfileDetails();
+    setState(() {
+      widget.name = userDataDetails['USER_NAME'];
+      widget.email = userDataDetails['USER_EMAIL'];
+      widget.login = userData['USER_LOGIN'];
+      widget.phoneNumber = userDataDetails['USER_PHONE'];
+    });
+  }
   @override
   Widget build(BuildContext context) {
+    // TODO: implement build
     return Theme(
       data: ThemeData.from(
-        colorScheme: widget.colorScheme,
-        textTheme: ThemeData.light().textTheme,
-      ).copyWith(
-        brightness: widget.themeMode == ThemeMode.dark
-            ? Brightness.dark
-            : Brightness.light,
-      ),
+              colorScheme: widget.colorScheme,
+              textTheme: ThemeData.light().textTheme)
+          .copyWith(
+              brightness: widget.themeMode == ThemeMode.dark
+                  ? Brightness.dark
+                  : Brightness.light),
       child: Scaffold(
         appBar: AppBar(
           title: const Text("User Profile"),
@@ -106,9 +72,11 @@ class _ProfileState extends State<Profile> {
               onTap: () {
                 // Handle edit action
                 print("Edit button pressed");
+
               },
               child: const Padding(
-                padding: EdgeInsets.only(right: 16.0), // Add spacing to the icon
+                padding: EdgeInsets.only(right: 16.0),
+                // Add spacing to the icon
                 child: Icon(Icons.edit),
               ),
             ),
@@ -129,25 +97,25 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ),
-                const Align(
+                Align(
                   alignment: Alignment.center,
                   child: Column(
                     children: [
-                      SizedBox(height: 80),
-                      CircleAvatar(
+                      const SizedBox(height: 80),
+                      const CircleAvatar(
                         radius: 70,
                         backgroundImage: AssetImage(
                             'assets/profile_picture.png'), // Replace with actual image asset or network URL
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
-                        'XYZ',
-                        style: TextStyle(
+                        widget.name.toString(),
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
+                      const Text(
                         'Software Engineer Level 1',
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
@@ -167,7 +135,7 @@ class _ProfileState extends State<Profile> {
                       'User Login',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: const Text('k240381102'),
+                    subtitle: Text(widget.login.toString()),
                     onTap: () {
                       // Handle navigation
                     },
@@ -177,7 +145,10 @@ class _ProfileState extends State<Profile> {
                     margin: const EdgeInsets.symmetric(horizontal: 16.0),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [ Colors.grey.withOpacity(0.5),Colors.grey.withOpacity(0.1)],
+                        colors: [
+                          Colors.grey.withOpacity(0.5),
+                          Colors.grey.withOpacity(0.1)
+                        ],
                       ),
                     ),
                   ),
@@ -197,7 +168,10 @@ class _ProfileState extends State<Profile> {
                     margin: const EdgeInsets.symmetric(horizontal: 16.0),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [ Colors.grey.withOpacity(0.5),Colors.grey.withOpacity(0.1)],
+                        colors: [
+                          Colors.grey.withOpacity(0.5),
+                          Colors.grey.withOpacity(0.1)
+                        ],
                       ),
                     ),
                   ),
@@ -206,8 +180,7 @@ class _ProfileState extends State<Profile> {
                       'Phone Number',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle:
-                    const Text('+91 9876543210'),
+                    subtitle: Text(widget.phoneNumber.toString()),
                     trailing: const Icon(Icons.phone),
                     onTap: () {
                       // Handle navigation
@@ -218,7 +191,10 @@ class _ProfileState extends State<Profile> {
                     margin: const EdgeInsets.symmetric(horizontal: 16.0),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [ Colors.grey.withOpacity(0.5),Colors.grey.withOpacity(0.1)],
+                        colors: [
+                          Colors.grey.withOpacity(0.5),
+                          Colors.grey.withOpacity(0.1)
+                        ],
                       ),
                     ),
                   ),
@@ -227,8 +203,7 @@ class _ProfileState extends State<Profile> {
                       'Email',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle:
-                    const Text('XYZ@keross.com'),
+                    subtitle: Text(widget.email.toString()),
                     trailing: const Icon(Icons.email_outlined),
                     onTap: () {
                       // Handle navigation
@@ -239,7 +214,10 @@ class _ProfileState extends State<Profile> {
                     margin: const EdgeInsets.symmetric(horizontal: 16.0),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [ Colors.grey.withOpacity(0.5),Colors.grey.withOpacity(0.1)],
+                        colors: [
+                          Colors.grey.withOpacity(0.5),
+                          Colors.grey.withOpacity(0.1)
+                        ],
                       ),
                     ),
                   ),
@@ -248,8 +226,7 @@ class _ProfileState extends State<Profile> {
                       'About us',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle:
-                    const Text('Know more about our team and goal'),
+                    subtitle: const Text('Know more about our team and goal'),
                     trailing: const Icon(Icons.keyboard_arrow_right_outlined),
                     onTap: () {
                       // Handle navigation

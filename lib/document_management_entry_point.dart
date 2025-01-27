@@ -19,57 +19,6 @@ class _DocumentManagementEntryPointState
   late ColorScheme _colorScheme;
   late ThemeMode themeMode;
 
-  // final List<MenuItem> _menuItems = [
-  //   MenuItem(
-  //     title: 'My Drive',
-  //     icon: Icons.drive_file_move,
-  //     destination: () => MyDrive(
-  //       onThemeChanged: _updateTheme,
-  //       onColorSchemeChanged: _updateColorScheme,
-  //       colorScheme: _colorScheme,
-  //       themeMode: _themeMode,
-  //     ),
-  //   ),
-  //   MenuItem(
-  //     title: 'Trash',
-  //     icon: Icons.delete,
-  //     destination: () => Trash(
-  //       onThemeChanged: _updateTheme,
-  //       onColorSchemeChanged: _updateColorScheme,
-  //       colorScheme: _colorScheme,
-  //       themeMode: _themeMode,
-  //     ),
-  //   ),
-  //   MenuItem.withSubItems(
-  //     title: 'Profile',
-  //     icon: Icons.person,
-  //     subItems: [
-  //       MenuItem(
-  //         title: 'Account',
-  //         icon: Icons.account_circle,
-  //         destination: () => Account(
-  //           onThemeChanged: _updateTheme,
-  //           onColorSchemeChanged: _updateColorScheme,
-  //           colorScheme: _colorScheme,
-  //           themeMode: _themeMode,
-  //         ),
-  //       ),
-  //       MenuItem(
-  //         title: 'Appearance',
-  //         icon: Icons.color_lens,
-  //         destination: () => AppearanceWidget(
-  //           onThemeChanged: _updateTheme,
-  //           onColorSchemeChanged: _updateColorScheme,
-  //           colorScheme: _colorScheme,
-  //           themeMode: _themeMode,
-  //         ),
-  //       ),
-  //       // Add more sub-items as needed
-  //     ],
-  //   ),
-  //   // Add more main items as needed
-  // ];
-
   @override
   void initState() {
     super.initState();

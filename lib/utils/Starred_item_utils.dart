@@ -20,7 +20,8 @@ void addToStarred(isFolder,identifier,parameterType,parameterValue,filePath){
 
 void invokeUserSpecificDetails(itemType,identifier,parameterType,parameterValue) async {
   String taskId;  Map<String, dynamic> itemData;
-   final Map<String, dynamic> userData = await IKonService.iKonService.getLoggedInUserProfileDetails();
+   // final Map<String, dynamic> userData = await IKonService.iKonService.getLoggedInUserProfileDetails();
+  final Map<String, dynamic> userData = await IKonService.iKonService.getLoggedInUserProfile();
    String userId=userData["USER_ID"];
    print(userId);
    final List<Map<String, dynamic>> folderInstanceData =

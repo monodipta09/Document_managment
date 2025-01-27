@@ -142,6 +142,7 @@ class _HomeFragmentState extends State<HomeFragment> {
   }
 
   void _addToStarred(FileItemNew item) {
+
     setState(() {
       item.isStarred = !item.isStarred;
     });
