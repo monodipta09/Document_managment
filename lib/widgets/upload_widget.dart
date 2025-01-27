@@ -103,6 +103,8 @@ class _UploadWidgetState extends State<UploadWidget> {
 
           print('Extract data for file: ${file.name} - $extractData');
 
+
+          Future<String> resourceId = IKonService.iKonService.uploadFile(filePath: file.filePath!, resourceId: file.fileId!);
           IKonService.iKonService.startProcessV2(
               processId: processId,
               data: extractData,

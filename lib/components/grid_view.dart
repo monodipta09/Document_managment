@@ -15,7 +15,7 @@ class GridLayout extends StatelessWidget {
   final ColorScheme colorScheme;
   final Function(String, FileItemNew item)? renameFolder;
   final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
-  final bool? isTrashed;
+  final bool isTrashed;
   final dynamic parentFolderId;
 
   // final bool isLightTheme;
@@ -25,7 +25,7 @@ class GridLayout extends StatelessWidget {
       required this.items,
       this.onStarred,
       required this.colorScheme,
-      this.renameFolder, this.deleteItem, this.isTrashed, this.parentFolderId});
+      this.renameFolder, this.deleteItem, this.isTrashed = false, this.parentFolderId});
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +67,7 @@ class GridLayout extends StatelessWidget {
               folderName: item.name,
               colorScheme: colorScheme,
               parentId: item.identifier,
+              isTrashed: isTrashed ? true : false,
               // isLightTheme: isLightTheme,
             ),
             transitionsBuilder:

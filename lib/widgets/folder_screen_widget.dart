@@ -18,6 +18,7 @@ class FolderScreenWidget extends StatefulWidget {
   final List<FileItemNew> fileItems;
   final String folderName;
   final dynamic parentId;
+  final bool isTrashed;
 
   // final bool isLightTheme;
   final ColorScheme colorScheme;
@@ -27,6 +28,7 @@ class FolderScreenWidget extends StatefulWidget {
       required this.fileItems,
       required this.folderName,
       required this.colorScheme,
+      this.isTrashed = false,
       this.parentId});
 
   @override
@@ -324,6 +326,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
                     parentFolderId: widget.parentId,
                     renameFolder: _renameFolder,
                     deleteItem: _deleteFileOrFolder,
+                    isTrashed: widget.isTrashed,
                   )
                 : CustomListView(
                     items: currentItems,
@@ -332,6 +335,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
                     parentFolderId: widget.parentId,
                     renameFolder: _renameFolder,
                     deleteItem: _deleteFileOrFolder,
+                    isTrashed: widget.isTrashed,
                   ),
           ),
           // GridLayout(items: currentItems, onStarred: _addToStarred, isGridView: widget.isGridView, toggleViewMode: widget.toggleViewMode),

@@ -15,10 +15,10 @@ class CustomListView extends StatelessWidget {
   final ColorScheme colorScheme;
   final Function(String, FileItemNew item)? renameFolder;
   final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
-  final bool? isTrashed;
+  final bool isTrashed;
   final dynamic parentFolderId;
 
-  const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme, this.renameFolder, this.deleteItem, this.isTrashed, this.parentFolderId});
+  const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme, this.renameFolder, this.deleteItem, this.isTrashed = false, this.parentFolderId});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,8 @@ class CustomListView extends StatelessWidget {
                       fileItems: item.children ?? [],
                       folderName: item.name,
                       colorScheme: colorScheme,
-                       parentId: item.identifier
+                       parentId: item.identifier,
+                       isTrashed: isTrashed ? true : false,
                       // isLightTheme: isLightTheme,
                     ),
                     transitionsBuilder:
