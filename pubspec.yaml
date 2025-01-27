@@ -36,10 +36,6 @@ dependencies:
     git:
       url: https://github.com/RomanticNihilist/file_uploader_package
       ref: main
-  bottom_sheet_modal_package:
-    git:
-      url: https://github.com/RomanticNihilist/bottom_package_modal_package
-      ref: main
   flutter:
     sdk: flutter
   uuid: ^3.0.6

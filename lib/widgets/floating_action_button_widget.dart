@@ -25,7 +25,6 @@ class _FloatingActionButtonWidgetState extends State<FloatingActionButtonWidget>
   final FileType pickingType = FileType.any;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return FloatingActionButton(
       backgroundColor: widget.colorScheme.secondary,
       onPressed: () {
