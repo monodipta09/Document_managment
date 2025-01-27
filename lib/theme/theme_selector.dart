@@ -122,8 +122,8 @@ class ThemeSelector extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 120, // Adjust the width of the image
-            height: 160, // Adjust the height of the image
+            width: 120,
+            height: 160,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
@@ -140,7 +140,7 @@ class ThemeSelector extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              color: isSelected ? colorScheme.primary : colorScheme.onSurface,
+              color: isSelected ? colorScheme.primary : Colors.black,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),

@@ -11,16 +11,15 @@ class Profile extends StatefulWidget {
   final Function(bool isDarkMode) onThemeChanged;
   final Function(ColorScheme colorScheme) onColorSchemeChanged;
 
-  Profile(
-      {required this.onThemeChanged,
-      required this.onColorSchemeChanged,
-      required this.colorScheme,
-      required this.themeMode,
-      this.email,
-      this.login,
-      this.name,
-      this.phoneNumber,
-      super.key});
+  Profile({required this.onThemeChanged,
+    required this.onColorSchemeChanged,
+    required this.colorScheme,
+    required this.themeMode,
+    this.email,
+    this.login,
+    this.name,
+    this.phoneNumber,
+    super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -32,15 +31,17 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late final Map<String, dynamic> userDataDetails;
   late final Map<String, dynamic> userData;
+
   @override
   void initState() {
     super.initState();
     getUserDetails();
   }
 
-  void getUserDetails() async{
+  void getUserDetails() async {
     userData = await IKonService.iKonService.getLoggedInUserProfile();
-    userDataDetails = await IKonService.iKonService.getLoggedInUserProfileDetails();
+    userDataDetails =
+    await IKonService.iKonService.getLoggedInUserProfileDetails();
     setState(() {
       widget.name = userDataDetails['USER_NAME'];
       widget.email = userDataDetails['USER_EMAIL'];
@@ -48,17 +49,20 @@ class _ProfileState extends State<Profile> {
       widget.phoneNumber = userDataDetails['USER_PHONE'];
     });
   }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Theme(
       data: ThemeData.from(
-              colorScheme: widget.colorScheme,
-              textTheme: ThemeData.light().textTheme)
+          colorScheme: widget.colorScheme,
+          textTheme: ThemeData
+              .light()
+              .textTheme)
           .copyWith(
-              brightness: widget.themeMode == ThemeMode.dark
-                  ? Brightness.dark
-                  : Brightness.light),
+          brightness: widget.themeMode == ThemeMode.dark
+              ? Brightness.dark
+              : Brightness.light),
       child: Scaffold(
         appBar: AppBar(
           title: const Text("User Profile"),
@@ -72,7 +76,6 @@ class _ProfileState extends State<Profile> {
               onTap: () {
                 // Handle edit action
                 print("Edit button pressed");
-
               },
               child: const Padding(
                 padding: EdgeInsets.only(right: 16.0),
@@ -131,11 +134,16 @@ class _ProfileState extends State<Profile> {
                 children: [
                   ListTile(
                     trailing: const Icon(Icons.login_sharp),
-                    title: const Text(
+                    title: Text(
                       'User Login',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: widget.colorScheme.primary),
                     ),
-                    subtitle: Text(widget.login.toString()),
+                    subtitle: Text(
+                      widget.login.toString(),
+                      style: TextStyle(color: widget.colorScheme.secondary),
+                    ),
                     onTap: () {
                       // Handle navigation
                     },
@@ -153,11 +161,14 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   ListTile(
-                    title: const Text(
+                    title: Text(
                       'Date of Birth',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold,
+                          color: widget.colorScheme.primary),
                     ),
-                    subtitle: const Text('dd-mm-yyyy'),
+                    subtitle: Text('dd-mm-yyyy', style:TextStyle(
+                      color: widget.colorScheme.secondary
+                    ),),
                     trailing: const Icon(Icons.calendar_month),
                     onTap: () {
                       // Handle navigation
@@ -176,11 +187,11 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   ListTile(
-                    title: const Text(
+                    title: Text(
                       'Phone Number',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: widget.colorScheme.primary),
                     ),
-                    subtitle: Text(widget.phoneNumber.toString()),
+                    subtitle: Text(widget.phoneNumber.toString(), style: TextStyle(color: widget.colorScheme.secondary),),
                     trailing: const Icon(Icons.phone),
                     onTap: () {
                       // Handle navigation
@@ -199,11 +210,16 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   ListTile(
-                    title: const Text(
+                    title: Text(
                       'Email',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: widget.colorScheme.primary),
                     ),
-                    subtitle: Text(widget.email.toString()),
+                    subtitle: Text(
+                      widget.email.toString(),
+                      style: TextStyle(
+                        color: widget.colorScheme.secondary
+                      ),
+                    ),
                     trailing: const Icon(Icons.email_outlined),
                     onTap: () {
                       // Handle navigation
@@ -222,11 +238,13 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   ListTile(
-                    title: const Text(
+                    title: Text(
                       'About us',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: widget.colorScheme.primary),
                     ),
-                    subtitle: const Text('Know more about our team and goal'),
+                    subtitle: Text('Know more about our team and goal', style: TextStyle(
+                      color: widget.colorScheme.secondary
+                    ),),
                     trailing: const Icon(Icons.keyboard_arrow_right_outlined),
                     onTap: () {
                       // Handle navigation
