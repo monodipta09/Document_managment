@@ -181,7 +181,7 @@ class GridLayout extends StatelessWidget {
                       ),
                     ),
                     builder: (BuildContext context) {
-                      return BottomModalOptions(item, onStarred: onStarred, renameFolder: renameFolder!,deleteItem : deleteItem, isTrashed: isTrashed,parentFolderId: parentFolderId);
+                      return isTrashed! ? BottomModalOptions(item, isTrashed: isTrashed) : BottomModalOptions(item, onStarred: onStarred, renameFolder: renameFolder, deleteItem : deleteItem, isTrashed: isTrashed,parentFolderId: parentFolderId);
                     },
                   );
                 },

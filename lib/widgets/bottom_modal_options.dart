@@ -9,13 +9,13 @@ import 'folder_dialog.dart';
 class BottomModalOptions extends StatelessWidget {
   final FileItemNew itemData;
   final Function(FileItemNew)? onStarred;
-  final Function(String, FileItemNew item) renameFolder;
+  final Function(String, FileItemNew item)? renameFolder;
   final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
   final bool? isTrashed;
   final dynamic parentFolderId;
 
 
-  const BottomModalOptions(this.itemData, {this.onStarred, super.key, required this.renameFolder, this.deleteItem, this.isTrashed, this.parentFolderId});
+  const BottomModalOptions(this.itemData, {this.onStarred, super.key, this.renameFolder, this.deleteItem, this.isTrashed, this.parentFolderId});
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:uuid/uuid.dart';
 import '../data/create_fileStructure.dart';
 import '../data/file_class.dart';
+
 final uuid = Uuid();
 
 String getFileIcon(String? extension) {
@@ -39,10 +40,11 @@ String getResourceType(String extension) {
   }
 }
 
-List<FileItemNew> processFiles(List<PlatformFile> files, bool isFolderUpload, String folderName) {
-  String fileId = uuid.v4();
-  String identifier = uuid.v4();
+List<FileItemNew> processFiles(
+    List<PlatformFile> files, bool isFolderUpload, String folderName) {
   return files.map((file) {
+    String fileId = uuid.v4();
+    String identifier = uuid.v4();
     return FileItemNew(
       name: file.name,
       icon: getFileIcon(file.extension),

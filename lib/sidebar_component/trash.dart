@@ -42,6 +42,7 @@ class _TrashState extends State<Trash> {
   void _toggleViewMode() {
     setState(() {
       localIsGridView = !localIsGridView;
+      trashedItems = [];
     });
   }
 
