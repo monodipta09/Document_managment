@@ -11,18 +11,21 @@ import '../widgets/bottom_modal_options.dart';
 
 class GridLayout extends StatelessWidget {
   final List<FileItemNew> items;
-  final Function(FileItemNew) onStarred;
+  final Function(FileItemNew)? onStarred;
   final ColorScheme colorScheme;
-  final Function(String, FileItemNew item) renameFolder;
+  final Function(String, FileItemNew item)? renameFolder;
+  final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
+  final bool? isTrashed;
+  final dynamic parentFolderId;
 
   // final bool isLightTheme;
 
   const GridLayout(
       {super.key,
       required this.items,
-      required this.onStarred,
+      this.onStarred,
       required this.colorScheme,
-        required this.renameFolder});
+      this.renameFolder, this.deleteItem, this.isTrashed, this.parentFolderId});
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +181,7 @@ class GridLayout extends StatelessWidget {
                       ),
                     ),
                     builder: (BuildContext context) {
-                      return BottomModalOptions(item, onStarred: onStarred, renameFolder: renameFolder);
+                      return BottomModalOptions(item, onStarred: onStarred, renameFolder: renameFolder!,deleteItem : deleteItem, isTrashed: isTrashed,parentFolderId: parentFolderId);
                     },
                   );
                 },

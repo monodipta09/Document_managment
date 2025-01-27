@@ -10,9 +10,12 @@ class BottomModalOptions extends StatelessWidget {
   final FileItemNew itemData;
   final Function(FileItemNew)? onStarred;
   final Function(String, FileItemNew item) renameFolder;
+  final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
+  final bool? isTrashed;
+  final dynamic parentFolderId;
 
 
-  const BottomModalOptions(this.itemData, {this.onStarred, super.key, required this.renameFolder});
+  const BottomModalOptions(this.itemData, {this.onStarred, super.key, required this.renameFolder, this.deleteItem, this.isTrashed, this.parentFolderId});
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +116,26 @@ class BottomModalOptions extends StatelessWidget {
 
           ListView(
             shrinkWrap: true,
-            children: [
+            children: (isTrashed != null && isTrashed == true) ? 
+            [
+                    _buildOption(
+                      context,
+                      icon: Icons.delete_forever,
+                      label: "Delete Permanently",
+                      onTap: () {
+                        // Handle delete permanently action
+                      },
+                    ),
+                    _buildOption(
+                      context,
+                      icon: Icons.restore,
+                      label: "Restore",
+                      onTap: () {
+                        // Handle restore action
+                      },
+                    ),
+                  ] : 
+            [
               if (itemData.isFolder)
                 _buildOption(
                   context,
@@ -135,7 +157,7 @@ class BottomModalOptions extends StatelessWidget {
                 ),
               _buildOption(
                 context,
-                icon: Icons.delete_outline,
+                icon: Icons.cut,
                 label: "Cut",
                 onTap: () {
                   Navigator.pop(context); // Close the modal
@@ -147,7 +169,7 @@ class BottomModalOptions extends StatelessWidget {
               ),
               _buildOption(
                 context,
-                icon: Icons.share_outlined,
+                icon: Icons.paste,
                 label: "Paste",
                 onTap: () {
                   Navigator.pop(context); // Close the modal
@@ -173,7 +195,17 @@ class BottomModalOptions extends StatelessWidget {
                   print("Add to Starred option selected");
                 },
               ),
-            ],
+              _buildOption(
+                context,
+                icon: Icons.delete_outline,
+                label: "Move to Trash",
+                onTap: () {
+                  Navigator.pop(context); // Close the modal
+                  deleteItem!(itemData, parentFolderId);
+                  print("Share option selected");
+                },
+              ),
+            ]
           ),
         ],
       ),

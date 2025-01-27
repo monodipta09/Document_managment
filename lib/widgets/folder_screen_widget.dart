@@ -10,6 +10,7 @@ import '../components/grid_view.dart';
 import '../components/list_view.dart';
 import '../data/create_fileStructure.dart';
 import '../data/file_class.dart';
+import '../utils/delete_item_utils.dart';
 import 'floating_action_button_widget.dart';
 import 'package:document_management_main/data/file_data.dart';
 
@@ -66,6 +67,8 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     return null;
   }
 
+  List<FileItemNew> allActiveItems = [];
+
   @override
   void initState() {
     super.initState();
@@ -76,7 +79,86 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     //   currentItems = [];
     //   print("Folder '${widget.folderName}' not found.");
     // }
-    currentItems = widget.fileItems;
+    // currentItems = widget.fileItems;
+    removeDeletedFiles(widget.fileItems, allActiveItems);
+    currentItems = allActiveItems;
+  }
+
+  Future<void> _refreshData() async {
+    try {
+      // Fetch file instances
+      final List<Map<String, dynamic>> fileInstanceData =
+          await IKonService.iKonService.getMyInstancesV2(
+        processName: "File Manager - DM",
+        predefinedFilters: {"taskName": "Viewer Access"},
+        processVariableFilters: null,
+        taskVariableFilters: null,
+        mongoWhereClause: null,
+        projections: ["Data"],
+        allInstance: false,
+      );
+      print("FileInstance Data: ");
+      print(fileInstanceData);
+
+      // Fetch folder instances
+      final List<Map<String, dynamic>> folderInstanceData =
+          await IKonService.iKonService.getMyInstancesV2(
+        processName: "Folder Manager - DM",
+        predefinedFilters: {"taskName": "Viewer Access"},
+        processVariableFilters: null,
+        taskVariableFilters: null,
+        mongoWhereClause: null,
+        projections: ["Data"],
+        allInstance: false,
+      );
+      print("FolderInstance Data: ");
+      print(folderInstanceData);
+
+      final Map<String, dynamic> userData =
+          await IKonService.iKonService.getLoggedInUserProfileDetails();
+
+      final List<Map<String, dynamic>> starredInstanceData =
+          await IKonService.iKonService.getMyInstancesV2(
+        processName: "User Specific Folder and File Details - DM",
+        predefinedFilters: {"taskName": "View Details"},
+        processVariableFilters: {"user_id": userData["USER_ID"]},
+        taskVariableFilters: null,
+        mongoWhereClause: null,
+        projections: ["Data"],
+        allInstance: false,
+      );
+
+      final List<Map<String, dynamic>> trashInstanceData =
+          await IKonService.iKonService.getMyInstancesV2(
+        processName: "Delete Folder Structure - DM",
+        predefinedFilters: {"taskName": "Delete Folder And Files"},
+        processVariableFilters: null,
+        taskVariableFilters: null,
+        mongoWhereClause: null,
+        projections: ["Data"],
+        allInstance: false,
+      );
+
+      // Create file structure
+      final fileStructure = createFileStructure(fileInstanceData,
+          folderInstanceData, starredInstanceData, trashInstanceData);
+      getItemData(fileStructure);
+
+      // Update the state with the new file structure
+      setState(() {
+        allActiveItems = [];
+        removeDeletedFiles(fileStructure, allActiveItems);
+        currentItems = allActiveItems;
+        // currentItems = fileStructure;
+      });
+    } catch (e) {
+      // Handle any errors here
+      print("Error during refresh: $e");
+      // Optionally, show a snackbar or dialog to inform the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to refresh data. Please try again.')),
+      );
+    }
   }
 
   // final FileItemNew folder;
@@ -110,7 +192,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
       item!.name = newName;
     });
 
-    String identifier=item!.identifier;
+    String identifier = item!.identifier;
     String taskId;
     print("Rename folder called");
     item.name = newName;
@@ -119,7 +201,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
         await IKonService.iKonService.getMyInstancesV2(
       processName: "Folder Manager - DM",
       predefinedFilters: {"taskName": "Editor Access"},
-      processVariableFilters: {"folder_identifier" : identifier},
+      processVariableFilters: {"folder_identifier": identifier},
       taskVariableFilters: null,
       mongoWhereClause: null,
       projections: ["Data"],
@@ -129,10 +211,55 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     print("Task id:");
 
     print(folderInstanceData[0]["taskId"]);
-    taskId= folderInstanceData[0]["taskId"];
+    taskId = folderInstanceData[0]["taskId"];
 
-    bool result =  await IKonService.iKonService.invokeAction(taskId: taskId,transitionName: "Update Editor Access",data: {"folder_identifier":item.identifier,"folderName":item.name}, processIdentifierFields: null);
+    bool result = await IKonService.iKonService.invokeAction(
+        taskId: taskId,
+        transitionName: "Update Editor Access",
+        data: {"folder_identifier": item.identifier, "folderName": item.name},
+        processIdentifierFields: null);
+  }
 
+  void _deleteFileOrFolder(FileItemNew item, dynamic parentFolderId) async {
+    setState(() {
+      item.isDeleted = true;
+    });
+
+    // String processId = await IKonService.iKonService
+    //     .mapProcessName(processName: "Delete Folder Structure - DM");
+
+    // final Map<String, dynamic> userData =
+    //     await IKonService.iKonService.getLoggedInUserProfileDetails();
+    // String userId = userData["USER_ID"];
+
+    // var dataObj = {
+    //   "delete_identifier": uuid.v4(),
+    //   "identifier": item.identifier,
+    //   "detetedBy": userId,
+    //   "deletedOn": DateTime.now().toIso8601String(),
+    //   "folderOrFile": item.isFolder ? "folder" : "file",
+    //   "parentFolderId": widget.parentId,
+    // };
+
+    // await IKonService.iKonService.startProcessV2(
+    //     processId: processId,
+    //     data: dataObj,
+    //     processIdentifierFields: "identifier,delete_identifier,parentFolderId");
+
+    await deleteFilesOrFolder(item, parentFolderId);
+
+    _refreshData();
+  }
+
+  void removeDeletedFiles(items, allActiveItems) {
+    for (var item in items) {
+      if (!item.isDeleted) {
+        allActiveItems.add(item);
+      }
+      if (item.isFolder && item.children!.isNotEmpty) {
+        removeDeletedFiles(item.children, allActiveItems);
+      }
+    }
   }
 
   @override
@@ -194,13 +321,17 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
                     items: currentItems,
                     onStarred: _addToStarred,
                     colorScheme: widget.colorScheme,
-              renameFolder: _renameFolder,
+                    parentFolderId: widget.parentId,
+                    renameFolder: _renameFolder,
+                    deleteItem: _deleteFileOrFolder,
                   )
                 : CustomListView(
                     items: currentItems,
                     onStarred: _addToStarred,
                     colorScheme: widget.colorScheme,
-              renameFolder: _renameFolder,
+                    parentFolderId: widget.parentId,
+                    renameFolder: _renameFolder,
+                    deleteItem: _deleteFileOrFolder,
                   ),
           ),
           // GridLayout(items: currentItems, onStarred: _addToStarred, isGridView: widget.isGridView, toggleViewMode: widget.toggleViewMode),

@@ -1,11 +1,13 @@
 import 'package:document_management_main/components/grid_view.dart';
 import 'package:document_management_main/data/create_fileStructure.dart';
 import 'package:document_management_main/data/file_data.dart';
+import 'package:document_management_main/utils/rename_folder_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../apis/ikon_service.dart';
 import '../components/list_view.dart';
 import '../utils/Starred_item_utils.dart';
+import '../utils/delete_item_utils.dart';
 import '../widgets/floating_action_button_widget.dart';
 
 class HomeFragment extends StatefulWidget {
@@ -35,6 +37,7 @@ class HomeFragment extends StatefulWidget {
 class _HomeFragmentState extends State<HomeFragment> {
   // Move allItems into the state
   List<FileItemNew> currentItems = [];
+  List<FileItemNew> allActiveItems = [];
   bool isGridView = false;
 
   @override
@@ -42,6 +45,9 @@ class _HomeFragmentState extends State<HomeFragment> {
     super.initState();
     // Fetch initial data when the widget is first built
     currentItems = allItems;
+    // currentItems = removeDeletedFiles(allItems, allActiveItems);
+    removeDeletedFiles(allItems, allActiveItems);
+    currentItems = allActiveItems;
     // _fetchInitialData();
   }
 
@@ -55,7 +61,7 @@ class _HomeFragmentState extends State<HomeFragment> {
     try {
       // Fetch file instances
       final List<Map<String, dynamic>> fileInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
+          await IKonService.iKonService.getMyInstancesV2(
         processName: "File Manager - DM",
         predefinedFilters: {"taskName": "Viewer Access"},
         processVariableFilters: null,
@@ -69,7 +75,7 @@ class _HomeFragmentState extends State<HomeFragment> {
 
       // Fetch folder instances
       final List<Map<String, dynamic>> folderInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
+          await IKonService.iKonService.getMyInstancesV2(
         processName: "Folder Manager - DM",
         predefinedFilters: {"taskName": "Viewer Access"},
         processVariableFilters: null,
@@ -81,13 +87,14 @@ class _HomeFragmentState extends State<HomeFragment> {
       print("FolderInstance Data: ");
       print(folderInstanceData);
 
-      final Map<String, dynamic> userData = await IKonService.iKonService.getLoggedInUserProfileDetails();
+      final Map<String, dynamic> userData =
+          await IKonService.iKonService.getLoggedInUserProfileDetails();
 
       final List<Map<String, dynamic>> starredInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
+          await IKonService.iKonService.getMyInstancesV2(
         processName: "User Specific Folder and File Details - DM",
         predefinedFilters: {"taskName": "View Details"},
-        processVariableFilters: {"userId": userData["USER_ID"]},
+        processVariableFilters: {"user_id": userData["USER_ID"]},
         taskVariableFilters: null,
         mongoWhereClause: null,
         projections: ["Data"],
@@ -95,7 +102,7 @@ class _HomeFragmentState extends State<HomeFragment> {
       );
 
       final List<Map<String, dynamic>> trashInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
+          await IKonService.iKonService.getMyInstancesV2(
         processName: "Delete Folder Structure - DM",
         predefinedFilters: {"taskName": "Delete Folder And Files"},
         processVariableFilters: null,
@@ -106,11 +113,16 @@ class _HomeFragmentState extends State<HomeFragment> {
       );
 
       // Create file structure
-      final fileStructure = createFileStructure(fileInstanceData, folderInstanceData, starredInstanceData, trashInstanceData);
+      final fileStructure = createFileStructure(fileInstanceData,
+          folderInstanceData, starredInstanceData, trashInstanceData);
+      getItemData(fileStructure);
 
       // Update the state with the new file structure
       setState(() {
-        currentItems = fileStructure;
+        allActiveItems = [];
+        removeDeletedFiles(fileStructure, allActiveItems);
+        currentItems = allActiveItems;
+        // currentItems = fileStructure;
       });
     } catch (e) {
       // Handle any errors here
@@ -130,11 +142,11 @@ class _HomeFragmentState extends State<HomeFragment> {
   }
 
   void _addToStarred(FileItemNew item) {
-
     setState(() {
       item.isStarred = !item.isStarred;
     });
-    addToStarred(item.isFolder,item.identifier,"starred",item.isStarred,item.filePath);
+    addToStarred(item.isFolder, item.identifier, "starred", item.isStarred,
+        item.filePath);
   }
 
   void _renameFolder(String newName, FileItemNew? item) async {
@@ -144,47 +156,48 @@ class _HomeFragmentState extends State<HomeFragment> {
       item.name = newName;
     });
 
-    String identifier = item.identifier;
-    String taskId;
-    print("Rename folder called");
+    // String identifier = item.identifier;
+    // String taskId;
+    // print("Rename folder called");
 
     try {
-      final List<Map<String, dynamic>> folderInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
-        processName: "Folder Manager - DM",
-        predefinedFilters: {"taskName": "Editor Access"},
-        processVariableFilters: {"folder_identifier": identifier},
-        taskVariableFilters: null,
-        mongoWhereClause: null,
-        projections: ["Data", "taskId"], // Ensure taskId is included
-        allInstance: false,
-      );
+      renameFolder(context, item);
+      // final List<Map<String, dynamic>> folderInstanceData =
+      // await IKonService.iKonService.getMyInstancesV2(
+      //   processName: "Folder Manager - DM",
+      //   predefinedFilters: {"taskName": "Editor Access"},
+      //   processVariableFilters: {"folder_identifier": identifier},
+      //   taskVariableFilters: null,
+      //   mongoWhereClause: null,
+      //   projections: ["Data", "taskId"], // Ensure taskId is included
+      //   allInstance: false,
+      // );
 
-      if (folderInstanceData.isNotEmpty && folderInstanceData[0].containsKey("taskId")) {
-        taskId = folderInstanceData[0]["taskId"];
-        bool result = await IKonService.iKonService.invokeAction(
-          taskId: taskId,
-          transitionName: "Update Editor Access",
-          data: {
-            "folder_identifier": item.identifier,
-            "folderName": item.name,
-          },
-          processIdentifierFields: null,
-        );
+      // if (folderInstanceData.isNotEmpty && folderInstanceData[0].containsKey("taskId")) {
+      //   taskId = folderInstanceData[0]["taskId"];
+      //   bool result = await IKonService.iKonService.invokeAction(
+      //     taskId: taskId,
+      //     transitionName: "Update Editor Access",
+      //     data: {
+      //       "folder_identifier": item.identifier,
+      //       "folderName": item.name,
+      //     },
+      //     processIdentifierFields: null,
+      //   );
 
-        if (!result) {
-          // Handle the failure to invoke action
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to rename folder.')),
-          );
-        }
-      } else {
-        // Handle the case where taskId is not found
-        print("Task ID not found for folder_identifier: $identifier");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to find task for renaming folder.')),
-        );
-      }
+      //   if (!result) {
+      //     // Handle the failure to invoke action
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       SnackBar(content: Text('Failed to rename folder.')),
+      //     );
+      //   }
+      // } else {
+      //   // Handle the case where taskId is not found
+      //   print("Task ID not found for folder_identifier: $identifier");
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text('Failed to find task for renaming folder.')),
+      //   );
+      // }
     } catch (e) {
       // Handle any errors here
       print("Error during renaming folder: $e");
@@ -194,27 +207,75 @@ class _HomeFragmentState extends State<HomeFragment> {
     }
   }
 
+  void _deleteFileOrFolder(FileItemNew item, dynamic parentFolderId) async {
+    setState(() {
+      item.isDeleted = true;
+    });
+
+    await deleteFilesOrFolder(item, parentFolderId);
+
+    _refreshData();
+  }
+
+  void removeDeletedFiles(items, allActiveItems) {
+    // return items
+    //   .where((item) => !item.isDeleted) // Filter out deleted items
+    //   .map((item) {
+    //     if (item.children != null) {
+    //       // Recursively process children
+    //       item.children = removeDeletedFiles(item.children!) as List<FileItemNew>?;
+    //     }
+    //     return item; // Return the updated item
+    //   })
+    //   .toList();
+
+    // currentItems.removeWhere((item) => item.isDeleted);
+
+    //     for(var item in items){
+    //   if(item.isDeleted){
+    //     items.remove(item);
+    //   }
+    //   else if(item.isFolder && item.children!.isNotEmpty){
+    //     removeDeletedFiles(item.children);
+    //   }
+    // }
+    // List<FileItemNew> allActiveItems = [];
+
+    for (var item in items) {
+      if (!item.isDeleted) {
+        allActiveItems.add(item);
+      }
+      if (item.isFolder && item.children!.isNotEmpty) {
+        removeDeletedFiles(item.children, allActiveItems);
+      }
+    }
+
+    // return allActiveItems;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Define the current view (Grid or List)
     Widget currentView = widget.isGridView
         ? GridLayout(
-      items: currentItems,
-      onStarred: _addToStarred,
-      colorScheme: widget.colorScheme,
-      renameFolder: _renameFolder,
-    )
+            items: currentItems,
+            onStarred: _addToStarred,
+            colorScheme: widget.colorScheme,
+            renameFolder: _renameFolder,
+            deleteItem: _deleteFileOrFolder,
+          )
         : CustomListView(
-      items: currentItems,
-      onStarred: _addToStarred,
-      colorScheme: widget.colorScheme,
-      renameFolder: _renameFolder,
-    );
+            items: currentItems,
+            onStarred: _addToStarred,
+            colorScheme: widget.colorScheme,
+            renameFolder: _renameFolder,
+            deleteItem: _deleteFileOrFolder,
+          );
 
     return Theme(
       data: ThemeData.from(
-          colorScheme: widget.colorScheme,
-          textTheme: ThemeData.light().textTheme)
+              colorScheme: widget.colorScheme,
+              textTheme: ThemeData.light().textTheme)
           .copyWith(
         brightness: widget.themeMode == ThemeMode.dark
             ? Brightness.dark
