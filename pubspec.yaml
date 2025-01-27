@@ -99,6 +99,8 @@ flutter:
     - assets/pdf-file.svg
     - assets/png-file.svg
     - assets/excel-file.svg
+    - assets/light_mode_bg.jpg
+    - assets/dark_mode_bg.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

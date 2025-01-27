@@ -79,10 +79,10 @@ class _AppearanceState extends State<Appearance> {
                 colorScheme: widget.colorScheme,
               ),
               const SizedBox(height: 20),
-              ColorPickerSection(
-                colorScheme: _colorScheme,
-                onColorSchemeChanged: _updateColorScheme,
-              ),
+              // ColorPickerSection(
+              //   colorScheme: _colorScheme,
+              //   onColorSchemeChanged: _updateColorScheme,
+              // ),
             ],
           ),
         ),

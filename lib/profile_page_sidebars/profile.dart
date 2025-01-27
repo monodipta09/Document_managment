@@ -49,6 +49,7 @@ class _ProfileState extends State<Profile> {
           child: Text(
             "Profile Sidebar Fragment",
             style: TextStyle(
+
               color: widget.colorScheme.primary,
             ),
           ),
