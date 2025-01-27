@@ -3,6 +3,9 @@ import 'package:document_management_main/apis/ikon_service.dart';
 import 'package:document_management_main/data/file_data.dart';
 // import 'package:document_management_main/otp_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'components/custom_input.dart';
 import 'package:document_management_main/apis/auth_service.dart';
 import 'data/create_fileStructure.dart';
@@ -13,13 +16,21 @@ import 'apis/dart_http.dart';
 import 'package:document_management_main/apis/ikon_service.dart';
 import 'forgot_password.dart';
 import 'dart:io';
+import 'utils/language_controller_utils.dart';
 
 
 class LoginPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final LanguageController languageController = Get.put(LanguageController());
    // final AuthService _authService = AuthService();
+  final Map<String, String> languageFlags = {
+    'EN': '🇺🇸', // English - USA flag
+    'FR': '🇫🇷', // French - France flag
+    'DE': '🇩🇪', // German - Germany flag
+    'ES': '🇪🇸', // Spanish - Spain flag
+  };
 
   void _login(BuildContext context, String username, String password) async {
     showDialog(
@@ -196,18 +207,46 @@ class LoginPage extends StatelessWidget {
                       height: 40,
                     ),
                     const SizedBox(height: 10),
-                    const Row(
+                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.flag, color: Colors.white),
-                        SizedBox(width: 5),
-                        Text(
-                          'EN',
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                        Icon(Icons.keyboard_arrow_down, color: Colors.white70),
-                      ],
-                    ),
+                       children: [
+                         const Spacer(), // Push to center
+                         Obx(
+                               () => Container(
+                             alignment: Alignment.centerLeft, // Align to the left
+                             padding: const EdgeInsets.symmetric(horizontal: 12),
+                             decoration: BoxDecoration(
+                               color: Colors.black, // Dropdown background color
+                               borderRadius: BorderRadius.circular(8), // Rounded corners
+                               border: Border.all(color: Colors.white70), // Border color
+                             ),
+                             child: DropdownButton<String>(
+                               value: languageController.selectedLanguage.value,
+                               dropdownColor: Colors.black, // Dropdown menu background
+                               icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white70),
+                               underline: const SizedBox(), // Remove default underline
+                               style: const TextStyle(color: Colors.white70, fontSize: 14), // Text style
+                               items: languageController.languages.map((String language) {
+                                 return DropdownMenuItem<String>(
+                                   value: language,
+                                   child: Text(
+                                     '${languageFlags[language] ?? '🏳️'} $language', // Flag and language code
+                                     style: const TextStyle(fontSize: 16, color: Colors.white70),
+                                   ),
+                                 );
+                               }).toList(),
+                               onChanged: (String? newLanguage) {
+                                 if (newLanguage != null) {
+                                   languageController.updateLanguage(newLanguage);
+                                 }
+                               },
+                             ),
+                           ),
+                         ),
+                         const Spacer(), // Push to center
+                       ],
+
+                     ),
                     const SizedBox(height: 20),
 
                     // Heading
@@ -364,7 +403,10 @@ class LoginPage extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    usernameController.clear();
+                                    passwordController.clear();
+                                  },
                                   child: const Text(
                                     'Reset',
                                     style: TextStyle(
