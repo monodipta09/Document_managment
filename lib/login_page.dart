@@ -95,7 +95,7 @@ class LoginPage extends StatelessWidget {
         print("FolderInstance Data: ");
         print(folderInstanceData);
 
-        final Map<String, dynamic> userData = await IKonService.iKonService.getLoggedInUserProfileDetails();
+        final Map<String, dynamic> userData = await IKonService.iKonService.getLoggedInUserProfile();
 
         final List<Map<String, dynamic>> starredInstanceData =
         await IKonService.iKonService.getMyInstancesV2(
