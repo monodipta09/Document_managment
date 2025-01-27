@@ -15,13 +15,13 @@ final List<externalMenuItem.MenuItem> menuItems = [
     //   return Center(child: Text('Profile Screen'));
     // },
   ),
-  externalMenuItem.MenuItem(
-    title: 'Account',
-    icon: Icons.account_circle,
-    // onTap: () {
-    //   return Center(child: Text('Account Screen'));
-    // },
-  ),
+  // externalMenuItem.MenuItem(
+  //   title: 'Account',
+  //   icon: Icons.account_circle,
+  //   // onTap: () {
+  //   //   return Center(child: Text('Account Screen'));
+  //   // },
+  // ),
   externalMenuItem.MenuItem(
     title: 'Collaborations',
     icon: Icons.person_add,

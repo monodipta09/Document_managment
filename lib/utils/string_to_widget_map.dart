@@ -36,12 +36,12 @@ class StringToWidgetMap extends externalPackageForMenuItems.MenuWithSubMenu {
       colorScheme: colorScheme,
       themeMode: themeMode,
     ),
-    'Account': () =>  Account(
-      onThemeChanged: updateTheme,
-      onColorSchemeChanged: updateColorScheme,
-      colorScheme: colorScheme,
-      themeMode: themeMode,
-    ),
+    // 'Account': () =>  Account(
+    //   onThemeChanged: updateTheme,
+    //   onColorSchemeChanged: updateColorScheme,
+    //   colorScheme: colorScheme,
+    //   themeMode: themeMode,
+    // ),
     'Profile': () =>  Profile(
       onThemeChanged: updateTheme,
       onColorSchemeChanged: updateColorScheme,
