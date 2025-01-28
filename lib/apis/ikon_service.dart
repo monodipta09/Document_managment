@@ -692,5 +692,118 @@ class IKonService {
     }
   }
 
+  // Future<void> updateUserProfile({required String name, required String password, required String phone, required String email, required dynamic thumbnail}) async {
+  //   try {
+  //     final headers = {
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //       'Cookie': 'CustomHeader=$email'
+  //     };
+  //
+  //     final params = {
+  //       "inZip": "false",
+  //       "outZip": "false",
+  //       "inFormat": "freejson",
+  //       "outFormat": "freejson",
+  //       "service": "loginService",
+  //       "operation": "updateUserProfile",
+  //       "ticket": _ticket, // Assuming ticket is available in scope
+  //     };
+  //
+  //     final uri = Uri.parse(restUrl).replace(queryParameters: params);
+  //
+  //     final arguments = jsonEncode([name, password, phone, email, thumbnail]);
+  //     final body = {
+  //       'arguments': arguments
+  //     };
+  //
+  //     final response = await http.post(
+  //       uri,
+  //       headers: headers,
+  //       body: body,
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final updatedProfile = jsonDecode(response.body);
+  //
+  //       if (updatedProfile != null && updatedProfile is Map<String, dynamic>) {
+  //         return ;
+  //       } else {
+  //         print('Update user profile failed: Invalid response data');
+  //         throw Exception('Invalid response format');
+  //       }
+  //     } else {
+  //       print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
+  //       print(response.body);
+  //       throw Exception('Failed to update user profile: ${response.reasonPhrase}');
+  //     }
+  //   } catch (error) {
+  //     print("Error during updateUserProfile API call: $error");
+  //     throw error;
+  //   }
+  // }
+
+  Future<void> updateUserProfile({
+    required String name,
+    required String password,
+    required String phone,
+    required String email,
+    required dynamic thumbnail,
+  }) async {
+    try {
+      final headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': 'CustomHeader=$email',
+      };
+
+      final params = {
+        "inZip": "false",
+        "outZip": "false",
+        "inFormat": "freejson",
+        "outFormat": "freejson",
+        "service": "loginService",
+        "operation": "updateUserProfile",
+        "ticket": _ticket, // Ensure _ticket is valid
+      };
+
+      final uri = Uri.parse(restUrl).replace(queryParameters: params);
+
+      final arguments = jsonEncode([name, password, phone, email, thumbnail]);
+      final body = 'arguments=${Uri.encodeComponent(arguments)}';
+
+      print('Request URI: $uri');
+      print('Request Headers: $headers');
+      print('Request Body: $body');
+
+      final response = await http.post(
+        uri,
+        headers: headers,
+        body: body,
+      );
+
+      print('Response Status: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final updatedProfile = jsonDecode(response.body);
+
+        // if (updatedProfile != null && updatedProfile is Map<String, dynamic>) {
+        //   print('Profile updated successfully.');
+        //   return;
+        // } else {
+        //   print('Update user profile failed: Invalid response data');
+        //   throw Exception('Invalid response format');
+        // }
+      } else {
+        print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
+        print('Error Body: ${response.body}');
+        throw Exception('Failed to update user profile: ${response.reasonPhrase}');
+      }
+    } catch (error) {
+      print("Error during updateUserProfile API call: $error");
+      throw error;
+    }
+  }
+
+
 
 }

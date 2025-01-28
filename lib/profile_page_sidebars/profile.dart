@@ -52,6 +52,14 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+  void showUpdatedProfileDetails(String name, String email, String phoneNumber){
+    setState(() {
+      widget.name = name;
+      widget.email = email;
+      widget.phoneNumber = phoneNumber;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -90,6 +98,7 @@ class _ProfileState extends State<Profile> {
                       email: widget.email,
                       phoneNumber: widget.phoneNumber,
                       login: widget.login,
+                      onProfileUpdate: showUpdatedProfileDetails,
                     ),
                   ),
                 );
