@@ -1,3 +1,4 @@
+import 'package:document_management_main/apis/ikon_service.dart';
 import 'package:flutter/material.dart';
 import '../components/custom_input.dart';
 
@@ -10,6 +11,7 @@ class EditProfile extends StatefulWidget {
   final ColorScheme colorScheme;
   final Function(bool isDarkMode) onThemeChanged;
   final Function(ColorScheme colorScheme) onColorSchemeChanged;
+  final Function(String name, String email, String phoneNumber) onProfileUpdate;
 
   const EditProfile({
     Key? key,
@@ -21,6 +23,7 @@ class EditProfile extends StatefulWidget {
     this.email,
     this.login,
     this.phoneNumber,
+    required this.onProfileUpdate
   }) : super(key: key);
 
   @override
@@ -42,6 +45,118 @@ class _EditProfileState extends State<EditProfile> {
     phoneController.text = widget.phoneNumber ?? '';
     loginController.text = widget.login ?? '';
   }
+
+  // void updateUserProfile(BuildContext ctx, String name, String email, String phone) async{
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false, // Prevents the dialog from being dismissed by tapping outside
+  //     builder: (BuildContext context) {
+  //       return Dialog(
+  //         backgroundColor: Colors.transparent,
+  //         elevation: 0,
+  //         child: Center(
+  //           child: Container(
+  //             padding: const EdgeInsets.all(20),
+  //             decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               borderRadius: BorderRadius.circular(10),
+  //             ),
+  //             child:const Row(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 CircularProgressIndicator(),
+  //                 SizedBox(width: 20),
+  //                 Text(
+  //                   "Updating Profile...",
+  //                   style: TextStyle(fontSize: 16),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  //   try {
+  //     await IKonService.iKonService.updateUserProfile(name: name, password: "", phone: phone, email: email, thumbnail: null);
+  //     Navigator.of(ctx).pop();
+  //     ScaffoldMessenger.of(ctx).showSnackBar(
+  //       SnackBar(content: Text('Profile updated successfully')),
+  //     );
+  //   }catch(e){
+  //     Navigator.of(context).pop();
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('An error occurred: $e')),
+  //     );
+  //   }
+  // }
+
+  void updateUserProfile(BuildContext context, String name, String email, String phone) async {
+    // Show the loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevents the dialog from being dismissed by tapping outside
+      builder: (BuildContext dialogContext) { // Renamed for clarity
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(width: 20),
+                  Text(
+                    "Updating Profile...",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    try {
+      // Await the API call
+      await IKonService.iKonService.updateUserProfile(
+        name: name,
+        password: "", // Ensure this is handled appropriately
+        phone: phone,
+        email: email,
+        thumbnail: null,
+      );
+
+      widget.onProfileUpdate(name, email, phone);
+      // Close the dialog using the root navigator
+      Navigator.of(context, rootNavigator: true).pop();
+
+      // Show success snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile updated successfully')),
+      );
+
+      // Optionally, you can navigate back or refresh the UI here
+      // Navigator.pop(context); // If you need to navigate back after successful update
+
+    } catch (e) {
+      // Close the dialog using the root navigator
+      Navigator.of(context, rootNavigator: true).pop();
+
+      // Show error snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $e')),
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,18 +193,18 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                 ),
-                Align(
+                const Align(
                   alignment: Alignment.center,
                   child: Column(
                     children: [
-                      const SizedBox(height: 80),
-                      const CircleAvatar(
+                      SizedBox(height: 80),
+                      CircleAvatar(
                         radius: 70,
                         backgroundImage: AssetImage(
                             'assets/profile_picture.png'), // Replace with actual image asset or network URL
                       ),
-                      const SizedBox(height: 10),
-                      const Text(
+                      SizedBox(height: 10),
+                      Text(
                         'Software Engineer Level 1',
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
@@ -152,6 +267,8 @@ class _EditProfileState extends State<EditProfile> {
                         print("Email: ${emailController.text}");
                         print("Phone: ${phoneController.text}");
                         print("Login: ${loginController.text}");
+
+                        updateUserProfile(context, nameController.text, emailController.text, phoneController.text);
 
                         // Handle saving to the backend or state
                         // Navigator.pop(context); // Return to Profile screen
