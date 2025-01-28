@@ -25,7 +25,10 @@ class GridLayout extends StatelessWidget {
       required this.items,
       this.onStarred,
       required this.colorScheme,
-      this.renameFolder, this.deleteItem, this.isTrashed = false, this.parentFolderId});
+      this.renameFolder,
+      this.deleteItem,
+      this.isTrashed = false,
+      this.parentFolderId});
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +50,6 @@ class GridLayout extends StatelessWidget {
     );
   }
 
-
-
   Widget _buildGridLayout(dynamic item, BuildContext context, bool isLight) {
     String itemName = item.name.toString();
     itemName =
@@ -56,7 +57,7 @@ class GridLayout extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        String fileName=item.name;
+        String fileName = item.name;
         print("Item tapped: ${item.name}");
         //OpenFile.open(item.filePath);
         if (item.isFolder) {
@@ -84,31 +85,32 @@ class GridLayout extends StatelessWidget {
             },
           ));
         } else if (item.filePath.endsWith("pdf")) {
-        Navigator.push(
-        context,
-        // Access the file name
-        MaterialPageRoute(
-        builder: (context) => PdfViewerPage(filePath: item.filePath,fileName: fileName)),
-        );
+          Navigator.push(
+            context,
+            // Access the file name
+            MaterialPageRoute(
+                builder: (context) =>
+                    PdfViewerPage(filePath: item.filePath, fileName: fileName)),
+          );
         } else if (item.filePath.endsWith("plain")) {
-        Navigator.push(
-        context,
-        MaterialPageRoute(
-        builder: (context) =>
-        TextFileViewerPage(filePath: item.filePath,fileName: fileName)),
-        );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TextFileViewerPage(
+                    filePath: item.filePath, fileName: fileName)),
+          );
         } else if (item.filePath.endsWith("png") ||
-        item.filePath.endsWith("jpg")) {
-        Navigator.push(
-        context,
-        MaterialPageRoute(
-        builder: (context) =>
-        ImageViewerPage(imagePath: item.filePath,fileName: fileName)),
-        );
+            item.filePath.endsWith("jpg")) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ImageViewerPage(
+                    imagePath: item.filePath, fileName: fileName)),
+          );
         } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Unsupported file type")),
-        );
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Unsupported file type")),
+          );
         }
       },
       onDoubleTap: () {
@@ -182,7 +184,14 @@ class GridLayout extends StatelessWidget {
                       ),
                     ),
                     builder: (BuildContext context) {
-                      return isTrashed! ? BottomModalOptions(item, isTrashed: isTrashed) : BottomModalOptions(item, onStarred: onStarred, renameFolder: renameFolder, deleteItem : deleteItem, isTrashed: isTrashed,parentFolderId: parentFolderId);
+                      return isTrashed!
+                          ? BottomModalOptions(item, isTrashed: isTrashed)
+                          : BottomModalOptions(item,
+                              onStarred: onStarred,
+                              renameFolder: renameFolder,
+                              deleteItem: deleteItem,
+                              isTrashed: isTrashed,
+                              parentFolderId: parentFolderId);
                     },
                   );
                 },
