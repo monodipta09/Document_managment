@@ -1,9 +1,13 @@
 import 'dart:core';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
+import '../login_page.dart';
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 class IKonService {
   late String _tempTicket;
   late String _ticket;
@@ -238,6 +242,57 @@ class IKonService {
       throw error;
     }
   }
+
+  Future<void> logout({Function? callback}) async {
+    try {
+      final storage = FlutterSecureStorage();
+      await storage.delete(key: "ticket");
+      await storage.delete(key: "locale");
+      await storage.delete(key: "version");
+      await storage.delete(key: "theme");
+      await storage.delete(key: "userpagetype");
+
+      final headers = {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      };
+
+      final params = {
+        "inZip": "false",
+        "outZip": "false",
+        "inFormat": "freejson",
+        "outFormat": "freejson",
+        "service": "loginService",
+        "operation": "logout",
+      };
+
+      final uri = Uri.parse(restUrl).replace(queryParameters: params);
+      final response = await http.post(uri, headers: headers);
+
+      if (response.statusCode == 200) {
+        if (callback != null) {
+          callback();
+        } else {
+          // Navigate to the LoginPage using navigatorKey
+          navigatorKey.currentState?.pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LoginPage()),
+                (route) => false,
+          );
+        }
+      } else {
+        throw Exception("Logout API failed");
+      }
+    } catch (e) {
+      print("Logout error: $e");
+
+      // Navigate to the LoginPage in case of an error
+      navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => LoginPage()),
+            (route) => false,
+      );
+    }
+  }
+
+
 
   Future<String> _getSoftwareId(String softwareName,String versionNumber ) async {
     var headers = {

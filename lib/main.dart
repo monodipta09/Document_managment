@@ -64,6 +64,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'apis/ikon_service.dart';
 import 'login_page.dart'; // Import the LoginPage widget
 import 'theme/app_theme.dart';
 
@@ -77,6 +78,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'IKON Login',
+      navigatorKey: navigatorKey,
       theme: AppTheme.lightTheme, // Apply your app theme (light or dark)
       home: LoginPage(), // Set LoginPage as the home screen
     );
