@@ -30,8 +30,8 @@ environment:
 dependencies:
   menu_submenu_sidebar_dropdown_accordian_package:
     git:
-      url: https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package
-      ref : main
+      url: https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package.git
+      ref: main
   file_uploader_package:
     git:
       url: https://github.com/RomanticNihilist/file_uploader_package
@@ -134,6 +134,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
