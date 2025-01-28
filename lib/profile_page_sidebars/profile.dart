@@ -1,6 +1,8 @@
 import 'package:document_management_main/apis/ikon_service.dart';
 import 'package:flutter/material.dart';
 
+import 'edit_profile.dart';
+
 class Profile extends StatefulWidget {
   late String? name;
   late String? email;
@@ -76,6 +78,21 @@ class _ProfileState extends State<Profile> {
               onTap: () {
                 // Handle edit action
                 print("Edit button pressed");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditProfile(
+                      onThemeChanged: widget.onThemeChanged,
+                      onColorSchemeChanged: widget.onColorSchemeChanged,
+                      colorScheme: widget.colorScheme,
+                      themeMode: widget.themeMode,
+                      name: widget.name,
+                      email: widget.email,
+                      phoneNumber: widget.phoneNumber,
+                      login: widget.login,
+                    ),
+                  ),
+                );
               },
               child: const Padding(
                 padding: EdgeInsets.only(right: 16.0),
@@ -246,9 +263,9 @@ class _ProfileState extends State<Profile> {
                       color: widget.colorScheme.secondary
                     ),),
                     trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-                    onTap: () {
-                      // Handle navigation
-                    },
+                      onTap: () {
+
+                      },
                   ),
                 ],
               ),

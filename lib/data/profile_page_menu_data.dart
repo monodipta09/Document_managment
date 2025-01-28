@@ -72,7 +72,7 @@ final List<externalMenuItem.MenuItem> menuItems = [
   ),
   externalMenuItem.MenuItem(
     title: 'Logout',
-    icon: Icons.arrow_circle_right
+    icon: Icons.logout_outlined
   ),
 ];
 
