@@ -9,7 +9,7 @@ Future<void> deleteFilesOrFolder(item, parentFolderId) async {
       .mapProcessName(processName: "Delete Folder Structure - DM");
 
   final Map<String, dynamic> userData =
-      await IKonService.iKonService.getLoggedInUserProfileDetails();
+      await IKonService.iKonService.getLoggedInUserProfile();
   String userId = userData["USER_ID"];
 
   final now = DateTime.now();
