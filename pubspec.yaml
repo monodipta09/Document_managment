@@ -30,7 +30,7 @@ environment:
 dependencies:
   menu_submenu_sidebar_dropdown_accordian_package:
     git:
-      url: https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package.git
+      url: https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package
       ref: main
   file_uploader_package:
     git:

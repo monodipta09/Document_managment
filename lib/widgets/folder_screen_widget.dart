@@ -117,7 +117,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
       print(folderInstanceData);
 
       final Map<String, dynamic> userData =
-          await IKonService.iKonService.getLoggedInUserProfileDetails();
+          await IKonService.iKonService.getLoggedInUserProfile();
 
       final List<Map<String, dynamic>> starredInstanceData =
           await IKonService.iKonService.getMyInstancesV2(
@@ -258,8 +258,8 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
       if (!item.isDeleted) {
         allActiveItems.add(item);
       }
-      if (item.isFolder && item.children!.isNotEmpty) {
-        removeDeletedFiles(item.children, allActiveItems);
+      if (item.isFolder && item.children!=null) {
+        removeDeletedFiles(item.children!, allActiveItems);
       }
     }
   }

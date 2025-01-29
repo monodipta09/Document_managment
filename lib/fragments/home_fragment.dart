@@ -88,7 +88,7 @@ class _HomeFragmentState extends State<HomeFragment> {
       print(folderInstanceData);
 
       final Map<String, dynamic> userData =
-          await IKonService.iKonService.getLoggedInUserProfileDetails();
+          await IKonService.iKonService.getLoggedInUserProfile();
 
       final List<Map<String, dynamic>> starredInstanceData =
           await IKonService.iKonService.getMyInstancesV2(
