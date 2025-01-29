@@ -9,7 +9,7 @@ $apps = @(
 # Git package details
 $packageName = "menu_submenu_sidebar_dropdown_accordian_package" # The package name
 $packageGitUrl = "https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package.git" # Git URL
-$branchOrCommit = "<latest-commit-hash>" # Replace with the actual commit hash (not branch name)
+$branchOrCommit = "main" # Set the branch to 'main'
 
 # Function to clear pub cache for the specific Git package
 function Clear-PubCacheForGitPackage {
