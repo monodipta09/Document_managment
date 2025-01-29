@@ -17,6 +17,9 @@ class GridLayout extends StatelessWidget {
   final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
   final bool isTrashed;
   final dynamic parentFolderId;
+  final bool isCutOrCopied;
+  final Function(bool isFolder, String cutOrCopied, String identifier,FileItemNew item)? cutOrCopyDocument;
+  final Function(FileItemNew item)? pasteDocument;
 
   // final bool isLightTheme;
 
@@ -28,7 +31,8 @@ class GridLayout extends StatelessWidget {
       this.renameFolder,
       this.deleteItem,
       this.isTrashed = false,
-      this.parentFolderId});
+      this.parentFolderId, 
+      this.isCutOrCopied = false, this.cutOrCopyDocument, this.pasteDocument});
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +73,7 @@ class GridLayout extends StatelessWidget {
               colorScheme: colorScheme,
               parentId: item.identifier,
               isTrashed: isTrashed ? true : false,
+              isCutOrCopied: isCutOrCopied,
               // isLightTheme: isLightTheme,
             ),
             transitionsBuilder:
@@ -191,7 +196,10 @@ class GridLayout extends StatelessWidget {
                               renameFolder: renameFolder,
                               deleteItem: deleteItem,
                               isTrashed: isTrashed,
-                              parentFolderId: parentFolderId);
+                              parentFolderId: parentFolderId,
+                              cutOrCopyDocument: cutOrCopyDocument,
+                              pasteDocument: pasteDocument
+                            );
                     },
                   );
                 },

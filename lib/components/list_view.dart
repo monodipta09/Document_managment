@@ -17,13 +17,27 @@ class CustomListView extends StatelessWidget {
   final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
   final bool isTrashed;
   final dynamic parentFolderId;
+  final bool isCutOrCopied;
+  final Function(bool isFolder, String cutOrCopied, String identifier,
+      FileItemNew item)? cutOrCopyDocument;
+  final Function(FileItemNew item)? pasteDocument;
 
-  const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme, this.renameFolder, this.deleteItem, this.isTrashed = false, this.parentFolderId});
+  const CustomListView(
+      {super.key,
+      required this.items,
+      this.onStarred,
+      required this.colorScheme,
+      this.renameFolder,
+      this.deleteItem,
+      this.isTrashed = false,
+      this.parentFolderId,
+      this.isCutOrCopied = false,
+      this.cutOrCopyDocument,
+      this.pasteDocument});
 
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
-
 
     // print("islight $isLight");
     return ListView.builder(
@@ -32,10 +46,12 @@ class CustomListView extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           final item = items[index];
           String itemName = item.name.toString();
-          itemName = itemName.length > 20 ? '${itemName.substring(0, 20)}...' : itemName;
+          itemName = itemName.length > 20
+              ? '${itemName.substring(0, 20)}...'
+              : itemName;
 
           return Padding(
-            padding: const EdgeInsets.only(left:10.0),
+            padding: const EdgeInsets.only(left: 10.0),
             child: ListTile(
               leading: SvgPicture.asset(
                 item.icon,
@@ -61,8 +77,9 @@ class CustomListView extends StatelessWidget {
                       fileItems: item.children ?? [],
                       folderName: item.name,
                       colorScheme: colorScheme,
-                       parentId: item.identifier,
-                       isTrashed: isTrashed ? true : false,
+                      parentId: item.identifier,
+                      isTrashed: isTrashed ? true : false,
+                      isCutOrCopied: isCutOrCopied,
                       // isLightTheme: isLightTheme,
                     ),
                     transitionsBuilder:
@@ -70,11 +87,11 @@ class CustomListView extends StatelessWidget {
                       const begin = Offset(1.0, 0.0); // Start from the right
                       const end = Offset.zero; // End at the original position
                       const curve = Curves.easeInOut;
-            
+
                       var tween = Tween(begin: begin, end: end)
                           .chain(CurveTween(curve: curve));
                       var offsetAnimation = animation.drive(tween);
-            
+
                       return SlideTransition(
                           position: offsetAnimation, child: child);
                     },
@@ -83,23 +100,29 @@ class CustomListView extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            PdfViewerPage(filePath: item.filePath!, fileName: item.name,)),
+                        builder: (context) => PdfViewerPage(
+                              filePath: item.filePath!,
+                              fileName: item.name,
+                            )),
                   );
                 } else if (item.filePath!.endsWith("plain")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            TextFileViewerPage(filePath: item.filePath!,fileName: item.name,)),
+                        builder: (context) => TextFileViewerPage(
+                              filePath: item.filePath!,
+                              fileName: item.name,
+                            )),
                   );
                 } else if (item.filePath!.endsWith("png") ||
                     item.filePath!.endsWith("jpg")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            ImageViewerPage(imagePath: item.filePath!,fileName: item.name,)),
+                        builder: (context) => ImageViewerPage(
+                              imagePath: item.filePath!,
+                              fileName: item.name,
+                            )),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -120,10 +143,8 @@ class CustomListView extends StatelessWidget {
                   ),
                   Text(
                     "Opened Recently",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: colorScheme.secondary
-                    ),
+                    style:
+                        TextStyle(fontSize: 14.0, color: colorScheme.secondary),
                   ),
                 ],
               ),
@@ -146,7 +167,20 @@ class CustomListView extends StatelessWidget {
                       ),
                     ),
                     builder: (BuildContext context) {
-                      return isTrashed! ? BottomModalOptions(item, isTrashed: isTrashed,) : BottomModalOptions(item, onStarred: onStarred, renameFolder: renameFolder, deleteItem : deleteItem, isTrashed: isTrashed,parentFolderId: parentFolderId);
+                      return isTrashed!
+                          ? BottomModalOptions(
+                              item,
+                              isTrashed: isTrashed,
+                            )
+                          : BottomModalOptions(item,
+                              onStarred: onStarred,
+                              renameFolder: renameFolder,
+                              deleteItem: deleteItem,
+                              isTrashed: isTrashed,
+                              parentFolderId: parentFolderId,
+                              cutOrCopyDocument: cutOrCopyDocument,
+                              pasteDocument: pasteDocument
+                              );
                     },
                   );
                 },

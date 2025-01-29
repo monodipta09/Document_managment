@@ -2,6 +2,7 @@
 * DO NOT TOUCH THIS FILE, OR YOU WILL FACE THE WRATH OF THE DEMON(ME)
 * */
 
+import 'package:document_management_main/utils/cut_copy_paste_utils.dart';
 import 'package:document_management_main/widgets/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ class FolderScreenWidget extends StatefulWidget {
   final String folderName;
   final dynamic parentId;
   final bool isTrashed;
+  final bool isCutOrCopied;
 
   // final bool isLightTheme;
   final ColorScheme colorScheme;
@@ -29,7 +31,8 @@ class FolderScreenWidget extends StatefulWidget {
       required this.folderName,
       required this.colorScheme,
       this.isTrashed = false,
-      this.parentId});
+      this.parentId,
+      this.isCutOrCopied = false});
 
   @override
   State<FolderScreenWidget> createState() {
@@ -70,6 +73,9 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
   }
 
   List<FileItemNew> allActiveItems = [];
+
+  bool isCutOrCopied = false;
+  // FileItemNew? cutOrCopiedItem;
 
   @override
   void initState() {
@@ -264,6 +270,64 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     }
   }
 
+  // FileItemNew? originalParent;
+
+  void _cutOrCopyDocument(
+      bool isFolder, String cutOrCopied, String identifier, FileItemNew item) {
+    setState(() {
+      setCutOrCopiedItem(item);
+      isCutOrCopied = cutOrCopied.isNotEmpty;
+      // if (cutOrCopied == "Cut") {
+      //   originalParent = _findParent(item, currentItems);
+      // } else {
+      //   originalParent = null;
+      // }
+    });
+  }
+
+  // FileItemNew? _findParent(FileItemNew item, List<FileItemNew> items) {
+  //   for (var parent in items) {
+  //     if (parent.children != null && parent.children!.contains(item)) {
+  //       return parent;
+  //     } else if (parent.isFolder && parent.children != null) {
+  //       var foundParent = _findParent(item, parent.children!);
+  //       if (foundParent != null) {
+  //         return foundParent;
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // }
+
+  void removeCutItems(items) {
+    for (var item in items) {
+      if (item.identifier == cutOrCopiedItem!.identifier) {
+        items.remove(item);
+        return;
+      }
+      if (item.isFolder && item.children!.isNotEmpty) {
+        removeCutItems(item.children);
+      }
+    }
+  }
+
+  void _pasteDocument(FileItemNew destinationItem) {
+    setState(() {
+      if (cutOrCopiedItem != null) {
+        // if (originalParent != null) {
+        //   originalParent!.children!.remove(cutOrCopiedItem);
+        // }
+        allActiveItems = [];
+        removeCutItems(currentItems);
+        getItemData(currentItems);
+        currentItems = allItems;
+        destinationItem.children?.add(cutOrCopiedItem!);
+        cutOrCopiedItem = null;
+        isCutOrCopied = false;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -327,6 +391,9 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
                     renameFolder: _renameFolder,
                     deleteItem: _deleteFileOrFolder,
                     isTrashed: widget.isTrashed,
+                    isCutOrCopied: widget.isCutOrCopied,
+                    cutOrCopyDocument: _cutOrCopyDocument,
+                    pasteDocument: _pasteDocument,
                   )
                 : CustomListView(
                     items: currentItems,
@@ -336,6 +403,9 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
                     renameFolder: _renameFolder,
                     deleteItem: _deleteFileOrFolder,
                     isTrashed: widget.isTrashed,
+                    isCutOrCopied: widget.isCutOrCopied,
+                    cutOrCopyDocument: _cutOrCopyDocument,
+                    pasteDocument: _pasteDocument,
                   ),
           ),
           // GridLayout(items: currentItems, onStarred: _addToStarred, isGridView: widget.isGridView, toggleViewMode: widget.toggleViewMode),

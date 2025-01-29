@@ -5,6 +5,7 @@ import '../apis/ikon_service.dart';
 import '../data/create_fileStructure.dart';
 import '../fragments/home_fragment.dart';
 import 'folder_dialog.dart';
+// import 'package:document_management_main/utils/cut_copy_paste_utils.dart';
 
 class BottomModalOptions extends StatelessWidget {
   final FileItemNew itemData;
@@ -13,9 +14,11 @@ class BottomModalOptions extends StatelessWidget {
   final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
   final bool? isTrashed;
   final dynamic parentFolderId;
+  final Function(bool isFolder, String cutOrCopied, String identifier,FileItemNew item)? cutOrCopyDocument;
+  final Function(FileItemNew item)? pasteDocument;
 
 
-  const BottomModalOptions(this.itemData, {this.onStarred, super.key, this.renameFolder, this.deleteItem, this.isTrashed, this.parentFolderId});
+  const BottomModalOptions(this.itemData, {this.onStarred, super.key, this.renameFolder, this.deleteItem, this.isTrashed, this.parentFolderId, this.cutOrCopyDocument, this.pasteDocument});
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +167,7 @@ class BottomModalOptions extends StatelessWidget {
                   bool isFolder = itemData.isFolder;
                   String cutOrCopied = "Cut";
                   String identifier = itemData.identifier;
-                  _cutOrCopyDocument(isFolder, cutOrCopied, identifier);
+                  cutOrCopyDocument!(isFolder, cutOrCopied, identifier, itemData);
                 },
               ),
               _buildOption(
@@ -176,6 +179,7 @@ class BottomModalOptions extends StatelessWidget {
                   if (itemData.isFolder) {
                     String destinationIdentifier = itemData.identifier;
                     // _pasteFolder(destinationIdentifier);
+                    pasteDocument!(itemData);
                   }
                   print("Share option selected");
                 },

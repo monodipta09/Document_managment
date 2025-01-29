@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../apis/ikon_service.dart';
 import '../components/list_view.dart';
 import '../utils/Starred_item_utils.dart';
+import '../utils/cut_copy_paste_utils.dart';
 import '../utils/delete_item_utils.dart';
 import '../widgets/floating_action_button_widget.dart';
 
@@ -39,6 +40,8 @@ class _HomeFragmentState extends State<HomeFragment> {
   List<FileItemNew> currentItems = [];
   List<FileItemNew> allActiveItems = [];
   bool isGridView = false;
+  bool isCutOrCopied = false;
+  // FileItemNew? cutOrCopiedItem;
 
   @override
   void initState() {
@@ -142,7 +145,6 @@ class _HomeFragmentState extends State<HomeFragment> {
   }
 
   void _addToStarred(FileItemNew item) {
-
     setState(() {
       item.isStarred = !item.isStarred;
     });
@@ -254,6 +256,77 @@ class _HomeFragmentState extends State<HomeFragment> {
     // return allActiveItems;
   }
 
+  // void _cutOrCopyDocument(isFolder, cutOrCopied, identifier, item) {
+  //   cutOrCopied != "" ? isCutOrCopied = true : isCutOrCopied = false;
+  //   cutOrCopiedItem = item;
+  //   if (cutOrCopied == "Cut" && isFolder == true) {}
+  // }
+
+  // void _pasteDocument(destinationItem) {
+  //   setState(() {
+  //     destinationItem.children.add(cutOrCopiedItem);
+  //   });
+  //   // for()
+  // }
+
+  // FileItemNew? originalParent;
+
+  void _cutOrCopyDocument(
+      bool isFolder, String cutOrCopied, String identifier, FileItemNew item) {
+    setState(() {
+      setCutOrCopiedItem(item);
+      isCutOrCopied = cutOrCopied.isNotEmpty;
+      // if (cutOrCopied == "Cut") {
+      //   originalParent = _findParent(item, currentItems);
+      // } else {
+      //   originalParent = null;
+      // }
+    });
+  }
+
+  // FileItemNew? _findParent(FileItemNew item, List<FileItemNew> items) {
+  //   for (var parent in items) {
+  //     if (parent.children != null && parent.children!.contains(item)) {
+  //       return parent;
+  //     } else if (parent.isFolder && parent.children != null) {
+  //       var foundParent = _findParent(item, parent.children!);
+  //       if (foundParent != null) {
+  //         return foundParent;
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // }
+
+  void removeCutItems(items) {
+    for (var item in items) {
+      if (item.identifier == cutOrCopiedItem!.identifier) {
+        items.remove(item);
+        return;
+      }
+      if (item.isFolder && item.children!.isNotEmpty) {
+        removeCutItems(item.children);
+      }
+    }
+  }
+
+  void _pasteDocument(FileItemNew destinationItem) {
+    setState(() {
+      if (cutOrCopiedItem != null) {
+        allActiveItems = [];
+        removeCutItems(currentItems);
+        getItemData(currentItems);
+        currentItems = allItems;
+        // if (originalParent != null) {
+        //   originalParent!.children!.remove(cutOrCopiedItem);
+        // }
+        destinationItem.children?.add(cutOrCopiedItem!);
+        cutOrCopiedItem = null;
+        isCutOrCopied = false;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Define the current view (Grid or List)
@@ -264,14 +337,18 @@ class _HomeFragmentState extends State<HomeFragment> {
             colorScheme: widget.colorScheme,
             renameFolder: _renameFolder,
             deleteItem: _deleteFileOrFolder,
-          )
+            isCutOrCopied: isCutOrCopied,
+            cutOrCopyDocument: _cutOrCopyDocument,
+            pasteDocument: _pasteDocument)
         : CustomListView(
             items: currentItems,
             onStarred: _addToStarred,
             colorScheme: widget.colorScheme,
             renameFolder: _renameFolder,
             deleteItem: _deleteFileOrFolder,
-          );
+            isCutOrCopied: isCutOrCopied,
+            cutOrCopyDocument: _cutOrCopyDocument,
+            pasteDocument: _pasteDocument);
 
     return Theme(
       data: ThemeData.from(

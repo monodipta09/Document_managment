@@ -1,7 +1,6 @@
 import 'package:document_management_main/apis/ikon_service.dart';
 import 'package:flutter/material.dart';
 
-
 // File item class definition
 class FileItemNew {
   late String name;
@@ -45,7 +44,10 @@ String getFileIcon(String extension) {
 }
 
 List<FileItemNew> createFileStructure(
-    List<Map<String, dynamic>> fileInstanceData, List<Map<String, dynamic>> folderInstanceData, List<Map<String, dynamic>> starredInstanceData, List<Map<String, dynamic>> trashInstanceData) {
+    List<Map<String, dynamic>> fileInstanceData,
+    List<Map<String, dynamic>> folderInstanceData,
+    List<Map<String, dynamic>> starredInstanceData,
+    List<Map<String, dynamic>> trashInstanceData) {
   // Create a map of folder ID to its children
   Map<String, List<FileItemNew>> folderChildren = {};
   Set<String> starredItemIds = {};
@@ -59,7 +61,8 @@ List<FileItemNew> createFileStructure(
   }
 
   // Second pass: Create folder items and assign them to their parents
-  Map<String, FileItemNew> folderItemsMap = {}; // Map to store folder items by ID
+  Map<String, FileItemNew> folderItemsMap =
+      {}; // Map to store folder items by ID
 
   for (var folder in folderInstanceData) {
     var data = folder['data'];
@@ -177,42 +180,38 @@ List<FileItemNew> createFileStructure(
   //   trashedItemIds.add(item["data"]["identifier"]);
   // }
 
-
   modifyRootItemsStarredTrashed(rootItems, starredItemIds, trashedItemIds);
-
-
-
 
   return rootItems;
 }
 
 Set<String> getStarredFiles(List<Map<String, dynamic>> items) {
   Set<String> starredFilesIds = {};
+  if (items.isNotEmpty) {
+    var data = items[0]["data"];
+    data["file"]?.keys.forEach((id) {
+      starredFilesIds.add(id);
+    });
 
-  var data = items[0]["data"];
-  data["file"]?.keys.forEach((id) {
-    starredFilesIds.add(id);
-  });
-
-  data["folder"]?.keys.forEach((id) {
-    starredFilesIds.add(id);
-  });
-
+    data["folder"]?.keys.forEach((id) {
+      starredFilesIds.add(id);
+    });
+  }
   return starredFilesIds;
 }
 
 Set<String> getTrashedFiles(List<Map<String, dynamic>> items) {
   Set<String> trashedFilesIds = {};
 
-
- for (var item in items) {
-   trashedFilesIds.add(item["data"]["identifier"]);
- }
+  for (var item in items) {
+    trashedFilesIds.add(item["data"]["identifier"]);
+  }
 
   return trashedFilesIds;
 }
 
-void modifyRootItemsStarredTrashed(List<FileItemNew> rootItems, Set<String> starredItemIds, Set<String> trashedItemIds) {
+void modifyRootItemsStarredTrashed(List<FileItemNew> rootItems,
+    Set<String> starredItemIds, Set<String> trashedItemIds) {
   for (final item in rootItems) {
     if (starredItemIds.contains(item.identifier)) {
       item.isStarred = true;
@@ -223,7 +222,8 @@ void modifyRootItemsStarredTrashed(List<FileItemNew> rootItems, Set<String> star
     }
 
     if (item.isFolder && item.children != null && item.children!.isNotEmpty) {
-      modifyRootItemsStarredTrashed(item.children!, starredItemIds, trashedItemIds);
+      modifyRootItemsStarredTrashed(
+          item.children!, starredItemIds, trashedItemIds);
     }
   }
 }
