@@ -82,8 +82,8 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     //   print("Folder '${widget.folderName}' not found.");
     // }
     // currentItems = widget.fileItems;
-    removeDeletedFiles(widget.fileItems, allActiveItems);
-    currentItems = allActiveItems;
+    removeDeletedFiles(widget.fileItems);
+    currentItems = widget.fileItems;
   }
 
   Future<void> _refreshData() async {
@@ -148,9 +148,9 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
 
       // Update the state with the new file structure
       setState(() {
-        allActiveItems = [];
-        removeDeletedFiles(fileStructure, allActiveItems);
-        currentItems = allActiveItems;
+        // allActiveItems = [];
+        removeDeletedFiles(widget.fileItems);
+        currentItems = widget.fileItems;
         // currentItems = fileStructure;
       });
     } catch (e) {
@@ -248,18 +248,30 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     //     data: dataObj,
     //     processIdentifierFields: "identifier,delete_identifier,parentFolderId");
 
-    await deleteFilesOrFolder(item, parentFolderId);
+    await deleteFilesOrFolder(item, parentFolderId, context);
 
     _refreshData();
   }
 
-  void removeDeletedFiles(items, allActiveItems) {
+  // void removeDeletedFiles(items, allActiveItems) {
+  //   for (var item in items) {
+  //     if (!item.isDeleted) {
+  //       allActiveItems.add(item);
+  //     }
+  //     if (item.isFolder && item.children!=null) {
+  //       removeDeletedFiles(item.children!, allActiveItems);
+  //     }
+  //   }
+  // }
+
+  void removeDeletedFiles(items) {
     for (var item in items) {
-      if (!item.isDeleted) {
-        allActiveItems.add(item);
+      if (item.isDeleted) {
+        items.remove(item);
+        return;
       }
       if (item.isFolder && item.children!=null) {
-        removeDeletedFiles(item.children!, allActiveItems);
+        removeDeletedFiles(item.children!);
       }
     }
   }

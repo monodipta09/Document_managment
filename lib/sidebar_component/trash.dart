@@ -38,33 +38,45 @@ class _TrashState extends State<Trash> {
   //   });
   // }
   bool localIsGridView = false;
+  List<FileItemNew> trashedItems = [];
 
+  @override
+  void initState() {
+    super.initState();
+    getTrashedData(allItems, trashedItems);
+  }
   void _toggleViewMode() {
     setState(() {
       localIsGridView = !localIsGridView;
-      trashedItems = [];
     });
   }
 
-  List<FileItemNew> trashedItems = [];
+  void getTrashedData(items, trashedItems) {
+    // for (var item in items) {
+    //   if (item.isDeleted == true) {
+    //     trashedItems.add(item);
+    //   }
+    //
+    //   if (item.isFolder && item.children!=null) {
+    //     return getTrashedData(item.children!);
+    //   }
+    // }
+    // return trashedItems;
 
-  List<FileItemNew> getTrashedData(items) {
-    for (var item in items) {
-      if (item.isDeleted == true) {
+    for(final item in items){
+      if(item.isDeleted == true){
         trashedItems.add(item);
       }
-
-      if (item.isFolder && item.children!.isNotEmpty) {
-        getTrashedData(item.children);
+      if(item.isFolder && item.children != null){
+        getTrashedData(item.children!, trashedItems);
       }
     }
 
-    return trashedItems;
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<FileItemNew> trashedItems = getTrashedData(allItems);
+    // final List<FileItemNew> trashedItems = getTrashedData(allItems, trashedItems);
 
     // TODO: implement build
     return Theme(

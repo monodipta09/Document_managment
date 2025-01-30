@@ -184,7 +184,7 @@ class GridLayout extends StatelessWidget {
                       ),
                     ),
                     builder: (BuildContext context) {
-                      return isTrashed!
+                      return isTrashed
                           ? BottomModalOptions(item, isTrashed: isTrashed)
                           : BottomModalOptions(item,
                               onStarred: onStarred,

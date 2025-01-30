@@ -37,18 +37,46 @@ class HomeFragment extends StatefulWidget {
 class _HomeFragmentState extends State<HomeFragment> {
   // Move allItems into the state
   List<FileItemNew> currentItems = [];
-  List<FileItemNew> allActiveItems = [];
+  // List<FileItemNew> allActiveItems = [];
   bool isGridView = false;
 
   @override
   void initState() {
     super.initState();
     // Fetch initial data when the widget is first built
-    currentItems = allItems;
+    // currentItems = allItems;
+    // allActiveItems = allItems;
     // currentItems = removeDeletedFiles(allItems, allActiveItems);
-    removeDeletedFiles(allItems, allActiveItems);
-    currentItems = allActiveItems;
+    // removeDeletedFiles(allItems, allActiveItems);
+    // currentItems = allActiveItems;
     // _fetchInitialData();
+    currentItems = List<FileItemNew>.from(allItems);
+    removeDeletedFilesMine(currentItems);
+    // currentItems = allItems;
+  }
+
+  // void removeDeletedFilesMine(currentItems) {
+  //   for (final item in currentItems) {
+  //     if (item.isDeleted) {
+  //       currentItems.remove(item);
+  //       return;
+  //     }
+  //     if (item.isFolder && item.children != null) {
+  //       removeDeletedFilesMine(item.children!);
+  //     }
+  //   }
+  // }
+
+  void removeDeletedFilesMine(List<FileItemNew> items) {
+    // Remove all deleted items at the current level
+    items.removeWhere((item) => item.isDeleted);
+
+    // Recursively remove deleted items from children
+    for (final item in items) {
+      if (item.isFolder && item.children != null) {
+        removeDeletedFilesMine(item.children!);
+      }
+    }
   }
 
   // Fetch initial data
@@ -61,7 +89,7 @@ class _HomeFragmentState extends State<HomeFragment> {
     try {
       // Fetch file instances
       final List<Map<String, dynamic>> fileInstanceData =
-          await IKonService.iKonService.getMyInstancesV2(
+      await IKonService.iKonService.getMyInstancesV2(
         processName: "File Manager - DM",
         predefinedFilters: {"taskName": "Viewer Access"},
         processVariableFilters: null,
@@ -75,7 +103,7 @@ class _HomeFragmentState extends State<HomeFragment> {
 
       // Fetch folder instances
       final List<Map<String, dynamic>> folderInstanceData =
-          await IKonService.iKonService.getMyInstancesV2(
+      await IKonService.iKonService.getMyInstancesV2(
         processName: "Folder Manager - DM",
         predefinedFilters: {"taskName": "Viewer Access"},
         processVariableFilters: null,
@@ -88,10 +116,10 @@ class _HomeFragmentState extends State<HomeFragment> {
       print(folderInstanceData);
 
       final Map<String, dynamic> userData =
-          await IKonService.iKonService.getLoggedInUserProfile();
+      await IKonService.iKonService.getLoggedInUserProfile();
 
       final List<Map<String, dynamic>> starredInstanceData =
-          await IKonService.iKonService.getMyInstancesV2(
+      await IKonService.iKonService.getMyInstancesV2(
         processName: "User Specific Folder and File Details - DM",
         predefinedFilters: {"taskName": "View Details"},
         processVariableFilters: {"user_id": userData["USER_ID"]},
@@ -102,7 +130,7 @@ class _HomeFragmentState extends State<HomeFragment> {
       );
 
       final List<Map<String, dynamic>> trashInstanceData =
-          await IKonService.iKonService.getMyInstancesV2(
+      await IKonService.iKonService.getMyInstancesV2(
         processName: "Delete Folder Structure - DM",
         predefinedFilters: {"taskName": "Delete Folder And Files"},
         processVariableFilters: null,
@@ -119,9 +147,11 @@ class _HomeFragmentState extends State<HomeFragment> {
 
       // Update the state with the new file structure
       setState(() {
-        allActiveItems = [];
-        removeDeletedFiles(fileStructure, allActiveItems);
-        currentItems = allActiveItems;
+        // allActiveItems = [];
+        // removeDeletedFiles(fileStructure, allActiveItems);
+        currentItems = List<FileItemNew>.from(fileStructure);
+        removeDeletedFilesMine(currentItems);
+        // currentItems = fileStructure;
         // currentItems = fileStructure;
       });
     } catch (e) {
@@ -133,23 +163,19 @@ class _HomeFragmentState extends State<HomeFragment> {
       );
     }
   }
-
   void _onFilesAdded(List<FileItemNew> newFiles) {
     setState(() {
       currentItems.insertAll(0, newFiles);
       Navigator.pop(context);
     });
   }
-
   void _addToStarred(FileItemNew item) {
-
     setState(() {
       item.isStarred = !item.isStarred;
     });
     addToStarred(item.isFolder, item.identifier, "starred", item.isStarred,
         item.filePath);
   }
-
   void _renameFolder(String newName, FileItemNew? item) async {
     if (item == null) return;
 
@@ -163,61 +189,24 @@ class _HomeFragmentState extends State<HomeFragment> {
 
     try {
       renameFolder(context, item);
-      // final List<Map<String, dynamic>> folderInstanceData =
-      // await IKonService.iKonService.getMyInstancesV2(
-      //   processName: "Folder Manager - DM",
-      //   predefinedFilters: {"taskName": "Editor Access"},
-      //   processVariableFilters: {"folder_identifier": identifier},
-      //   taskVariableFilters: null,
-      //   mongoWhereClause: null,
-      //   projections: ["Data", "taskId"], // Ensure taskId is included
-      //   allInstance: false,
-      // );
-
-      // if (folderInstanceData.isNotEmpty && folderInstanceData[0].containsKey("taskId")) {
-      //   taskId = folderInstanceData[0]["taskId"];
-      //   bool result = await IKonService.iKonService.invokeAction(
-      //     taskId: taskId,
-      //     transitionName: "Update Editor Access",
-      //     data: {
-      //       "folder_identifier": item.identifier,
-      //       "folderName": item.name,
-      //     },
-      //     processIdentifierFields: null,
-      //   );
-
-      //   if (!result) {
-      //     // Handle the failure to invoke action
-      //     ScaffoldMessenger.of(context).showSnackBar(
-      //       SnackBar(content: Text('Failed to rename folder.')),
-      //     );
-      //   }
-      // } else {
-      //   // Handle the case where taskId is not found
-      //   print("Task ID not found for folder_identifier: $identifier");
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(content: Text('Failed to find task for renaming folder.')),
-      //   );
-      // }
     } catch (e) {
       // Handle any errors here
       print("Error during renaming folder: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred while renaming the folder.')),
+        SnackBar(
+            content: Text('An error occurred while renaming the folder.')),
       );
     }
   }
-
   void _deleteFileOrFolder(FileItemNew item, dynamic parentFolderId) async {
     setState(() {
       item.isDeleted = true;
     });
 
-    await deleteFilesOrFolder(item, parentFolderId);
+    await deleteFilesOrFolder(item, parentFolderId, context);
 
     _refreshData();
   }
-
   void removeDeletedFiles(items, allActiveItems) {
     // return items
     //   .where((item) => !item.isDeleted) // Filter out deleted items
@@ -243,40 +232,42 @@ class _HomeFragmentState extends State<HomeFragment> {
     // List<FileItemNew> allActiveItems = [];
 
     for (var item in items) {
-      if (!item.isDeleted) {
-        allActiveItems.add(item);
+      if (item.isDeleted) {
+        allActiveItems.remove(item);
+        return;
       }
-      if (item.isFolder && item.children!.isNotEmpty) {
-        removeDeletedFiles(item.children, allActiveItems);
+      if (item.isFolder && item.children != null) {
+        removeDeletedFiles(item.children!, allActiveItems);
       }
     }
 
     // return allActiveItems;
   }
-
   @override
   Widget build(BuildContext context) {
     // Define the current view (Grid or List)
     Widget currentView = widget.isGridView
         ? GridLayout(
-            items: currentItems,
-            onStarred: _addToStarred,
-            colorScheme: widget.colorScheme,
-            renameFolder: _renameFolder,
-            deleteItem: _deleteFileOrFolder,
-          )
+      items: currentItems,
+      onStarred: _addToStarred,
+      colorScheme: widget.colorScheme,
+      renameFolder: _renameFolder,
+      deleteItem: _deleteFileOrFolder,
+    )
         : CustomListView(
-            items: currentItems,
-            onStarred: _addToStarred,
-            colorScheme: widget.colorScheme,
-            renameFolder: _renameFolder,
-            deleteItem: _deleteFileOrFolder,
-          );
+      items: currentItems,
+      onStarred: _addToStarred,
+      colorScheme: widget.colorScheme,
+      renameFolder: _renameFolder,
+      deleteItem: _deleteFileOrFolder,
+    );
 
     return Theme(
       data: ThemeData.from(
-              colorScheme: widget.colorScheme,
-              textTheme: ThemeData.light().textTheme)
+          colorScheme: widget.colorScheme,
+          textTheme: ThemeData
+              .light()
+              .textTheme)
           .copyWith(
         brightness: widget.themeMode == ThemeMode.dark
             ? Brightness.dark
