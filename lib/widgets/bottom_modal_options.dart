@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../apis/ikon_service.dart';
 import '../data/create_fileStructure.dart';
 import '../fragments/home_fragment.dart';
+import '../utils/cut_copy_paste_utils.dart';
 import 'folder_dialog.dart';
 
 class BottomModalOptions extends StatelessWidget {
@@ -157,14 +158,44 @@ class BottomModalOptions extends StatelessWidget {
                 ),
               _buildOption(
                 context,
+                icon: Icons.home_outlined,
+                label: "Move to Home",
+                onTap: () {
+                  Navigator.pop(context); // Close the modal
+                  bool isFolder = itemData.isFolder;
+                  String cutOrCopied = "cut";
+                  String identifier = itemData.identifier;
+                  cutOrCopyDocument(
+                      isFolder, cutOrCopied, identifier, itemData);
+                  pasteDocument("home", context);
+                },
+              ),
+              _buildOption(
+                context,
                 icon: Icons.cut,
                 label: "Cut",
                 onTap: () {
                   Navigator.pop(context); // Close the modal
                   bool isFolder = itemData.isFolder;
-                  String cutOrCopied = "Cut";
+                  String cutOrCopied = "cut";
                   String identifier = itemData.identifier;
-                  _cutOrCopyDocument(isFolder, cutOrCopied, identifier);
+                  // _cutOrCopyDocument(isFolder, cutOrCopied, identifier);
+                  cutOrCopyDocument(
+                      isFolder, cutOrCopied, identifier, itemData);
+                },
+              ),
+              _buildOption(
+                context,
+                icon: Icons.copy,
+                label: "Copy",
+                onTap: () {
+                  Navigator.pop(context); // Close the modal
+                  bool isFolder = itemData.isFolder;
+                  String cutOrCopied = "copy";
+                  String identifier = itemData.identifier;
+                  // _cutOrCopyDocument(isFolder, cutOrCopied, identifier);
+                  cutOrCopyDocument(
+                      isFolder, cutOrCopied, identifier, itemData);
                 },
               ),
               _buildOption(
@@ -176,10 +207,15 @@ class BottomModalOptions extends StatelessWidget {
                   if (itemData.isFolder) {
                     String destinationIdentifier = itemData.identifier;
                     // _pasteFolder(destinationIdentifier);
+                    pasteDocument(
+                        destinationItem: itemData,
+                        destinationIdentifier,
+                        context);
                   }
                   print("Share option selected");
                 },
               ),
+
               _buildOption(
                 context,
                 icon: itemData.isStarred ? Icons.star : Icons.star_border,
