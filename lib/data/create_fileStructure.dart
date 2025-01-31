@@ -120,10 +120,11 @@ List<FileItemNew> createFileStructure(
     if (folderId != null) {
       if (folderChildren.containsKey(folderId)) {
         folderChildren[folderId]!.add(fileItem);
-      } else {
-        // Handle cases where the folder might not exist
-        rootFiles.add(fileItem);
       }
+      // else {
+      //   // Handle cases where the folder might not exist
+      //   rootFiles.add(fileItem);
+      // }
     } else {
       rootFiles.add(fileItem);
     }
@@ -150,7 +151,6 @@ List<FileItemNew> createFileStructure(
 
   // Combine root folders and root files
   List<FileItemNew> rootItems = [...rootFolders, ...rootFiles];
-
   print("Root Items are");
   print(rootItems);
   print("Folder Children: ");

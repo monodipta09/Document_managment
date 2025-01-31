@@ -1,15 +1,16 @@
 import 'package:document_management_main/apis/ikon_service.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter/material.dart';
 
 var uuid = Uuid();
 
-Future<void> deleteFilesOrFolder(item, parentFolderId) async {
+Future<void> deleteFilesOrFolder(item, parentFolderId, context) async {
   String processId = await IKonService.iKonService
       .mapProcessName(processName: "Delete Folder Structure - DM");
 
   final Map<String, dynamic> userData =
-      await IKonService.iKonService.getLoggedInUserProfile();
+  await IKonService.iKonService.getLoggedInUserProfile();
   String userId = userData["USER_ID"];
 
   final now = DateTime.now();
