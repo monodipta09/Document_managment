@@ -35,7 +35,7 @@ class LoginPage extends StatelessWidget {
   void _login(BuildContext context, String username, String password) async {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevents the dialog from being dismissed by tapping outside
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
@@ -47,7 +47,7 @@ class LoginPage extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child:const Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircularProgressIndicator(),
@@ -67,105 +67,38 @@ class LoginPage extends StatelessWidget {
     try {
       bool isSuccess = await IKonService.iKonService.login(username, password);
 
+      // First close the "Logging in..." dialog:
+      Navigator.of(context, rootNavigator: true).pop();
+
       if (isSuccess) {
-        final List<Map<String, dynamic>> fileInstanceData =
-        await IKonService.iKonService.getMyInstancesV2(
-          processName: "File Manager - DM",
-          predefinedFilters: {"taskName": "Viewer Access"},
-          processVariableFilters: null,
-          taskVariableFilters: null,
-          mongoWhereClause: null,
-          projections: ["Data"],
-          allInstance: false,
+        // Then navigate to your next page:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              // if (Platform.isAndroid) {
+              //   return const DocumentManagementEntryPoint();
+              // }
+              return const DocumentManagementEntryPoint();
+            },
+          ),
         );
-        print("FileInstance Data: ");
-        print(fileInstanceData);
-
-        // Fetch folder instances
-        final List<Map<String, dynamic>> folderInstanceData =
-        await IKonService.iKonService.getMyInstancesV2(
-          processName: "Folder Manager - DM",
-          predefinedFilters: {"taskName": "Viewer Access"},
-          processVariableFilters: null,
-          taskVariableFilters: null,
-          mongoWhereClause: null,
-          projections: ["Data"],
-          allInstance: false,
-        );
-        print("FolderInstance Data: ");
-        print(folderInstanceData);
-
-        final Map<String, dynamic> userData = await IKonService.iKonService.getLoggedInUserProfile();
-
-        final List<Map<String, dynamic>> starredInstanceData =
-        await IKonService.iKonService.getMyInstancesV2(
-          processName: "User Specific Folder and File Details - DM",
-          predefinedFilters: {"taskName": "View Details"},
-          processVariableFilters: {"user_id": userData["USER_ID"]},
-          taskVariableFilters: null,
-          mongoWhereClause: null,
-          projections: ["Data"],
-          allInstance: false,
-        );
-        print("Starred Data");
-        print(starredInstanceData);
-
-        final List<Map<String, dynamic>> trashInstanceData =
-        await IKonService.iKonService.getMyInstancesV2(
-          processName: "Delete Folder Structure - DM",
-          predefinedFilters: {"taskName": "Delete Folder And Files"},
-          processVariableFilters: null,
-          taskVariableFilters: null,
-          mongoWhereClause: null,
-          projections: ["Data"],
-          allInstance: false,
-        );
-
-        print("Starred Data");
-        print(trashInstanceData);
-
-        // Create file structure
-        final fileStructure = createFileStructure(fileInstanceData, folderInstanceData, starredInstanceData, trashInstanceData);
-        getItemData(fileStructure);
-
-        // Optionally, you can process `fileStructure` as needed here
-
-        // Dismiss the loading dialog
-        Navigator.of(context).pop();
 
         // Show success SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Data fetched successfully!')),
         );
-
-        // Navigate to the Document Management Entry Point
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              if(Platform.isAndroid){
-                return const DocumentManagementEntryPoint();
-              }
-              return const DocumentManagementEntryPoint();
-            },
-          ),
-        );
       } else {
-        // Dismiss the loading dialog
-        Navigator.of(context).pop();
-
-        // Show error SnackBar
+        // Login failed
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Invalid username & password. Login failed. Please try again.'),
+            content: Text('Invalid username & password. Please try again.'),
           ),
         );
       }
     } catch (e) {
-      // Dismiss the loading dialog in case of an error
-      Navigator.of(context).pop();
-
-      // Optionally, log the error or handle it as needed
+      // Also close the dialog on error (in case it's still open)
+      Navigator.of(context, rootNavigator: true).pop();
 
       // Show error SnackBar
       ScaffoldMessenger.of(context).showSnackBar(
