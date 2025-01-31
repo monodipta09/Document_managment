@@ -1,14 +1,18 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+
 import 'package:document_management_main/components/grid_view.dart';
-import 'package:document_management_main/data/create_fileStructure.dart';
 import 'package:document_management_main/data/file_data.dart';
 import 'package:document_management_main/utils/rename_folder_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:document_management_main/components/list_view.dart';
+import 'package:document_management_main/utils/Starred_item_utils.dart';
+import 'package:document_management_main/utils/delete_item_utils.dart';
+import 'package:document_management_main/widgets/floating_action_button_widget.dart';
 
-import '../apis/ikon_service.dart';
-import '../components/list_view.dart';
-import '../utils/Starred_item_utils.dart';
-import '../utils/delete_item_utils.dart';
-import '../widgets/floating_action_button_widget.dart';
+// Import the separate file that fetches data
+import '../data/create_fileStructure.dart';
+import '../utils/file_data_service_util.dart';
 
 class HomeFragment extends StatefulWidget {
   final ThemeData? theme;
@@ -29,49 +33,63 @@ class HomeFragment extends StatefulWidget {
   });
 
   @override
-  State<HomeFragment> createState() {
-    return _HomeFragmentState();
-  }
+  State<HomeFragment> createState() => _HomeFragmentState();
 }
 
 class _HomeFragmentState extends State<HomeFragment> {
-  // Move allItems into the state
+  /// This list holds the actual file items we want to display.
   List<FileItemNew> currentItems = [];
-  // List<FileItemNew> allActiveItems = [];
-  bool isGridView = false;
+
+  /// Track whether we are loading data.
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // Fetch initial data when the widget is first built
-    // currentItems = allItems;
-    // allActiveItems = allItems;
-    // currentItems = removeDeletedFiles(allItems, allActiveItems);
-    // removeDeletedFiles(allItems, allActiveItems);
-    // currentItems = allActiveItems;
-    // _fetchInitialData();
-    currentItems = List<FileItemNew>.from(allItems);
-    removeDeletedFilesMine(currentItems);
-    // currentItems = allItems;
+    // Fetch data as soon as the widget is mounted
+    _loadData();
   }
 
-  // void removeDeletedFilesMine(currentItems) {
-  //   for (final item in currentItems) {
-  //     if (item.isDeleted) {
-  //       currentItems.remove(item);
-  //       return;
-  //     }
-  //     if (item.isFolder && item.children != null) {
-  //       removeDeletedFilesMine(item.children!);
-  //     }
-  //   }
-  // }
+  /// Called in initState and can also be called on pull-to-refresh.
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true;
+    });
 
+    try {
+      // Use our helper function to fetch the entire file structure
+      final fileStructure = await fetchFileStructure();
+
+      // Remove any deleted files
+      removeDeletedFilesMine(fileStructure);
+
+      // Update the state with the new items
+      setState(() {
+        currentItems = fileStructure;
+        _isLoading = false;
+      });
+    } catch (e) {
+      // In case of error, we still turn off the loading indicator
+      setState(() {
+        _isLoading = false;
+      });
+
+      // Show a SnackBar or handle error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load data: $e')),
+      );
+    }
+  }
+
+  /// Method to handle pull-down refresh
+  Future<void> _refreshData() async {
+    await _loadData();
+  }
+
+  /// Recursively remove any deleted files/folders
   void removeDeletedFilesMine(List<FileItemNew> items) {
-    // Remove all deleted items at the current level
     items.removeWhere((item) => item.isDeleted);
 
-    // Recursively remove deleted items from children
     for (final item in items) {
       if (item.isFolder && item.children != null) {
         removeDeletedFilesMine(item.children!);
@@ -79,96 +97,15 @@ class _HomeFragmentState extends State<HomeFragment> {
     }
   }
 
-  // Fetch initial data
-  Future<void> _fetchInitialData() async {
-    await _refreshData();
-  }
-
-  // Method to handle pull-down refresh
-  Future<void> _refreshData() async {
-    try {
-      // Fetch file instances
-      final List<Map<String, dynamic>> fileInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
-        processName: "File Manager - DM",
-        predefinedFilters: {"taskName": "Viewer Access"},
-        processVariableFilters: null,
-        taskVariableFilters: null,
-        mongoWhereClause: null,
-        projections: ["Data"],
-        allInstance: false,
-      );
-      print("FileInstance Data: ");
-      print(fileInstanceData);
-
-      // Fetch folder instances
-      final List<Map<String, dynamic>> folderInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
-        processName: "Folder Manager - DM",
-        predefinedFilters: {"taskName": "Viewer Access"},
-        processVariableFilters: null,
-        taskVariableFilters: null,
-        mongoWhereClause: null,
-        projections: ["Data"],
-        allInstance: false,
-      );
-      print("FolderInstance Data: ");
-      print(folderInstanceData);
-
-      final Map<String, dynamic> userData =
-      await IKonService.iKonService.getLoggedInUserProfile();
-
-      final List<Map<String, dynamic>> starredInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
-        processName: "User Specific Folder and File Details - DM",
-        predefinedFilters: {"taskName": "View Details"},
-        processVariableFilters: {"user_id": userData["USER_ID"]},
-        taskVariableFilters: null,
-        mongoWhereClause: null,
-        projections: ["Data"],
-        allInstance: false,
-      );
-
-      final List<Map<String, dynamic>> trashInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
-        processName: "Delete Folder Structure - DM",
-        predefinedFilters: {"taskName": "Delete Folder And Files"},
-        processVariableFilters: null,
-        taskVariableFilters: null,
-        mongoWhereClause: null,
-        projections: ["Data"],
-        allInstance: false,
-      );
-
-      // Create file structure
-      final fileStructure = createFileStructure(fileInstanceData,
-          folderInstanceData, starredInstanceData, trashInstanceData);
-      getItemData(fileStructure);
-
-      // Update the state with the new file structure
-      setState(() {
-        // allActiveItems = [];
-        // removeDeletedFiles(fileStructure, allActiveItems);
-        currentItems = List<FileItemNew>.from(fileStructure);
-        removeDeletedFilesMine(currentItems);
-        // currentItems = fileStructure;
-        // currentItems = fileStructure;
-      });
-    } catch (e) {
-      // Handle any errors here
-      print("Error during refresh: $e");
-      // Optionally, show a snackbar or dialog to inform the user
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to refresh data. Please try again.')),
-      );
-    }
-  }
+  /// Callback for the floating action button when new files are added
   void _onFilesAdded(List<FileItemNew> newFiles) {
     setState(() {
       currentItems.insertAll(0, newFiles);
       Navigator.pop(context);
     });
   }
+
+  /// Toggle starred state for a file/folder
   void _addToStarred(FileItemNew item) {
     setState(() {
       item.isStarred = !item.isStarred;
@@ -176,76 +113,37 @@ class _HomeFragmentState extends State<HomeFragment> {
     addToStarred(item.isFolder, item.identifier, "starred", item.isStarred,
         item.filePath);
   }
+
+  /// Rename a folder
   void _renameFolder(String newName, FileItemNew? item) async {
     if (item == null) return;
-
     setState(() {
       item.name = newName;
     });
-
-    // String identifier = item.identifier;
-    // String taskId;
-    // print("Rename folder called");
-
     try {
       renameFolder(context, item);
     } catch (e) {
-      // Handle any errors here
       print("Error during renaming folder: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
             content: Text('An error occurred while renaming the folder.')),
       );
     }
   }
+
+  /// Delete a file or folder
   void _deleteFileOrFolder(FileItemNew item, dynamic parentFolderId) async {
     setState(() {
       item.isDeleted = true;
     });
 
     await deleteFilesOrFolder(item, parentFolderId, context);
-
-    _refreshData();
+    _refreshData(); // Refresh after deletion
   }
-  void removeDeletedFiles(items, allActiveItems) {
-    // return items
-    //   .where((item) => !item.isDeleted) // Filter out deleted items
-    //   .map((item) {
-    //     if (item.children != null) {
-    //       // Recursively process children
-    //       item.children = removeDeletedFiles(item.children!) as List<FileItemNew>?;
-    //     }
-    //     return item; // Return the updated item
-    //   })
-    //   .toList();
 
-    // currentItems.removeWhere((item) => item.isDeleted);
-
-    //     for(var item in items){
-    //   if(item.isDeleted){
-    //     items.remove(item);
-    //   }
-    //   else if(item.isFolder && item.children!.isNotEmpty){
-    //     removeDeletedFiles(item.children);
-    //   }
-    // }
-    // List<FileItemNew> allActiveItems = [];
-
-    for (var item in items) {
-      if (item.isDeleted) {
-        allActiveItems.remove(item);
-        return;
-      }
-      if (item.isFolder && item.children != null) {
-        removeDeletedFiles(item.children!, allActiveItems);
-      }
-    }
-
-    // return allActiveItems;
-  }
   @override
   Widget build(BuildContext context) {
-    // Define the current view (Grid or List)
+    // Decide if we display a grid or list
     Widget currentView = widget.isGridView
         ? GridLayout(
       items: currentItems,
@@ -262,13 +160,12 @@ class _HomeFragmentState extends State<HomeFragment> {
       deleteItem: _deleteFileOrFolder,
     );
 
+    // Use the correct theme for the widget
     return Theme(
       data: ThemeData.from(
-          colorScheme: widget.colorScheme,
-          textTheme: ThemeData
-              .light()
-              .textTheme)
-          .copyWith(
+        colorScheme: widget.colorScheme,
+        textTheme: ThemeData.light().textTheme,
+      ).copyWith(
         brightness: widget.themeMode == ThemeMode.dark
             ? Brightness.dark
             : Brightness.light,
@@ -280,10 +177,31 @@ class _HomeFragmentState extends State<HomeFragment> {
           folderName: "",
           colorScheme: widget.colorScheme,
         ),
-        body: RefreshIndicator(
+        // If loading, show Shimmer placeholder, else show the actual grid/list
+        body: _isLoading
+            ? _buildShimmerPlaceholder()
+            : RefreshIndicator(
           onRefresh: _refreshData,
           child: currentView,
         ),
+      ),
+    );
+  }
+
+  /// A simple Shimmer-based placeholder while data loads
+  Widget _buildShimmerPlaceholder() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView.builder(
+        itemCount: 8, // Show as many placeholders as you like
+        itemBuilder: (context, index) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            height: 60,
+            color: Colors.white,
+          );
+        },
       ),
     );
   }
