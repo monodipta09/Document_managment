@@ -176,7 +176,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   const Text(
-                    'Software Engineer Level 1',
+                    'Keross R&D',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,

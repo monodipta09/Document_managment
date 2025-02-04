@@ -49,6 +49,11 @@ class _UploadWidgetState extends State<UploadWidget> {
       );
       String processId = await IKonService.iKonService
           .mapProcessName(processName: "File Manager - DM");
+
+      final Map<String, dynamic> userData =
+      await IKonService.iKonService.getLoggedInUserProfile();
+
+
       if (result != null && result.files.isNotEmpty) {
         List<FileItemNew> fileList =
         processFiles(result.files, isFolderUpload, folderName);
@@ -67,7 +72,7 @@ class _UploadWidgetState extends State<UploadWidget> {
                 "resourceSize": fileSize,
                 "resourceType": getResourceType(result.files[index].extension!),
                 "resourceId": file.fileId,
-                "uploadedBy": "b3683fff-4a28-4949-b9f0-48155df0ee59",
+                "uploadedBy": userData["USER_ID"],
                 "uploadedOn": DateTime.now().toIso8601String(),
                 "fileName": file.name.split('.').first,
                 "fileNameExtension": result.files[index].extension! ?? 'unknown'
@@ -75,9 +80,9 @@ class _UploadWidgetState extends State<UploadWidget> {
             ],
             "resource_identifier": file.identifier,
             "folder_identifier": parentFolderId,
-            "createdBy": "b3683fff-4a28-4949-b9f0-48155df0ee59",
+            "createdBy": userData["USER_ID"],
             "createdOn": DateTime.now().toIso8601String(),
-            "updatedBy": "b3683fff-4a28-4949-b9f0-48155df0ee59",
+            "updatedBy": userData["USER_ID"],
             "updatedOn": DateTime.now().toIso8601String(),
             "isCreated": true,
             "userDetails": {
@@ -87,7 +92,7 @@ class _UploadWidgetState extends State<UploadWidget> {
               "editFileUserAccess": [],
               "folderOwnerUserAccess": [],
               "viewFileUserAccess": [],
-              "ownerFileAccess": ["b3683fff-4a28-4949-b9f0-48155df0ee59"]
+              "ownerFileAccess": [userData["USER_ID"]]
             },
             "groupDetails": {
               "folderViewGrpAccess": [],
@@ -122,19 +127,23 @@ class _UploadWidgetState extends State<UploadWidget> {
 
   Future<void> _createFolder(String folderName, dynamic parentId) async {
     final String folderId = uuid.v4();
+
+    final Map<String, dynamic> userData =
+    await IKonService.iKonService.getLoggedInUserProfile();
+
     final Map<String, dynamic> extractDataForFolder = {
       "folderName": folderName,
       "folder_identifier": folderId,
       "parentId": parentId,
-      "createdBy": "b3683fff-4a28-4949-b9f0-48155df0ee59",
-      "createdOn": "2025-01-16T09:40:53.158+0000",
-      "updatedBy": "b3683fff-4a28-4949-b9f0-48155df0ee59",
-      "updatedOn": "2025-01-16T09:40:53.159+0000",
+      "createdBy": userData["USER_ID"],
+      "createdOn": DateTime.now().toIso8601String(),
+      "updatedBy": userData["USER_ID"],
+      "updatedOn": DateTime.now().toIso8601String(),
       "type": "folder",
       "userDetails": {
         "editFolderAccess": [],
         "viewFolderAccess": [],
-        "ownerFolderAccess": ["b3683fff-4a28-4949-b9f0-48155df0ee59"],
+        "ownerFolderAccess": [userData["USER_ID"]],
         "removedUserFolderAccess": [],
         "parentEditFolderAccess": [],
         "parentViewFolderAccess": [],

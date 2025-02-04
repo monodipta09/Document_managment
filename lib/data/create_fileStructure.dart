@@ -191,11 +191,13 @@ Set<String> getStarredFiles(List<Map<String, dynamic>> items) {
 
   var data = items[0]["data"];
   data["file"]?.keys.forEach((id) {
-    starredFilesIds.add(id);
+    if(data["file"][id]["starred"] == true)
+      starredFilesIds.add(id);
   });
 
   data["folder"]?.keys.forEach((id) {
-    starredFilesIds.add(id);
+    if(data["folder"][id]["starred"] == true)
+      starredFilesIds.add(id);
   });
 
   return starredFilesIds;
