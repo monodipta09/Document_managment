@@ -14,23 +14,26 @@ $branchOrCommit = "main"
 # Function to clear pub cache for the specific Git package
 function Clear-PubCacheForGitPackage {
     param ([string]$packageName)
+
+    Write-Host "`n==========================" -ForegroundColor Cyan
+    Write-Host "🚀 Clearing pub cache for package: $packageName..." -ForegroundColor Yellow
+    Write-Host "==========================" -ForegroundColor Cyan
     
-    Write-Host "Clearing pub cache for package: $packageName..."
     $pubCachePath = "$HOME\.pub-cache\git"
 
     if (Test-Path -Path $pubCachePath) {
         $packageDirectories = Get-ChildItem -Path $pubCachePath -Directory | Where-Object { $_.Name -like "*$packageName*" }
-        
+
         if ($packageDirectories.Count -gt 0) {
             foreach ($dir in $packageDirectories) {
                 Remove-Item -Recurse -Force -Path $dir.FullName
-                Write-Host "Removed cached directory: $dir"
+                Write-Host "✅ Removed cached directory: $dir" -ForegroundColor Green
             }
         } else {
-            Write-Host "No cached directories found for package: $packageName."
+            Write-Host "⚠️ No cached directories found for package: $packageName." -ForegroundColor Yellow
         }
     } else {
-        Write-Host "The directory $pubCachePath does not exist. Skipping cache clearing."
+        Write-Host "❌ The directory $pubCachePath does not exist. Skipping cache clearing." -ForegroundColor Red
     }
 }
 
@@ -43,14 +46,20 @@ foreach ($repo in $repos) {
     $repoUrl = $repo.url
     $repoPath = Join-Path $baseDirectory $repoName
 
+    Write-Host "`n==========================" -ForegroundColor Cyan
+    Write-Host "📂 Processing repository: $repoName" -ForegroundColor Yellow
+    Write-Host "==========================" -ForegroundColor Cyan
+
     # Check if the repo directory already exists
     if (Test-Path -Path $repoPath) {
-        Write-Host "$repoName already exists. Pulling latest changes..."
+        Write-Host "🔄 $repoName already exists. Pulling latest changes..." -ForegroundColor Yellow
         Set-Location -Path $repoPath
         git pull origin main
+        Write-Host "✅ Latest changes pulled successfully." -ForegroundColor Green
     } else {
-        Write-Host "Cloning repository: $repoName"
+        Write-Host "🛠️ Cloning repository: $repoName" -ForegroundColor Yellow
         git clone $repoUrl $repoPath
+        Write-Host "✅ Repository cloned successfully!" -ForegroundColor Green
     }
 
     # Change to project directory
@@ -69,20 +78,25 @@ foreach ($repo in $repos) {
 
     # Save the updated content back to pubspec.yaml
     Set-Content -Path $pubspecPath -Value $updatedPubspecContent
+    Write-Host "✅ Updated package dependency in pubspec.yaml" -ForegroundColor Green
 
     # Remove .packages and pubspec.lock to force a re-fetch
     Remove-Item -Path "$repoPath\.packages" -ErrorAction SilentlyContinue
     Remove-Item -Path "$repoPath\pubspec.lock" -ErrorAction SilentlyContinue
 
     # Run flutter pub get
+    Write-Host "📦 Running flutter pub get..." -ForegroundColor Yellow
     flutter pub get
-    Write-Host "Dependencies updated for: $repoName"
+    Write-Host "✅ Dependencies updated for: $repoName" -ForegroundColor Green
 
     # Push changes back to GitHub
+    Write-Host "🚀 Pushing changes to GitHub..." -ForegroundColor Yellow
     git add .
     git commit -m "Updated $packageName dependency"
     git push origin master
-    Write-Host "Changes pushed to GitHub for $repoName."
+    Write-Host "✅ Changes pushed to GitHub for $repoName." -ForegroundColor Green
 }
 
-Write-Host "All projects have been updated and pushed to GitHub!"
+Write-Host "`n==========================" -ForegroundColor Cyan
+Write-Host "🎉 All projects have been updated and pushed to GitHub!" -ForegroundColor Green
+Write-Host "==========================" -ForegroundColor Cyan
