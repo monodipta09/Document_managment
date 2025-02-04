@@ -334,7 +334,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: c11ce504d6285d060a2fcee1db827221a1be8ff6
+      resolved-ref: "95abd0b3836ee40b2cb4deb191f4eadc98a8e978"
       url: "https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package.git"
     source: git
     version: "0.0.1"
