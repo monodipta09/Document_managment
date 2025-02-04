@@ -143,7 +143,6 @@ class _HomeFragmentState extends State<HomeFragment> {
 
   @override
   Widget build(BuildContext context) {
-    // Decide if we display a grid or list
     Widget currentView = widget.isGridView
         ? GridLayout(
       items: currentItems,
@@ -189,20 +188,49 @@ class _HomeFragmentState extends State<HomeFragment> {
   }
 
   /// A simple Shimmer-based placeholder while data loads
+  // Widget _buildShimmerPlaceholder() {
+  //   return Shimmer.fromColors(
+  //     baseColor: Colors.grey[300]!,
+  //     highlightColor: Colors.grey[100]!,
+  //     child: ListView.builder(
+  //       itemCount: 8, // Show as many placeholders as you like
+  //       itemBuilder: (context, index) {
+  //         return Container(
+  //           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //           height: 60,
+  //           color: Colors.white,
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
+
   Widget _buildShimmerPlaceholder() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: ListView.builder(
-        itemCount: 8, // Show as many placeholders as you like
-        itemBuilder: (context, index) {
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            height: 60,
-            color: Colors.white,
-          );
-        },
-      ),
+    return ListView.builder(
+      itemCount: 9,
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: ListTile(
+            leading: const CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 24,
+            ),
+            title: Container(
+              height: 16,
+              width: double.infinity,
+              color: Colors.white,
+            ),
+            subtitle: Container(
+              height: 14,
+              width: double.infinity,
+              margin: const EdgeInsets.only(top: 8),
+              color: Colors.white,
+            ),
+          ),
+        );
+      },
     );
   }
 }

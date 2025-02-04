@@ -32,7 +32,7 @@ import 'create_fileStructure.dart';
 //   // Add more items as needed
 // ];
 
-List<FileItemNew> allItems = [];
-void getItemData(items){
-  allItems = items;
-}
+// List<FileItemNew> allItems = [];
+// void getItemData(items){
+//   allItems = items;
+// }
