@@ -1,28 +1,26 @@
-# List of Flutter project paths
-$apps = @(
-    "C:\Users\diasa\StudioProjects\ikon_demo",
-    "C:\Users\diasa\StudioProjects\login_page",
-    "C:\Users\diasa\StudioProjects\document_management_main"
-    # Add more paths as needed
+# Define repository details
+$repos = @(
+    @{ name = "Document_managment"; url = "https://github.com/monodipta09/Document_managment.git" }
 )
 
+# Directory to clone the projects
+$baseDirectory = "C:\Users\diasa\Desktop\New folder"
+
 # Git package details
-$packageName = "menu_submenu_sidebar_dropdown_accordian_package" # The package name
-$packageGitUrl = "https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package.git" # Git URL
-$branchOrCommit = "main" # Set the branch to 'main'
+$packageName = "menu_submenu_sidebar_dropdown_accordian_package"
+$packageGitUrl = "https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package.git"
+$branchOrCommit = "main"
 
 # Function to clear pub cache for the specific Git package
 function Clear-PubCacheForGitPackage {
-    param (
-        [string]$packageName
-    )
-
+    param ([string]$packageName)
+    
     Write-Host "Clearing pub cache for package: $packageName..."
     $pubCachePath = "$HOME\.pub-cache\git"
 
     if (Test-Path -Path $pubCachePath) {
         $packageDirectories = Get-ChildItem -Path $pubCachePath -Directory | Where-Object { $_.Name -like "*$packageName*" }
-
+        
         if ($packageDirectories.Count -gt 0) {
             foreach ($dir in $packageDirectories) {
                 Remove-Item -Recurse -Force -Path $dir.FullName
@@ -39,13 +37,27 @@ function Clear-PubCacheForGitPackage {
 # Clear cache for the specific Git package
 Clear-PubCacheForGitPackage -packageName $packageName
 
-# Loop through each app directory and update the specific dependency
-foreach ($app in $apps) {
-    Write-Host "Processing project: $app"
-    Set-Location -Path $app
+# Clone the repositories and process them
+foreach ($repo in $repos) {
+    $repoName = $repo.name
+    $repoUrl = $repo.url
+    $repoPath = Join-Path $baseDirectory $repoName
+
+    # Check if the repo directory already exists
+    if (Test-Path -Path $repoPath) {
+        Write-Host "$repoName already exists. Pulling latest changes..."
+        Set-Location -Path $repoPath
+        git pull origin main
+    } else {
+        Write-Host "Cloning repository: $repoName"
+        git clone $repoUrl $repoPath
+    }
+
+    # Change to project directory
+    Set-Location -Path $repoPath
 
     # Update only the dependency for the specified package in pubspec.yaml
-    $pubspecPath = Join-Path $app "pubspec.yaml"
+    $pubspecPath = Join-Path $repoPath "pubspec.yaml"
     $pubspecContent = Get-Content $pubspecPath -Raw
 
     # Use a regex to find and update the Git URL and ref for the specific package
@@ -59,12 +71,18 @@ foreach ($app in $apps) {
     Set-Content -Path $pubspecPath -Value $updatedPubspecContent
 
     # Remove .packages and pubspec.lock to force a re-fetch
-    Remove-Item -Path "$app\.packages" -ErrorAction SilentlyContinue
-    Remove-Item -Path "$app\pubspec.lock" -ErrorAction SilentlyContinue
+    Remove-Item -Path "$repoPath\.packages" -ErrorAction SilentlyContinue
+    Remove-Item -Path "$repoPath\pubspec.lock" -ErrorAction SilentlyContinue
 
     # Run flutter pub get
     flutter pub get
-    Write-Host "Dependencies updated for: $app"
+    Write-Host "Dependencies updated for: $repoName"
+
+    # Push changes back to GitHub
+    git add .
+    git commit -m "Updated $packageName dependency"
+    git push origin master
+    Write-Host "Changes pushed to GitHub for $repoName."
 }
 
-Write-Host "All projects have been updated and dependencies refreshed!"
+Write-Host "All projects have been updated and pushed to GitHub!"
