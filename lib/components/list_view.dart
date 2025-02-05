@@ -17,8 +17,10 @@ class CustomListView extends StatelessWidget {
   final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
   final bool isTrashed;
   final dynamic parentFolderId;
+  final Function(FileItemNew item, List<FileItemNew> allItems)? cutFileOrFolder;
+  final Function(FileItemNew item, List<FileItemNew> allItems)? pasteFileOrFolder;
 
-  const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme, this.renameFolder, this.deleteItem, this.isTrashed = false, this.parentFolderId});
+  const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme, this.renameFolder, this.deleteItem, this.isTrashed = false, this.parentFolderId, this.cutFileOrFolder, this.pasteFileOrFolder});
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +148,7 @@ class CustomListView extends StatelessWidget {
                       ),
                     ),
                     builder: (BuildContext context) {
-                      return isTrashed! ? BottomModalOptions(item, isTrashed: isTrashed,) : BottomModalOptions(item, onStarred: onStarred, renameFolder: renameFolder, deleteItem : deleteItem, isTrashed: isTrashed,parentFolderId: parentFolderId);
+                      return isTrashed! ? BottomModalOptions(item, isTrashed: isTrashed,) : BottomModalOptions(item, onStarred: onStarred, renameFolder: renameFolder, deleteItem : deleteItem, isTrashed: isTrashed,parentFolderId: parentFolderId, cutFileOrFolder: cutFileOrFolder,pasteFileOrFolder: pasteFileOrFolder,);
                     },
                   );
                 },

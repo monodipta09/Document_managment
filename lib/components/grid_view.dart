@@ -17,7 +17,8 @@ class GridLayout extends StatelessWidget {
   final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
   final bool isTrashed;
   final dynamic parentFolderId;
-
+  final Function(FileItemNew item, List<FileItemNew> allItems)? cutFileOrFolder;
+  final Function(FileItemNew item, List<FileItemNew> allItems)? pasteFileOrFolder;
   // final bool isLightTheme;
 
   const GridLayout(
@@ -28,7 +29,10 @@ class GridLayout extends StatelessWidget {
       this.renameFolder,
       this.deleteItem,
       this.isTrashed = false,
-      this.parentFolderId});
+      this.parentFolderId,
+      this.cutFileOrFolder,
+      this.pasteFileOrFolder,
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +195,9 @@ class GridLayout extends StatelessWidget {
                               renameFolder: renameFolder,
                               deleteItem: deleteItem,
                               isTrashed: isTrashed,
-                              parentFolderId: parentFolderId);
+                              parentFolderId: parentFolderId,
+                              cutFileOrFolder: cutFileOrFolder,
+                              pasteFileOrFolder: pasteFileOrFolder,);
                     },
                   );
                 },

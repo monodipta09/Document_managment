@@ -69,6 +69,13 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     return null;
   }
 
+  void cutItemsFromFolder(FileItemNew item, List<FileItemNew> allItems){
+    setState(() {
+      allItems.remove(item);
+      currentItems = allItems;
+    });
+  }
+
   List<FileItemNew> allActiveItems = [];
 
   @override
@@ -276,6 +283,10 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     }
   }
 
+  void pasteItem(FileItemNew item, List<FileItemNew> allItems){
+    _refreshData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -339,6 +350,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
                     renameFolder: _renameFolder,
                     deleteItem: _deleteFileOrFolder,
                     isTrashed: widget.isTrashed,
+              pasteFileOrFolder: pasteItem,
                   )
                 : CustomListView(
                     items: currentItems,
@@ -348,6 +360,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
                     renameFolder: _renameFolder,
                     deleteItem: _deleteFileOrFolder,
                     isTrashed: widget.isTrashed,
+              pasteFileOrFolder: pasteItem,
                   ),
           ),
           // GridLayout(items: currentItems, onStarred: _addToStarred, isGridView: widget.isGridView, toggleViewMode: widget.toggleViewMode),
