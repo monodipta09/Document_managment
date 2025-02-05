@@ -9,14 +9,19 @@ class FolderDialog extends StatelessWidget {
   final Function(String, FileItemNew)? renameFolder;
 
   const FolderDialog(
-      {super.key, this.onFolderCreated, this.folderData, this.renameFolder, this.parentId});
+      {super.key,
+      this.onFolderCreated,
+      this.folderData,
+      this.renameFolder,
+      this.parentId});
 
   @override
   Widget build(BuildContext context) {
     final isLightTheme = Theme.of(context).brightness == Brightness.light;
 
-    TextEditingController folderNameController =folderData != null ?
-    TextEditingController(text: folderData!.name) : TextEditingController();
+    TextEditingController folderNameController = folderData != null
+        ? TextEditingController(text: folderData!.name)
+        : TextEditingController();
 
     return AlertDialog(
       title: Text(
@@ -37,13 +42,16 @@ class FolderDialog extends StatelessWidget {
           child: const Text('Cancel'),
           onPressed: () => Navigator.of(context).pop(),
         ),
-    TextButton(
-    child: folderData != null ? const Text("Rename") : const Text('Create'),
-    onPressed: () {
-    folderData != null ? renameFolder!(folderNameController.text, folderData!) : onFolderCreated!(folderNameController.text, parentId);
-    Navigator.of(context).pop();
-    },
-    ),
+        TextButton(
+          child:
+              folderData != null ? const Text("Rename") : const Text('Create'),
+          onPressed: () {
+            folderData != null
+                ? renameFolder!(folderNameController.text, folderData!)
+                : onFolderCreated!(folderNameController.text, parentId);
+            Navigator.of(context).pop();
+          },
+        ),
       ],
     );
   }

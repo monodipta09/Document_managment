@@ -1,4 +1,5 @@
 import 'package:document_management_main/data/file_class.dart';
+import 'package:document_management_main/utils/file_data_service_util.dart';
 import 'package:flutter/material.dart';
 
 import '../apis/ikon_service.dart';
@@ -14,9 +15,11 @@ class BottomModalOptions extends StatelessWidget {
   final Function(FileItemNew item, dynamic parentFolderId)? deleteItem;
   final bool? isTrashed;
   final dynamic parentFolderId;
+  final Function(FileItemNew item, List<FileItemNew> allItems)? cutFileOrFolder;
+  final Function(FileItemNew item, List<FileItemNew> allItems)? pasteFileOrFolder;
 
 
-  const BottomModalOptions(this.itemData, {this.onStarred, super.key, this.renameFolder, this.deleteItem, this.isTrashed, this.parentFolderId});
+  const BottomModalOptions(this.itemData, {this.onStarred, super.key, this.renameFolder, this.deleteItem, this.isTrashed, this.parentFolderId, this.cutFileOrFolder, this.pasteFileOrFolder});
 
   @override
   Widget build(BuildContext context) {
@@ -182,6 +185,7 @@ class BottomModalOptions extends StatelessWidget {
                   // _cutOrCopyDocument(isFolder, cutOrCopied, identifier);
                   cutOrCopyDocument(
                       isFolder, cutOrCopied, identifier, itemData);
+                  cutFileOrFolder!(itemData, allItems);
                 },
               ),
               _buildOption(
@@ -196,21 +200,23 @@ class BottomModalOptions extends StatelessWidget {
                   // _cutOrCopyDocument(isFolder, cutOrCopied, identifier);
                   cutOrCopyDocument(
                       isFolder, cutOrCopied, identifier, itemData);
+
                 },
               ),
               _buildOption(
                 context,
                 icon: Icons.paste,
                 label: "Paste",
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context); // Close the modal
                   if (itemData.isFolder) {
                     String destinationIdentifier = itemData.identifier;
                     // _pasteFolder(destinationIdentifier);
-                    pasteDocument(
+                    await pasteDocument(
                         destinationItem: itemData,
                         destinationIdentifier,
                         context);
+                    pasteFileOrFolder!(itemData, allItems);
                   }
                   print("Share option selected");
                 },

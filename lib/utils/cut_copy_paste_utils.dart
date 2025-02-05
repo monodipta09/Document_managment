@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:document_management_main/apis/ikon_service.dart';
+import 'package:document_management_main/document_management_entry_point.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,7 +25,7 @@ void setCutOrCopiedItem(FileItemNew item) {
 void cutOrCopyDocument(bool isFolder, String cutOrCopiedParam,
     String identifier, FileItemNew item) {
   cutOrCopiedItem = item;
-  isCutOrCopied = cutOrCopied.isNotEmpty;
+  isCutOrCopied = cutOrCopiedParam.isNotEmpty;
   isFolder ? folderOrFile = "folder" : folderOrFile = "file";
   cutOrCopied = cutOrCopiedParam;
   cutOrCopiedIdentifier = identifier;
@@ -72,8 +73,7 @@ void removeCutItems(items) {
   }
 }
 
-void pasteDocument(String destinationIdentifier, BuildContext context,
-    {FileItemNew? destinationItem}) async {
+Future<void> pasteDocument(String destinationIdentifier, BuildContext context, {FileItemNew? destinationItem}) async {
   // if (cutOrCopiedItem != null) {
   //   allActiveItems = [];
   //   removeCutItems(allItems);
@@ -129,8 +129,7 @@ void pasteDocument(String destinationIdentifier, BuildContext context,
         transitionName: "Update Sharing Activity",
         data: cutFolderData,
         processIdentifierFields: null);
-  } 
-  else if(cutOrCopied == "home" && folderOrFile != "folder"){
+  } else if (cutOrCopied == "home" && folderOrFile != "folder") {
     Map<String, dynamic> processVariableFilters = {
       "resource_identifier": cutOrCopiedIdentifier
     };
@@ -170,8 +169,7 @@ void pasteDocument(String destinationIdentifier, BuildContext context,
         transitionName: "Update Sharing Activity",
         data: cutFileData,
         processIdentifierFields: null);
-  }
-  else if (cutOrCopied == "cut" && folderOrFile == "folder") {
+  } else if (cutOrCopied == "cut" && folderOrFile == "folder") {
     collectFolderIds(destinationItem!);
     if (allChildrenFolderIds.contains(destinationIdentifier) ||
         cutOrCopiedIdentifier == destinationIdentifier) {

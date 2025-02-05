@@ -37,56 +37,47 @@ class HomeFragment extends StatefulWidget {
 }
 
 class _HomeFragmentState extends State<HomeFragment> {
-  /// This list holds the actual file items we want to display.
   List<FileItemNew> currentItems = [];
+  FileItemNew? cutOrCopiedItem;
 
-  /// Track whether we are loading data.
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // Fetch data as soon as the widget is mounted
     _loadData();
   }
 
-  /// Called in initState and can also be called on pull-to-refresh.
   Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      // Use our helper function to fetch the entire file structure
       final fileStructure = await fetchFileStructure();
+      getItemData(fileStructure);
 
-      // Remove any deleted files
       removeDeletedFilesMine(fileStructure);
 
-      // Update the state with the new items
       setState(() {
         currentItems = fileStructure;
         _isLoading = false;
       });
     } catch (e) {
-      // In case of error, we still turn off the loading indicator
       setState(() {
         _isLoading = false;
       });
 
-      // Show a SnackBar or handle error
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to load data: $e')),
       );
     }
   }
 
-  /// Method to handle pull-down refresh
   Future<void> _refreshData() async {
     await _loadData();
   }
 
-  /// Recursively remove any deleted files/folders
   void removeDeletedFilesMine(List<FileItemNew> items) {
     items.removeWhere((item) => item.isDeleted);
 
@@ -97,7 +88,6 @@ class _HomeFragmentState extends State<HomeFragment> {
     }
   }
 
-  /// Callback for the floating action button when new files are added
   void _onFilesAdded(List<FileItemNew> newFiles) {
     setState(() {
       currentItems.insertAll(0, newFiles);
@@ -105,7 +95,6 @@ class _HomeFragmentState extends State<HomeFragment> {
     });
   }
 
-  /// Toggle starred state for a file/folder
   void _addToStarred(FileItemNew item) {
     setState(() {
       item.isStarred = !item.isStarred;
@@ -114,7 +103,6 @@ class _HomeFragmentState extends State<HomeFragment> {
         item.filePath);
   }
 
-  /// Rename a folder
   void _renameFolder(String newName, FileItemNew? item) async {
     if (item == null) return;
     setState(() {
@@ -131,7 +119,6 @@ class _HomeFragmentState extends State<HomeFragment> {
     }
   }
 
-  /// Delete a file or folder
   void _deleteFileOrFolder(FileItemNew item, dynamic parentFolderId) async {
     setState(() {
       item.isDeleted = true;
@@ -139,6 +126,24 @@ class _HomeFragmentState extends State<HomeFragment> {
 
     await deleteFilesOrFolder(item, parentFolderId, context);
     _refreshData(); // Refresh after deletion
+  }
+
+  void removeCutItem(FileItemNew item, List<FileItemNew> allItems){
+    setState(() {
+      // allItems.remove(item);
+      // currentItems = allItems;
+      cutOrCopiedItem = item;
+    });
+  }
+
+  void pasteItem(FileItemNew item, List<FileItemNew> allItems){
+    // setState(() {
+    //   allItems.remove(cutOrCopiedItem);
+    //   item.children != null ?
+    //   item.children!.add(cutOrCopiedItem!) :
+    //   item.children = [cutOrCopiedItem!];
+    // });
+    _refreshData();
   }
 
   @override
@@ -150,6 +155,8 @@ class _HomeFragmentState extends State<HomeFragment> {
       colorScheme: widget.colorScheme,
       renameFolder: _renameFolder,
       deleteItem: _deleteFileOrFolder,
+      cutFileOrFolder: removeCutItem,
+      pasteFileOrFolder: pasteItem,
     )
         : CustomListView(
       items: currentItems,
@@ -157,6 +164,8 @@ class _HomeFragmentState extends State<HomeFragment> {
       colorScheme: widget.colorScheme,
       renameFolder: _renameFolder,
       deleteItem: _deleteFileOrFolder,
+      cutFileOrFolder: removeCutItem,
+      pasteFileOrFolder: pasteItem,
     );
 
     // Use the correct theme for the widget
@@ -186,24 +195,6 @@ class _HomeFragmentState extends State<HomeFragment> {
       ),
     );
   }
-
-  /// A simple Shimmer-based placeholder while data loads
-  // Widget _buildShimmerPlaceholder() {
-  //   return Shimmer.fromColors(
-  //     baseColor: Colors.grey[300]!,
-  //     highlightColor: Colors.grey[100]!,
-  //     child: ListView.builder(
-  //       itemCount: 8, // Show as many placeholders as you like
-  //       itemBuilder: (context, index) {
-  //         return Container(
-  //           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  //           height: 60,
-  //           color: Colors.white,
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
 
   Widget _buildShimmerPlaceholder() {
     return ListView.builder(
