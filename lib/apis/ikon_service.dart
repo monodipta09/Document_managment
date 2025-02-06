@@ -334,6 +334,9 @@ class IKonService {
         // final responseData = json.decode(response.body);
         // return responseData;
         return response.body.replaceAll('\"', "");
+      }else if(response.statusCode == 401){
+        await logout();
+        return "";
       } else {
         // Handle non-200 responses
         return 'false';
@@ -400,7 +403,10 @@ class IKonService {
         return List<Map<String, dynamic>>.from(
             responseData.map((item) => Map<String, dynamic>.from(item))
         );
-      } else {
+      }else if(response.statusCode == 401){
+        await logout();
+        return [];
+    }else {
         print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
         throw Exception('Failed to get instances: ${response.reasonPhrase}');
       }
@@ -453,6 +459,9 @@ class IKonService {
 
       if (response.statusCode == 200) {
         return response.body.replaceAll('\"', "");
+      }else if(response.statusCode == 401){
+        await logout();
+        return "";
       } else {
         print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
         throw Exception('Failed to map process name: ${response.reasonPhrase}');
@@ -515,7 +524,10 @@ class IKonService {
           print('Process start failed: Invalid response data');
           return false;
         }
-      } else {
+      } else if(response.statusCode == 401){
+        await logout();
+        return false;
+      }else {
         print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
         print(response.body);
         return false;
@@ -580,7 +592,10 @@ class IKonService {
           print('Process invoke failed: Invalid response data');
           return false;
         }
-      } else {
+      } else if(response.statusCode == 401){
+        await logout();
+        return false;
+      }else {
         print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
         print(response.body);
         return false;
@@ -630,7 +645,10 @@ class IKonService {
           print('Get user profile failed: Invalid response data');
           throw Exception('Invalid response format');
         }
-      } else {
+      } else if(response.statusCode == 401){
+        await logout();
+        return {};
+      }else {
         print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
         print(response.body);
         throw Exception('Failed to get user profile: ${response.reasonPhrase}');
@@ -678,6 +696,9 @@ class IKonService {
           print('Get user profile failed: Invalid response data');
           throw Exception('Invalid response format');
         }
+      }else if(response.statusCode == 401){
+        await logout();
+        return {};
       } else {
         print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
         print(response.body);
@@ -709,6 +730,9 @@ class IKonService {
 
       if (response.statusCode == 200) {
         return await response.stream.bytesToString();
+      }else if(response.statusCode == 401){
+        await logout();
+        return "";
       } else {
         print('Upload failed: ${response.reasonPhrase}');
         return 'false';
@@ -737,6 +761,9 @@ class IKonService {
       if (response.statusCode == 200) {
         final responseBody = await response.stream.bytesToString();
         return responseBody;
+      }else if(response.statusCode == 401){
+        await logout();
+        return "";
       } else {
         print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
         throw Exception('Failed to download resource: ${response.reasonPhrase}');
@@ -848,7 +875,9 @@ class IKonService {
         //   print('Update user profile failed: Invalid response data');
         //   throw Exception('Invalid response format');
         // }
-      } else {
+      } else if(response.statusCode == 401){
+        await logout();
+      }else {
         print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
         print('Error Body: ${response.body}');
         throw Exception('Failed to update user profile: ${response.reasonPhrase}');

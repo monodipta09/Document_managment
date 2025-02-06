@@ -205,7 +205,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'Software Engineer Level 1',
+                        'Keross R&D',
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                     ],
