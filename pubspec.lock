@@ -334,7 +334,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "0795523e096bc97761b0a749f13516f1b4e31e98"
+      resolved-ref: "3e15048f06fb24824f9713eb9855ddba9e46bd44"
       url: "https://github.com/RomanticNihilist/menu_submenu_sidebar_dropdown_accordian_package.git"
     source: git
     version: "0.0.1"
@@ -691,10 +691,10 @@ packages:
     dependency: transitive
     description:
       name: vector_graphics
-      sha256: a1870d398158844fe5db12441611ed9a2222ff4340258b539eaf3590c1b4bd7e
+      sha256: "44cc7104ff32563122a929e4620cf3efd584194eec6d1d913eb5ba593dbcf6de"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.17"
+    version: "1.1.18"
   vector_graphics_codec:
     dependency: transitive
     description:
