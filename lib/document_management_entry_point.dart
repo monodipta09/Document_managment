@@ -5,6 +5,8 @@ import 'data/profile_page_menu_data.dart';
 import 'dart:io';
 import 'package:menu_submenu_sidebar_dropdown_accordian_package/menu_submenu_sidebar_dropdown_accordian_package.dart';
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 class DocumentManagementEntryPoint extends StatefulWidget {
   const DocumentManagementEntryPoint({super.key});
 
@@ -76,6 +78,7 @@ class _DocumentManagementEntryPointState
         useMaterial3: true,
       ),
       themeMode: themeMode,
+      navigatorObservers: [routeObserver],
       home: Scaffold(
         drawer: Drawer(
           child: MenuWithSubMenu(

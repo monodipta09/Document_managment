@@ -90,6 +90,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                         fileItems: item.children ?? [],
                         folderName: item.name,
                         colorScheme: Theme.of(context).colorScheme,
+                        folderId: item.identifier,
                       ),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {

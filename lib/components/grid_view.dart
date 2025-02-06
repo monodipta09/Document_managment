@@ -19,6 +19,7 @@ class GridLayout extends StatelessWidget {
   final dynamic parentFolderId;
   final Function(FileItemNew item, List<FileItemNew> allItems)? cutFileOrFolder;
   final Function(FileItemNew item, List<FileItemNew> allItems)? pasteFileOrFolder;
+  final Function? homeRefreshData;
   // final bool isLightTheme;
 
   const GridLayout(
@@ -32,6 +33,7 @@ class GridLayout extends StatelessWidget {
       this.parentFolderId,
       this.cutFileOrFolder,
       this.pasteFileOrFolder,
+      this.homeRefreshData,
       });
 
   @override
@@ -73,6 +75,8 @@ class GridLayout extends StatelessWidget {
               colorScheme: colorScheme,
               parentId: item.identifier,
               isTrashed: isTrashed ? true : false,
+              folderId: item.identifier,
+              homeRefreshData:homeRefreshData,
               // isLightTheme: isLightTheme,
             ),
             transitionsBuilder:

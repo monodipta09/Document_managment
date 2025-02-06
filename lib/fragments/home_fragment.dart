@@ -36,7 +36,7 @@ class HomeFragment extends StatefulWidget {
   State<HomeFragment> createState() => _HomeFragmentState();
 }
 
-class _HomeFragmentState extends State<HomeFragment> {
+class _HomeFragmentState extends State<HomeFragment>{
   List<FileItemNew> currentItems = [];
   FileItemNew? cutOrCopiedItem;
 
@@ -146,6 +146,10 @@ class _HomeFragmentState extends State<HomeFragment> {
     _refreshData();
   }
 
+  void _refreshDataAfterPaste(){
+    _refreshData();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget currentView = widget.isGridView
@@ -157,6 +161,7 @@ class _HomeFragmentState extends State<HomeFragment> {
       deleteItem: _deleteFileOrFolder,
       cutFileOrFolder: removeCutItem,
       pasteFileOrFolder: pasteItem,
+      homeRefreshData: _refreshDataAfterPaste,
     )
         : CustomListView(
       items: currentItems,
@@ -166,6 +171,7 @@ class _HomeFragmentState extends State<HomeFragment> {
       deleteItem: _deleteFileOrFolder,
       cutFileOrFolder: removeCutItem,
       pasteFileOrFolder: pasteItem,
+      homeRefreshData: _refreshDataAfterPaste,
     );
 
     // Use the correct theme for the widget

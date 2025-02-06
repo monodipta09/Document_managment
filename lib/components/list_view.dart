@@ -19,8 +19,9 @@ class CustomListView extends StatelessWidget {
   final dynamic parentFolderId;
   final Function(FileItemNew item, List<FileItemNew> allItems)? cutFileOrFolder;
   final Function(FileItemNew item, List<FileItemNew> allItems)? pasteFileOrFolder;
+  final Function? homeRefreshData;
 
-  const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme, this.renameFolder, this.deleteItem, this.isTrashed = false, this.parentFolderId, this.cutFileOrFolder, this.pasteFileOrFolder});
+  const CustomListView({super.key, required this.items, this.onStarred, required this.colorScheme, this.renameFolder, this.deleteItem, this.isTrashed = false, this.parentFolderId, this.cutFileOrFolder, this.pasteFileOrFolder, this.homeRefreshData});
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +66,8 @@ class CustomListView extends StatelessWidget {
                       colorScheme: colorScheme,
                        parentId: item.identifier,
                        isTrashed: isTrashed ? true : false,
+                       folderId: item.identifier,
+                       homeRefreshData:homeRefreshData,
                       // isLightTheme: isLightTheme,
                     ),
                     transitionsBuilder:

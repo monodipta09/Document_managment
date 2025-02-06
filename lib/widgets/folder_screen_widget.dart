@@ -14,11 +14,14 @@ import '../utils/delete_item_utils.dart';
 import 'floating_action_button_widget.dart';
 // import 'package:document_management_main/data/file_data.dart';
 import '../utils/file_data_service_util.dart';
+
 class FolderScreenWidget extends StatefulWidget {
   final List<FileItemNew> fileItems;
   final String folderName;
   final dynamic parentId;
   final bool isTrashed;
+  final String folderId;
+  final Function? homeRefreshData;
 
   // final bool isLightTheme;
   final ColorScheme colorScheme;
@@ -28,8 +31,9 @@ class FolderScreenWidget extends StatefulWidget {
       required this.fileItems,
       required this.folderName,
       required this.colorScheme,
+      required this.folderId,
       this.isTrashed = false,
-      this.parentId});
+      this.parentId, this.homeRefreshData});
 
   @override
   State<FolderScreenWidget> createState() {
@@ -37,7 +41,7 @@ class FolderScreenWidget extends StatefulWidget {
   }
 }
 
-class _FolderScreenWidget extends State<FolderScreenWidget> {
+class _FolderScreenWidget extends State<FolderScreenWidget>{
   List<FileItemNew> currentItems = [];
   bool localIsGridView = false;
 
@@ -69,7 +73,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
     return null;
   }
 
-  void cutItemsFromFolder(FileItemNew item, List<FileItemNew> allItems){
+  void cutItemsFromFolder(FileItemNew item, List<FileItemNew> allItems) {
     setState(() {
       allItems.remove(item);
       currentItems = allItems;
@@ -77,7 +81,6 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
   }
 
   List<FileItemNew> allActiveItems = [];
-
   @override
   void initState() {
     super.initState();
@@ -96,68 +99,19 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
   Future<void> _refreshData() async {
     try {
       // Fetch file instances
-      final List<Map<String, dynamic>> fileInstanceData =
-          await IKonService.iKonService.getMyInstancesV2(
-        processName: "File Manager - DM",
-        predefinedFilters: {"taskName": "Viewer Access"},
-        processVariableFilters: null,
-        taskVariableFilters: null,
-        mongoWhereClause: null,
-        projections: ["Data"],
-        allInstance: false,
-      );
-      print("FileInstance Data: ");
-      print(fileInstanceData);
-
-      // Fetch folder instances
-      final List<Map<String, dynamic>> folderInstanceData =
-          await IKonService.iKonService.getMyInstancesV2(
-        processName: "Folder Manager - DM",
-        predefinedFilters: {"taskName": "Viewer Access"},
-        processVariableFilters: null,
-        taskVariableFilters: null,
-        mongoWhereClause: null,
-        projections: ["Data"],
-        allInstance: false,
-      );
-      print("FolderInstance Data: ");
-      print(folderInstanceData);
-
-      final Map<String, dynamic> userData =
-          await IKonService.iKonService.getLoggedInUserProfile();
-
-      final List<Map<String, dynamic>> starredInstanceData =
-          await IKonService.iKonService.getMyInstancesV2(
-        processName: "User Specific Folder and File Details - DM",
-        predefinedFilters: {"taskName": "View Details"},
-        processVariableFilters: {"user_id": userData["USER_ID"]},
-        taskVariableFilters: null,
-        mongoWhereClause: null,
-        projections: ["Data"],
-        allInstance: false,
-      );
-
-      final List<Map<String, dynamic>> trashInstanceData =
-          await IKonService.iKonService.getMyInstancesV2(
-        processName: "Delete Folder Structure - DM",
-        predefinedFilters: {"taskName": "Delete Folder And Files"},
-        processVariableFilters: null,
-        taskVariableFilters: null,
-        mongoWhereClause: null,
-        projections: ["Data"],
-        allInstance: false,
-      );
-
-      // Create file structure
-      final fileStructure = createFileStructure(fileInstanceData,
-          folderInstanceData, starredInstanceData, trashInstanceData);
-      getItemData(fileStructure);
+      final fileStructure = await fetchFileStructure();
 
       // Update the state with the new file structure
       setState(() {
         // allActiveItems = [];
-        removeDeletedFiles(widget.fileItems);
-        currentItems = widget.fileItems;
+        FileItemNew fileItem = fileStructure
+            .firstWhere((item) => item.identifier == widget.folderId);
+        List<FileItemNew> fileItems = fileItem.children!;
+        removeDeletedFiles(fileItems);
+        currentItems = fileItems;
+
+        // removeDeletedFiles(widget.fileItems);
+        // currentItems = widget.fileItems;
         // currentItems = fileStructure;
       });
     } catch (e) {
@@ -165,7 +119,7 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
       print("Error during refresh: $e");
       // Optionally, show a snackbar or dialog to inform the user
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to refresh data. Please try again.')),
+        const SnackBar(content: Text('Failed to refresh data. Please try again.')),
       );
     }
   }
@@ -277,14 +231,18 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
         items.remove(item);
         return;
       }
-      if (item.isFolder && item.children!=null) {
+      if (item.isFolder && item.children != null) {
         removeDeletedFiles(item.children!);
       }
     }
   }
 
-  void pasteItem(FileItemNew item, List<FileItemNew> allItems){
+  void cutItem(FileItemNew item, List<FileItemNew> allItems){
+    // _refreshData();
+  }
+  void pasteItem(FileItemNew item, List<FileItemNew> allItems) {
     _refreshData();
+    widget.homeRefreshData!();
   }
 
   @override
@@ -350,7 +308,8 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
                     renameFolder: _renameFolder,
                     deleteItem: _deleteFileOrFolder,
                     isTrashed: widget.isTrashed,
-              pasteFileOrFolder: pasteItem,
+                    cutFileOrFolder: cutItem,
+                    pasteFileOrFolder: pasteItem,
                   )
                 : CustomListView(
                     items: currentItems,
@@ -360,7 +319,8 @@ class _FolderScreenWidget extends State<FolderScreenWidget> {
                     renameFolder: _renameFolder,
                     deleteItem: _deleteFileOrFolder,
                     isTrashed: widget.isTrashed,
-              pasteFileOrFolder: pasteItem,
+                    cutFileOrFolder: cutItem,
+                    pasteFileOrFolder: pasteItem,
                   ),
           ),
           // GridLayout(items: currentItems, onStarred: _addToStarred, isGridView: widget.isGridView, toggleViewMode: widget.toggleViewMode),
