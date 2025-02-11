@@ -136,14 +136,14 @@ class BottomModalOptions extends StatelessWidget {
                 shrinkWrap: true,
                 children: (isTrashed != null && isTrashed == true)
                     ? [
-                        _buildOption(
-                          context,
-                          icon: Icons.delete_forever,
-                          label: "Delete Permanently",
-                          onTap: () {
-                            // Handle delete permanently action
-                          },
-                        ),
+                        // _buildOption(
+                        //   context,
+                        //   icon: Icons.delete_forever,
+                        //   label: "Delete Permanently",
+                        //   onTap: () {
+                        //     // Handle delete permanently action
+                        //   },
+                        // ),
                         _buildOption(
                           context,
                           icon: Icons.restore,
@@ -178,20 +178,20 @@ class BottomModalOptions extends StatelessWidget {
                           indent: 20.0,
                           endIndent: 20.0,
                         ),
-                        _buildOption(
-                          context,
-                          icon: Icons.home_outlined,
-                          label: "Move to Home",
-                          onTap: () {
-                            Navigator.pop(context); // Close the modal
-                            bool isFolder = itemData.isFolder;
-                            String cutOrCopied = "cut";
-                            String identifier = itemData.identifier;
-                            cutOrCopyDocument(
-                                isFolder, cutOrCopied, identifier, itemData);
-                            pasteDocument("home", context);
-                          },
-                        ),
+                        // _buildOption(
+                        //   context,
+                        //   icon: Icons.home_outlined,
+                        //   label: "Move to Home",
+                        //   onTap: () {
+                        //     Navigator.pop(context); // Close the modal
+                        //     bool isFolder = itemData.isFolder;
+                        //     String cutOrCopied = "cut";
+                        //     String identifier = itemData.identifier;
+                        //     cutOrCopyDocument(
+                        //         isFolder, cutOrCopied, identifier, itemData);
+                        //     pasteDocument("home", context);
+                        //   },
+                        // ),
                         _buildOption(
                           context,
                           icon: Icons.cut,
