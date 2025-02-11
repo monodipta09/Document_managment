@@ -8,6 +8,7 @@ import '../files_viewer/pdf_viewer_page.dart';
 import '../files_viewer/text_viewer_page.dart';
 import '../widgets/bottom_modal_options.dart';
 import '../widgets/folder_screen_widget.dart';
+import 'package:intl/intl.dart';
 
 class CustomListView extends StatelessWidget {
   final List<FileItemNew> items;
@@ -123,8 +124,10 @@ class CustomListView extends StatelessWidget {
                   const SizedBox(
                     width: 5.0,
                   ),
-                  Text(
-                    "Opened Recently",
+                  Text("Modified on "+
+                      DateFormat("dd/MM/yy hh:mm").format(
+                        DateTime.parse(item.otherDetails['updatedOn']),
+                      ),
                     style: TextStyle(
                       fontSize: 14.0,
                       color: colorScheme.secondary
