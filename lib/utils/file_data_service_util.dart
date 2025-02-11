@@ -64,6 +64,12 @@ Future<List<FileItemNew>> fetchFileStructure() async {
     trashInstanceData,
   );
 
+  // 7. Fetch all user data
+  List allUserData = await IKonService.iKonService.getAllUsers();
+
+  //8. Store the data in user id user details map format
+  setAllUserDetails(allUserData);
+
   return fileStructure;
 }
 

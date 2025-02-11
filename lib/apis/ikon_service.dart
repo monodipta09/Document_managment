@@ -414,8 +414,6 @@ class IKonService {
       return downloadUrl + "?ticket=" + _ticket + "&resourceId=" + resourceId + "&resourceName=" + resourceName + "&resourceType=" + resourceType;
   }
 
-
-
   Future<String> mapProcessName({required String processName}) async {
       final headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -689,6 +687,60 @@ class IKonService {
     }
   }
 
+    Future<List<dynamic>> getAllUsers() async {
+    try {
+      final headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
+
+      final params = {
+        "inZip": "false",
+        "outZip": "false",
+        "inFormat": "freejson",
+        "outFormat": "freejson",
+        "service": "userService",
+        "operation": "getAllUsers",
+        "ticket": _ticket,
+        "activeAccountId": _globalAccountId
+      };
+
+      final uri = Uri.parse(restUrl).replace(queryParameters: params);
+
+      
+      final arguments = [
+        _globalAccountId,
+      ];
+
+      // Empty body as per original request
+      final body = {
+        'arguments': jsonEncode(arguments),
+      };
+
+      final response = await http.post(
+        uri,
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        final userProfile = jsonDecode(response.body);
+
+        if (userProfile != null && userProfile is List) {
+          return userProfile;
+        } else {
+          print('Get user profile failed: Invalid response data');
+          throw Exception('Invalid response format');
+        }
+      } else {
+        print('API Error: ${response.statusCode} - ${response.reasonPhrase}');
+        print(response.body);
+        throw Exception('Failed to get user profile: ${response.reasonPhrase}');
+      }
+    } catch (error) {
+      print("Error during getLoggedInUserProfileDetails API call: $error");
+      throw error;
+    }
+  }
 
   Future<String> uploadFile({ required String filePath, required String resourceId}) async {
     var headers = {

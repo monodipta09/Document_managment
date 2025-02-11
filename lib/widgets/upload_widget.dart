@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../apis/ikon_service.dart';
 import '../data/create_fileStructure.dart';
@@ -17,20 +18,19 @@ class UploadWidget extends StatefulWidget {
   final String? folderName;
   final Function(List<FileItemNew>) onFilesAdded;
 
-  const UploadWidget({
-    super.key,
-    required this.onFilesAdded,
-    this.parentFolderId
-  }) : isFolderUpload = false,
+  const UploadWidget(
+      {super.key, required this.onFilesAdded, this.parentFolderId})
+      : isFolderUpload = false,
         folderName = null;
 
-  const UploadWidget.uploadWithinFolder({
-    super.key,
-    required this.onFilesAdded,
-    required this.isFolderUpload,
-    required this.folderName,
-    this.parentFolderId
-  }) : assert(isFolderUpload == true, 'isFolderUpload must be true for uploadWithinFolder');
+  const UploadWidget.uploadWithinFolder(
+      {super.key,
+      required this.onFilesAdded,
+      required this.isFolderUpload,
+      required this.folderName,
+      this.parentFolderId})
+      : assert(isFolderUpload == true,
+            'isFolderUpload must be true for uploadWithinFolder');
 
   @override
   _UploadWidgetState createState() => _UploadWidgetState();
@@ -39,7 +39,8 @@ class UploadWidget extends StatefulWidget {
 class _UploadWidgetState extends State<UploadWidget> {
   var uuid = Uuid();
 
-  Future<void> pickFiles(bool isFolderUpload, String folderName, dynamic parentFolderId) async {
+  Future<void> pickFiles(
+      bool isFolderUpload, String folderName, dynamic parentFolderId) async {
     try {
       final result = await FilePicker.platform.pickFiles(
         compressionQuality: 30,
@@ -51,12 +52,11 @@ class _UploadWidgetState extends State<UploadWidget> {
           .mapProcessName(processName: "File Manager - DM");
 
       final Map<String, dynamic> userData =
-      await IKonService.iKonService.getLoggedInUserProfile();
-
+          await IKonService.iKonService.getLoggedInUserProfile();
 
       if (result != null && result.files.isNotEmpty) {
         List<FileItemNew> fileList =
-        processFiles(result.files, isFolderUpload, folderName);
+            processFiles(result.files, isFolderUpload, folderName, userData["USER_ID"]);
 
         fileList.asMap().entries.map((entry) {
           final index = entry.key;
@@ -65,6 +65,9 @@ class _UploadWidgetState extends State<UploadWidget> {
           print('Processing file at index: $index, File: ${file.name}');
 
           final fileSize = File(file.filePath!).lengthSync();
+          final currentDateAndTime = DateTime.now();
+          final formattedCurrentDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+              .format(currentDateAndTime);
           final Map<String, dynamic> extractData = {
             "uploadResourceDetails": [
               {
@@ -73,7 +76,7 @@ class _UploadWidgetState extends State<UploadWidget> {
                 "resourceType": getResourceType(result.files[index].extension!),
                 "resourceId": file.fileId,
                 "uploadedBy": userData["USER_ID"],
-                "uploadedOn": DateTime.now().toIso8601String(),
+                "uploadedOn": formattedCurrentDate,
                 "fileName": file.name.split('.').first,
                 "fileNameExtension": result.files[index].extension! ?? 'unknown'
               }
@@ -81,9 +84,9 @@ class _UploadWidgetState extends State<UploadWidget> {
             "resource_identifier": file.identifier,
             "folder_identifier": parentFolderId,
             "createdBy": userData["USER_ID"],
-            "createdOn": DateTime.now().toIso8601String(),
+            "createdOn": formattedCurrentDate,
             "updatedBy": userData["USER_ID"],
-            "updatedOn": DateTime.now().toIso8601String(),
+            "updatedOn": formattedCurrentDate,
             "isCreated": true,
             "userDetails": {
               "folderViewUserAccess": [],
@@ -108,8 +111,8 @@ class _UploadWidgetState extends State<UploadWidget> {
 
           print('Extract data for file: ${file.name} - $extractData');
 
-
-          Future<String> resourceId = IKonService.iKonService.uploadFile(filePath: file.filePath!, resourceId: file.fileId!);
+          Future<String> resourceId = IKonService.iKonService
+              .uploadFile(filePath: file.filePath!, resourceId: file.fileId!);
           IKonService.iKonService.startProcessV2(
               processId: processId,
               data: extractData,
@@ -129,16 +132,20 @@ class _UploadWidgetState extends State<UploadWidget> {
     final String folderId = uuid.v4();
 
     final Map<String, dynamic> userData =
-    await IKonService.iKonService.getLoggedInUserProfile();
+        await IKonService.iKonService.getLoggedInUserProfile();
+
+    final currentDateAndTime = DateTime.now();
+    final formattedCurrentDate =
+        DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(currentDateAndTime);
 
     final Map<String, dynamic> extractDataForFolder = {
       "folderName": folderName,
       "folder_identifier": folderId,
       "parentId": parentId,
       "createdBy": userData["USER_ID"],
-      "createdOn": DateTime.now().toIso8601String(),
+      "createdOn": formattedCurrentDate,
       "updatedBy": userData["USER_ID"],
-      "updatedOn": DateTime.now().toIso8601String(),
+      "updatedOn": formattedCurrentDate,
       "type": "folder",
       "userDetails": {
         "editFolderAccess": [],
@@ -176,6 +183,12 @@ class _UploadWidgetState extends State<UploadWidget> {
       isDeleted: false,
       filePath: null,
       identifier: folderId,
+      otherDetails: {
+        "createdBy": userData["USER_ID"],
+        "createdOn": formattedCurrentDate,
+        "updatedBy": userData["USER_ID"],
+        "updatedOn": formattedCurrentDate,
+      },
     );
 
     widget.onFilesAdded([newFolder]);
@@ -183,13 +196,13 @@ class _UploadWidgetState extends State<UploadWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         UploadButton(
-          onTap:(){
-            pickFiles(widget.isFolderUpload, widget.folderName?? "", widget.parentFolderId);
+          onTap: () {
+            pickFiles(widget.isFolderUpload, widget.folderName ?? "",
+                widget.parentFolderId);
             // Navigator.pop(context);
           },
           icon: Icons.upload_file,
@@ -200,7 +213,10 @@ class _UploadWidgetState extends State<UploadWidget> {
           onTap: () {
             showDialog(
               context: context,
-              builder: (_) => FolderDialog(onFolderCreated: _createFolder, parentId: widget.parentFolderId,),
+              builder: (_) => FolderDialog(
+                onFolderCreated: _createFolder,
+                parentId: widget.parentFolderId,
+              ),
             );
             // Navigator.pop(context);
           },

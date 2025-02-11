@@ -1,4 +1,6 @@
+import 'package:document_management_main/apis/ikon_service.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../data/create_fileStructure.dart';
 import '../data/file_class.dart';
@@ -40,20 +42,28 @@ String getResourceType(String extension) {
   }
 }
 
-List<FileItemNew> processFiles(
-    List<PlatformFile> files, bool isFolderUpload, String folderName) {
+List<FileItemNew> processFiles(List<PlatformFile> files, bool isFolderUpload,
+    String folderName, String userId) {
   return files.map((file) {
     String fileId = uuid.v4();
     String identifier = uuid.v4();
+    final currentDateAndTime = DateTime.now();
+    final formattedCurrentDate =
+        DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(currentDateAndTime);
     return FileItemNew(
-      name: file.name,
-      icon: getFileIcon(file.extension),
-      isFolder: false,
-      isStarred: false,
-      isDeleted: false,
-      filePath: file.path,
-      fileId: fileId,
-      identifier: identifier,
-    );
+        name: file.name,
+        icon: getFileIcon(file.extension),
+        isFolder: false,
+        isStarred: false,
+        isDeleted: false,
+        filePath: file.path,
+        fileId: fileId,
+        identifier: identifier,
+        otherDetails: {
+          "createdBy": userId,
+          "createdOn": formattedCurrentDate,
+          "updatedBy": userId,
+          "updatedOn": formattedCurrentDate,
+        });
   }).toList();
 }
