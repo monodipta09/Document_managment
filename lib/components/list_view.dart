@@ -100,7 +100,8 @@ class CustomListView extends StatelessWidget {
                             TextFileViewerPage(filePath: item.filePath!,fileName: item.name,)),
                   );
                 } else if (item.filePath!.endsWith("png") ||
-                    item.filePath!.endsWith("jpg")) {
+                    item.filePath!.endsWith("jpg") ||
+                    item.filePath!.endsWith("jpeg")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -106,21 +106,21 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                 ));
               } else if (item.filePath != null) {
                 final path = item.filePath!.toLowerCase();
-                if (path.endsWith(".pdf")) {
+                if (path.endsWith("pdf")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => PdfViewerPage(filePath: item.filePath!, fileName: item.name,),
                     ),
                   );
-                } else if (path.endsWith(".txt")) {
+                } else if (path.endsWith("plain")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => TextFileViewerPage(filePath: item.filePath!,fileName: item.name,),
                     ),
                   );
-                } else if (path.endsWith(".png") || path.endsWith(".jpg")) {
+                } else if (path.endsWith("png") || path.endsWith("jpg") || path.endsWith("jpeg")) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(

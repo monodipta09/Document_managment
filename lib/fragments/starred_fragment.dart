@@ -126,7 +126,6 @@
 //   }
 // }
 
-
 // import 'package:flutter/material.dart';
 // import 'package:document_management_main/components/grid_view.dart';
 // import 'package:document_management_main/components/list_view.dart';
@@ -378,13 +377,6 @@
 //   }
 // }
 
-
-
-
-
-
-
-
 // With Shimmer Loading
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -436,7 +428,7 @@ class _StarredFragmentState extends State<StarredFragment> {
     try {
       // Example logic: fetch all needed instances
       final List<Map<String, dynamic>> fileInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
+          await IKonService.iKonService.getMyInstancesV2(
         processName: "File Manager - DM",
         predefinedFilters: {"taskName": "Viewer Access"},
         processVariableFilters: null,
@@ -447,7 +439,7 @@ class _StarredFragmentState extends State<StarredFragment> {
       );
 
       final List<Map<String, dynamic>> folderInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
+          await IKonService.iKonService.getMyInstancesV2(
         processName: "Folder Manager - DM",
         predefinedFilters: {"taskName": "Viewer Access"},
         processVariableFilters: null,
@@ -458,10 +450,10 @@ class _StarredFragmentState extends State<StarredFragment> {
       );
 
       final Map<String, dynamic> userData =
-      await IKonService.iKonService.getLoggedInUserProfile();
+          await IKonService.iKonService.getLoggedInUserProfile();
 
       final List<Map<String, dynamic>> starredInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
+          await IKonService.iKonService.getMyInstancesV2(
         processName: "User Specific Folder and File Details - DM",
         predefinedFilters: {"taskName": "View Details"},
         processVariableFilters: {"user_id": userData["USER_ID"]},
@@ -472,7 +464,7 @@ class _StarredFragmentState extends State<StarredFragment> {
       );
 
       final List<Map<String, dynamic>> trashInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
+          await IKonService.iKonService.getMyInstancesV2(
         processName: "Delete Folder Structure - DM",
         predefinedFilters: {"taskName": "Delete Folder And Files"},
         processVariableFilters: null,
@@ -553,7 +545,7 @@ class _StarredFragmentState extends State<StarredFragment> {
     try {
       final identifier = item.identifier;
       final List<Map<String, dynamic>> folderInstanceData =
-      await IKonService.iKonService.getMyInstancesV2(
+          await IKonService.iKonService.getMyInstancesV2(
         processName: "Folder Manager - DM",
         predefinedFilters: {"taskName": "Editor Access"},
         processVariableFilters: {"folder_identifier": identifier},
@@ -633,22 +625,22 @@ class _StarredFragmentState extends State<StarredFragment> {
       body: _isLoading
           ? _buildShimmerPlaceholder()
           : starredItems.isEmpty
-          ? const Center(
-        child: Text("No starred items"),
-      )
-          : localIsGridView
-          ? GridLayout(
-        items: starredItems,
-        onStarred: _addToStarred,
-        colorScheme: widget.colorScheme,
-        renameFolder: _renameFolder,
-      )
-          : CustomListView(
-        items: starredItems,
-        onStarred: _addToStarred,
-        colorScheme: widget.colorScheme,
-        renameFolder: _renameFolder,
-      ),
+              ? const Center(
+                  child: Text("No starred items"),
+                )
+              : widget.isGridView
+                  ? GridLayout(
+                      items: starredItems,
+                      onStarred: _addToStarred,
+                      colorScheme: widget.colorScheme,
+                      renameFolder: _renameFolder,
+                    )
+                  : CustomListView(
+                      items: starredItems,
+                      onStarred: _addToStarred,
+                      colorScheme: widget.colorScheme,
+                      renameFolder: _renameFolder,
+                    ),
     );
   }
 }

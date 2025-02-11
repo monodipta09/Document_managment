@@ -36,8 +36,9 @@ String getFileIcon(String extension) {
     case 'png':
       return 'assets/png-file.svg';
     case 'jpg':
+      return 'assets/png-file.svg';
     case 'jpeg':
-      return 'assets/jpg-file.svg';
+      return 'assets/png-file.svg';
     case 'xlsx':
       return 'assets/excel-file.svg';
     default:

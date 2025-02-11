@@ -12,7 +12,9 @@ String getFileIcon(String? extension) {
     case "pdf":
       return "assets/pdf-file.svg";
     case "png":
+      return "assets/png-file.svg";
     case "jpg":
+      return "assets/png-file.svg";
     case "jpeg":
       return "assets/png-file.svg";
     case "txt":
