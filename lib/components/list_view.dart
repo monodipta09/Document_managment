@@ -125,7 +125,7 @@ class CustomListView extends StatelessWidget {
                   const SizedBox(
                     width: 5.0,
                   ),
-                  Text("Modified on "+
+                  Text(
                       DateFormat("dd/MM/yy hh:mm").format(
                         DateTime.parse(item.otherDetails['updatedOn']),
                       ),
