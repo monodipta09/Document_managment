@@ -104,6 +104,8 @@ flutter:
     - assets/light_mode_bg.jpg
     - assets/dark_mode_bg.jpg
     - assets/profile_picture.png
+    - assets/appearancePageBg.svg
+    - assets/Frame.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

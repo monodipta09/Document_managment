@@ -20,27 +20,29 @@ class DetailsActivity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    final isLight = Theme.of(context).brightness == Brightness.light;
     void calculateFolderSize(){
 
     }
-    
+
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.5, // 40% of screen height
       minChildSize: 0.2, // Minimum size
       maxChildSize: 0.8, // Maximum size
       builder: (context, scrollController) {
-        return SingleChildScrollView(
+        return Theme(
+          data: Theme.of(context), // Use the current theme
+          child: SingleChildScrollView(
           controller: scrollController,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("File Details",
+                Text("File Details",
                     style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isLight ? Colors.black : Colors.white)),
                 const SizedBox(height: 10),
                 ListTile(
                   leading: const Icon(Icons.insert_drive_file),
@@ -75,9 +77,9 @@ class DetailsActivity extends StatelessWidget {
                     ),),
                 ),
                 const Divider(),
-                const Text("Activity",
+                Text("Activity",
                     style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isLight ? Colors.black : Colors.white)),
                 ListTile(
                   leading: const Icon(Icons.edit),
                   title: Text("Edited by ${userIdUserDetailsMap[item.otherDetails['updatedBy']]["USER_NAME"]}"),
@@ -95,7 +97,7 @@ class DetailsActivity extends StatelessWidget {
               ],
             ),
           ),
-        );
+        ),);
       },
     );
   }
