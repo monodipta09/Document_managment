@@ -111,7 +111,7 @@ Widget build(BuildContext context) {
           title: Text(
             'Appearance Settings',
             style: TextStyle(
-                color: widget.colorScheme.primary
+                color: _isDarkMode? Colors.white:Colors.black,
             ),
           ),
           centerTitle: false,

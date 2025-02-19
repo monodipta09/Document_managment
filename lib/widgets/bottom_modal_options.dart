@@ -125,9 +125,10 @@ class BottomModalOptions extends StatelessWidget {
             // Options
             Text(
               itemData.name,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
+                color: isLightTheme? Colors.black: Colors.white,
               ),
             ),
             const SizedBox(height: 10.0),
