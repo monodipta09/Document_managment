@@ -11,7 +11,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 class IKonService {
   late String _tempTicket;
   late String _ticket;
-  late String _softwareId ;
+  late String softwareId ;
   late final String _globalAccountId = 'b8bbe5c9-ad0d-4874-b563-275a86e4b818';
   late String  _softwareName = "Document Management";
   late String _versionNumber = "1";
@@ -34,17 +34,96 @@ class IKonService {
     }
   }
 
+//   Future<bool> login(String username, String password) async {
+//     try {
+//       // Hash the password
+//       final hashedPassword = await _hashPassword(password);
+//
+//       // Define headers
+//       final headers = {
+//         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+//       };
+//
+//       // Define query parameters
+//       final params = {
+//         "inZip": "false",
+//         "outZip": "true",
+//         "inFormat": "xml",
+//         "outFormat": "typedjson",
+//         "service": "loginService",
+//         "operation": "login",
+//         "locale": "en_US",
+//       };
+//
+//       // Construct the credential XML string
+//       final credential = '''
+// <list>
+//   <string>
+//     <content><![CDATA[$username]]></content>
+//   </string>
+//   <string>
+//     <content><![CDATA[$hashedPassword]]></content>
+//   </string>
+// </list>
+// '''.trim().replaceAll(RegExp(r'\s+'), '');
+//
+//       // Encode the parameters into the URL
+//       final uri = Uri.parse(restUrl).replace(queryParameters: params);
+//
+//       // Encode the body as application/x-www-form-urlencoded
+//       final body = {'arguments': credential};
+//
+//       // Make the POST request
+//       final response = await http.post(
+//         uri,
+//         headers: headers,
+//         body: body,
+//       );
+//
+//       // Check if the request was successful
+//       if (response.statusCode == 200) {
+//         final responseData = json.decode(response.body);
+//
+//         // Navigate through the JSON structure to find the temporaryTicket
+//         final tempTicket = responseData['value']?['temporaryTicket']?['value'];
+//         final ticket = responseData['value']?['ticket']?['value'];
+//
+//         if (tempTicket != null && tempTicket is String) {
+//           // Store the temporaryTicket securely
+//           this._tempTicket = tempTicket;
+//           return true;
+//         }
+//
+//         else if(ticket != null && ticket is String) {
+//           this._ticket = ticket;
+//
+//            _softwareId = await  _getSoftwareId(_softwareName, _versionNumber);
+//           return true;
+//         }
+//
+//         else {
+//           // Temporary ticket not found in response
+//           return false;
+//         }
+//       } else {
+//         // Handle non-200 responses
+//         return false;
+//       }
+//     } catch (e) {
+//       // Handle any exceptions
+//       print('Login error: $e');
+//       return false;
+//     }
+//   }
+
   Future<bool> login(String username, String password) async {
     try {
-      // Hash the password
       final hashedPassword = await _hashPassword(password);
 
-      // Define headers
       final headers = {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
       };
 
-      // Define query parameters
       final params = {
         "inZip": "false",
         "outZip": "true",
@@ -55,66 +134,99 @@ class IKonService {
         "locale": "en_US",
       };
 
-      // Construct the credential XML string
       final credential = '''
-<list>
-  <string>
-    <content><![CDATA[$username]]></content>
-  </string>
-  <string>
-    <content><![CDATA[$hashedPassword]]></content>
-  </string>
-</list>
-'''.trim().replaceAll(RegExp(r'\s+'), '');
+  <list>
+    <string>
+      <content><![CDATA[$username]]></content>
+    </string>
+    <string>
+      <content><![CDATA[$hashedPassword]]></content>
+    </string>
+  </list>
+  '''.trim().replaceAll(RegExp(r'\s+'), '');
 
-      // Encode the parameters into the URL
       final uri = Uri.parse(restUrl).replace(queryParameters: params);
-
-      // Encode the body as application/x-www-form-urlencoded
       final body = {'arguments': credential};
 
-      // Make the POST request
-      final response = await http.post(
-        uri,
-        headers: headers,
-        body: body,
-      );
+      final response = await http.post(uri, headers: headers, body: body);
 
-      // Check if the request was successful
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-
-        // Navigate through the JSON structure to find the temporaryTicket
-        final tempTicket = responseData['value']?['temporaryTicket']?['value'];
         final ticket = responseData['value']?['ticket']?['value'];
 
-        if (tempTicket != null && tempTicket is String) {
-          // Store the temporaryTicket securely
-          this._tempTicket = tempTicket;
-          return true;
-        }
-
-        else if(ticket != null && ticket is String) {
+        if (ticket != null && ticket is String) {
           this._ticket = ticket;
 
-           _softwareId = await  _getSoftwareId(_softwareName, _versionNumber);
-          return true;
-        }
+          // Get software ID and store it
+          softwareId = await _getSoftwareId(_softwareName, _versionNumber);
 
-        else {
-          // Temporary ticket not found in response
+          // Save both ticket and softwareId to Secure Storage
+          final storage = FlutterSecureStorage();
+          await storage.write(key: "ticket", value: ticket);
+          await storage.write(key: "softwareId", value: softwareId);
+
+          return true;
+        } else {
           return false;
         }
       } else {
-        // Handle non-200 responses
         return false;
       }
     } catch (e) {
-      // Handle any exceptions
       print('Login error: $e');
       return false;
     }
   }
+
+
+
+  Future<bool> validateSession(String savedTicket) async {
+    try {
+      final headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+      };
+
+      final params = {
+        "inZip": "false",
+        "outZip": "false",
+        "inFormat": "freejson",
+        "outFormat": "freejson",
+        "service": "loginService",
+        "operation": "getLoggedInUserProfile",
+        "ticket": savedTicket,
+        "activeAccountId": _globalAccountId
+      };
+
+      final uri = Uri.parse(restUrl).replace(queryParameters: params);
+      final response = await http.post(uri, headers: headers);
+
+      if (response.statusCode == 200) {
+        this._ticket = savedTicket;
+
+        // Retrieve the stored softwareId
+        final storage = FlutterSecureStorage();
+        String? savedSoftwareId = await storage.read(key: "softwareId");
+
+        if (savedSoftwareId != null && savedSoftwareId.isNotEmpty) {
+          this.softwareId = savedSoftwareId;
+        } else {
+          // Re-fetch if not found
+          softwareId = await _getSoftwareId(_softwareName, _versionNumber);
+          await storage.write(key: "softwareId", value: softwareId);
+        }
+
+        return true;
+      } else {
+        await logout();
+        return false;
+      }
+    } catch (error) {
+      print("Error validating session: $error");
+      return false;
+    }
+  }
+
+
 
   Future<bool> validateOtp(String otp) async {
     try {
@@ -243,10 +355,60 @@ class IKonService {
     }
   }
 
+  // Future<void> logout({Function? callback}) async {
+  //   try {
+  //     final storage = FlutterSecureStorage();
+  //     await storage.delete(key: "ticket");
+  //     await storage.delete(key: "locale");
+  //     await storage.delete(key: "version");
+  //     await storage.delete(key: "theme");
+  //     await storage.delete(key: "userpagetype");
+  //
+  //     final headers = {
+  //       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+  //     };
+  //
+  //     final params = {
+  //       "inZip": "false",
+  //       "outZip": "false",
+  //       "inFormat": "freejson",
+  //       "outFormat": "freejson",
+  //       "service": "loginService",
+  //       "operation": "logout",
+  //     };
+  //
+  //     final uri = Uri.parse(restUrl).replace(queryParameters: params);
+  //     final response = await http.post(uri, headers: headers);
+  //
+  //     if (response.statusCode == 200) {
+  //       if (callback != null) {
+  //         callback();
+  //       } else {
+  //         // Navigate to the LoginPage using navigatorKey
+  //         navigatorKey.currentState?.pushAndRemoveUntil(
+  //           MaterialPageRoute(builder: (context) => LoginPage()),
+  //               (route) => false,
+  //         );
+  //       }
+  //     } else {
+  //       throw Exception("Logout API failed");
+  //     }
+  //   } catch (e) {
+  //     print("Logout error: $e");
+  //
+  //     // Navigate to the LoginPage in case of an error
+  //     navigatorKey.currentState?.pushAndRemoveUntil(
+  //       MaterialPageRoute(builder: (context) => LoginPage()),
+  //           (route) => false,
+  //     );
+  //   }
+  // }
+
   Future<void> logout({Function? callback}) async {
     try {
       final storage = FlutterSecureStorage();
-      await storage.delete(key: "ticket");
+      await storage.delete(key: "ticket"); // Remove stored ticket
+      await storage.delete(key: "softwareId"); // Remove stored softwareId
       await storage.delete(key: "locale");
       await storage.delete(key: "version");
       await storage.delete(key: "theme");
@@ -266,25 +428,18 @@ class IKonService {
       };
 
       final uri = Uri.parse(restUrl).replace(queryParameters: params);
-      final response = await http.post(uri, headers: headers);
+      await http.post(uri, headers: headers);
 
-      if (response.statusCode == 200) {
-        if (callback != null) {
-          callback();
-        } else {
-          // Navigate to the LoginPage using navigatorKey
-          navigatorKey.currentState?.pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => LoginPage()),
-                (route) => false,
-          );
-        }
+      if (callback != null) {
+        callback();
       } else {
-        throw Exception("Logout API failed");
+        navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => LoginPage()),
+              (route) => false,
+        );
       }
     } catch (e) {
       print("Logout error: $e");
-
-      // Navigate to the LoginPage in case of an error
       navigatorKey.currentState?.pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => LoginPage()),
             (route) => false,
@@ -369,7 +524,7 @@ class IKonService {
       "outFormat": "freejson",
       "service": "processRuntimeService",
       "operation": "getMyInstancesV2",
-      "softwareId": _softwareId,
+      "softwareId": softwareId,
       "activeAccountId": _globalAccountId,
       "ticket": _ticket
     };
@@ -434,7 +589,7 @@ class IKonService {
       "operation": "mapProcessName",
       "ticket": _ticket,
       "activeAccountId": _globalAccountId,
-      "softwareId": _softwareId
+      "softwareId": softwareId
     };
 
     try {
@@ -490,7 +645,7 @@ class IKonService {
         "operation": "startProcessV2",
         "ticket": _ticket,
         "activeAccountId": _globalAccountId,
-        "softwareId": _softwareId
+        "softwareId": softwareId
       };
 
       final uri = Uri.parse(restUrl).replace(queryParameters: params);
@@ -557,7 +712,7 @@ class IKonService {
         "operation": "invokeAction",
         "ticket": _ticket,
         "activeAccountId": _globalAccountId,
-        "softwareId": _softwareId
+        "softwareId": softwareId
       };
 
       final uri = Uri.parse(restUrl).replace(queryParameters: params);
